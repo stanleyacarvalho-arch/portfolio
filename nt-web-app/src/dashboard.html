@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Novo Tempo</title>
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Header fixo -->
+  <header class="header">
+    <div class="header-content">
+      <img src="../public/Logo_Novo_Tempo.png" alt="Logo Novo Tempo" class="header-logo" />
+      <h1 class="header-title">Dashboard</h1>
+      <button class="menu-toggle" aria-label="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main class="main-content">
+    <!-- Saudação animada -->
+    <section class="greeting-section">
+      <h2 class="greeting" id="greeting">Bom dia, Alessandro Souza!</h2>
+    </section>
+
+    <section class="progress-section">
+      <div class="progress-container">
+        <div class="progress-header">
+          <div class="progress-info">
+            <h3>Seu Engajamento</h3>
+            <p>
+              Você participou de <strong id="completedCount">4</strong> de
+              <strong id="goalTotal">10</strong> eventos este ano —
+              faltam <strong id="remainingToGoal">6</strong> para a meta.
+            </p>
+          </div>
+          <div class="progress-meta">
+            <div class="meta-chip">
+              <i class="fas fa-chart-line"></i>
+              <span id="progressComparison">+5% vs. mês passado</span>
+            </div>
+            <div class="meta-chip">
+              <i class="fas fa-flag-checkered"></i>
+              <span id="projectionText">No ritmo atual, você atinge a meta em 3 eventos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="progress-percent-side" id="progressPercentLabel">40%</div>
+        </div>
+
+        <div class="engage-kpis">
+          <div class="engage-kpi">
+            <div class="kpi-icon-wrap kpi-blue"><i class="fas fa-calendar-check"></i></div>
+            <div class="kpi-info">
+              <div class="kpi-title">Taxa de Presença</div>
+              <div class="kpi-value" id="attendanceRate">—</div>
+              <div class="kpi-sub">Concluídos / Inscritos</div>
+            </div>
+          </div>
+          <div class="engage-kpi">
+            <div class="kpi-icon-wrap kpi-green"><i class="fas fa-fire"></i></div>
+            <div class="kpi-info">
+              <div class="kpi-title">Streak</div>
+              <div class="kpi-value"><span id="streakCount">—</span> eventos</div>
+              <div class="kpi-sub">consecutivos</div>
+            </div>
+          </div>
+          <div class="engage-kpi">
+            <div class="kpi-icon-wrap kpi-yellow"><i class="fas fa-star"></i></div>
+            <div class="kpi-info">
+              <div class="kpi-title">Pontos</div>
+              <div class="kpi-value"><span id="pointsTotal">—</span> pts</div>
+              <div class="kpi-sub">mês: <span id="pointsThisMonth">—</span> pts</div>
+            </div>
+          </div>
+          <div class="engage-kpi">
+            <div class="kpi-icon-wrap kpi-purple"><i class="fas fa-medal"></i></div>
+            <div class="kpi-info">
+              <div class="kpi-title">Próximo Badge</div>
+              <div class="kpi-value" id="nextBadgeName">—</div>
+              <div class="kpi-sub" id="nextBadgeDelta">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão Minhas Participações -->
+        <div class="engagement-actions">
+          <button class="participations-btn" id="openParticipationsBtn">
+            <i class="fas fa-list-check"></i>
+            Minhas Participações
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal: Minhas Participações -->
+    <div class="modal-overlay" id="participationsModal" aria-hidden="true">
+      <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="participationsTitle">
+        <div class="modal-header">
+          <h3 class="modal-title" id="participationsTitle">Minhas Participações</h3>
+          <button class="modal-close" id="closeParticipationsBtn" aria-label="Fechar">&times;</button>
+        </div>
+
+        <div class="modal-content">
+          <div class="event-info">
+            <!-- Resumo -->
+            <div class="participations-summary">
+              <div class="summary-item">
+                <i class="fas fa-calendar-check"></i>
+                <div>
+                  <strong>Eventos concluídos</strong>
+                  <span id="partTotalEvents">—</span>
+                </div>
+              </div>
+              <div class="summary-item">
+                <i class="fas fa-star"></i>
+                <div>
+                  <strong>Pontos acumulados</strong>
+                  <span id="partTotalPoints">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista -->
+            <div class="participations-list" id="participationsList">
+              <!-- Itens gerados via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards de próximos eventos -->
+    <section class="events-section">
+      <h3 class="section-title">Próximos Eventos</h3>
+      <div class="events-grid">
+        <div class="event-card" data-event-id="0">
+          <div class="event-type">Palestra</div>
+          <h4 class="event-title">Inovação e Tecnologia</h4>
+          <div class="event-details">
+            <p><i class="fas fa-calendar"></i> 25 de Agosto, 2024</p>
+            <p><i class="fas fa-map-marker-alt"></i> Auditório Principal</p>
+            <p><i class="fas fa-clock"></i> 14:00 - 16:00</p>
+          </div>
+          <button class="event-btn" data-index="0">Ver Detalhes</button>
+        </div>
+
+        <div class="event-card" data-event-id="1">
+          <div class="event-type">Curso</div>
+          <h4 class="event-title">Gestão de Projetos</h4>
+          <div class="event-details">
+            <p><i class="fas fa-calendar"></i> 28 de Agosto, 2024</p>
+            <p><i class="fas fa-map-marker-alt"></i> Sala de Treinamento</p>
+            <p><i class="fas fa-clock"></i> 09:00 - 17:00</p>
+          </div>
+          <button class="event-btn" data-index="1">Ver Detalhes</button>
+        </div>
+
+        <div class="event-card" data-event-id="2">
+          <div class="event-type">Seminário</div>
+          <h4 class="event-title">Sustentabilidade Corporativa</h4>
+          <div class="event-details">
+            <p><i class="fas fa-calendar"></i> 02 de Setembro, 2024</p>
+            <p><i class="fas fa-map-marker-alt"></i> Centro de Convenções</p>
+            <p><i class="fas fa-clock"></i> 08:00 - 12:00</p>
+          </div>
+          <button class="event-btn" data-index="2">Ver Detalhes</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ranking dos funcionários -->
+    <section class="ranking-section">
+      <h3 class="section-title">Ranking de Engajamento</h3>
+      <div class="ranking-carousel">
+        <button class="carousel-btn prev" aria-label="Anterior">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="ranking-container">
+          <div class="ranking-item podium-1">
+            <div class="rank-medal">🥇</div>
+            <div class="rank-avatar">M</div>
+            <div class="rank-name">Maria Silva</div>
+            <div class="rank-score">95 pts</div>
+          </div>
+
+          <div class="ranking-item podium-2">
+            <div class="rank-medal">🥈</div>
+            <div class="rank-avatar">J</div>
+            <div class="rank-name">João Santos</div>
+            <div class="rank-score">87 pts</div>
+          </div>
+
+          <div class="ranking-item podium-3">
+            <div class="rank-medal">🥉</div>
+            <div class="rank-avatar">A</div>
+            <div class="rank-name">Ana Costa</div>
+            <div class="rank-score">82 pts</div>
+          </div>
+
+          <div class="ranking-item">
+            <div class="rank-position">4º</div>
+            <div class="rank-avatar">C</div>
+            <div class="rank-name">Carlos Lima</div>
+            <div class="rank-score">78 pts</div>
+          </div>
+
+          <div class="ranking-item current-user">
+            <div class="rank-position">8º</div>
+            <div class="rank-avatar">A</div>
+            <div class="rank-name">Alessandro Souza</div>
+            <div class="rank-score">65 pts</div>
+          </div>
+        </div>
+
+        <button class="carousel-btn next" aria-label="Próximo">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé discreto -->
+  <footer class="footer">
+    <div class="footer-content">
+      <a href="#">Política de Privacidade</a>
+      <span>|</span>
+      <a href="#">Suporte</a>
+      <span>|</span>
+      <a href="#">Sobre</a>
+    </div>
+  </footer>
+
+  <!-- Modal de Detalhes do Evento -->
+  <div class="modal-overlay" id="eventModal" aria-hidden="true">
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Detalhes do Evento</h2>
+        <button class="modal-close" id="closeModal" aria-label="Fechar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="event-banner" id="eventBanner">
+        <img id="modalEventImage" src="assets/evento1.jpeg" alt="Foto do Evento" class="event-image" />
+        <div class="event-type-large" id="modalEventType">Palestra</div>
+      </div>
+
+      <div class="event-info">
+        <h3 class="event-title-large" id="modalEventTitle">Nome do Evento</h3>
+
+        <div class="event-details-grid">
+          <div class="detail-item">
+            <i class="fas fa-calendar"></i>
+            <div>
+              <strong>Data</strong>
+              <span id="modalEventDate">25 de Agosto, 2024</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <strong>Horário</strong>
+              <span id="modalEventTime">14:00 - 16:00</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Local</strong>
+              <span id="modalEventLocation">Auditório Principal</span>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <i class="fas fa-users"></i>
+            <div>
+              <strong>Vagas</strong>
+              <span id="modalEventCapacity">45 de 50 vagas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event-description">
+          <h4>Descrição</h4>
+          <p id="modalEventDescription">
+            Este evento abordará as principais tendências em inovação e tecnologia, 
+            com foco em transformação digital e impacto nos negócios.
+          </p>
+        </div>
+
+        <div class="event-actions">
+          <button class="qr-scan-btn" id="qrScanBtn" disabled>
+            <i class="fas fa-qrcode"></i>
+            <span id="qrBtnText">Escanear QR Code - Check-in</span>
+          </button>
+          <span id="checkStatusMsg" style="display:none; font-weight:600; margin-top:8px;"></span>
+
+          <!-- Modal do leitor de QR Code (interno ao modal de evento) -->
+          <div class="qr-modal" id="qrModal" style="display: none;">
+            <div class="qr-modal-content">
+              <div class="qr-modal-header">
+                <h3 id="qrModalTitle">Escaneie o QR Code para Check-in</h3>
+                <button class="qr-close" id="qrCloseBtn" aria-label="Fechar QR">&times;</button>
+              </div>
+              <div class="qr-reader-container">
+                <div id="qr-reader" style="width: 100%;"></div>
+              </div>
+              <div class="qr-status" id="qrStatus"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensagem de despedida personalizada -->
+        <div id="farewellMsg" style="display:none; margin-top:24px; text-align:center; font-size:1.1rem; font-weight:600; color:#1976d2;"></div>
+
+        <!-- === Nova seção de Avaliação (oculta até o checkout) === -->
+        <section id="feedbackSection" class="feedback-section" style="display:none; margin-top:18px;">
+          <h4>Avalie este evento</h4>
+
+          <!-- Curtir / Descurtir -->
+          <div class="feedback-actions" style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
+            <button id="likeBtn" class="btn feedback-like" aria-pressed="false" aria-label="Curtir evento">
+              <i class="fas fa-thumbs-up"></i> Curtir
+            </button>
+
+            <button id="dislikeBtn" class="btn feedback-dislike" aria-pressed="false" aria-label="Descurtir evento">
+              <i class="fas fa-thumbs-down"></i> Descurtir
+            </button>
+
+            <span id="feedbackResult" aria-live="polite" style="margin-left:10px; color:#94a3b8;"></span>
+          </div>
+
+          <!-- Campo de texto para feedback -->
+          <div class="feedback-form" style="display:flex; flex-direction:column; gap:8px;">
+            <label for="feedbackTextarea" style="font-weight:600;">Deixe seu comentário</label>
+            <textarea id="feedbackTextarea" rows="4" placeholder="Conte-nos o que achou do evento..." aria-label="Campo de comentário"></textarea>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+              <small id="feedbackPointsNote" style="color:#94a3b8;">A avaliação do evento acumula pontos.</small>
+              <button id="sendFeedbackBtn" class="btn btn-primary" aria-label="Enviar avaliação">Envie sua avaliação</button>
+            </div>
+          </div>
+        </section>
+        <!-- === fim seção de Avaliação === -->
+
+      </div> <!-- .event-info -->
+    </div> <!-- .modal-container -->
+  </div> <!-- #eventModal -->
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

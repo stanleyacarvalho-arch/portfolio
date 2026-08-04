@@ -1,0 +1,142 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Montserrat', Arial, sans-serif;
+  background: linear-gradient(135deg, #003366 0%, #0057A3 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-container {
+  background: rgba(255,255,255,0.05);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  padding: 40px 32px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 320px;
+  max-width: 360px;
+  width: 100%;
+}
+
+.logo {
+  width: 120px;
+  margin-bottom: 24px;
+  /* Animação: fade + bounce pode ser aplicada aqui */
+  animation: fadeBounce 1.2s;
+}
+
+@keyframes fadeBounce {
+  0% { opacity: 0; transform: translateY(-40px) scale(0.8);}
+  60% { opacity: 1; transform: translateY(10px) scale(1.05);}
+  80% { transform: translateY(-5px) scale(0.98);}
+  100% { opacity: 1; transform: translateY(0) scale(1);}
+}
+
+.welcome {
+  color: #FFD600;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+  /* Animação de digitação pode ser aplicada aqui */
+  animation: fadeIn 1.2s 0.5s backwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0;}
+  to { opacity: 1;}
+}
+
+.input-group {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  background: #F5F5F5;
+  font-size: 1rem;
+  transition: box-shadow 0.2s, border 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  outline: none;
+}
+
+.input-group input:focus {
+  border: 2px solid #0057A3;
+  box-shadow: 0 0 0 2px #FFD60055;
+  background: #fff;
+}
+
+.forgot {
+  width: 100%;
+  text-align: right;
+  margin-bottom: 18px;
+}
+
+.forgot a {
+  color: #0057A3;
+  text-decoration: none;
+  font-size: 0.95rem;
+  opacity: 0.85;
+  transition: color 0.2s;
+}
+
+.forgot a:hover {
+  color: #FFD600;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 14px 0;
+  background: #FFD600;
+  color: #003366;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.login-btn:hover {
+  background: #FFC400;
+  transform: scale(1.03);
+}
+
+.copyright {
+  margin-top: 32px;
+  color: #F5F5F5;
+  font-size: 0.9rem;
+  opacity: 0.7;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 24px 8px 16px 8px;
+    min-width: unset;
+    max-width: 98vw;
+  }
+  .logo {
+    width: 90px;
+  }
+}
