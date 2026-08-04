@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualizar Produto - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Seu CSS original mantido para consistência */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .back-btn {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      flex: 1;
+      text-align: center;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-edit {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-edit:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .btn-delete {
+      background: #222;
+      color: #ff5252;
+      border: 1.2px solid #ff5252;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-delete:hover {
+      background: #ff5252;
+      color: #fff;
+    }
+    .product-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .product-gallery {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .gallery-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .main-image {
+      width: 100%;
+      height: 300px;
+      background: #222;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 1.1rem;
+      overflow: hidden;
+    }
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .thumbnail-gallery {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .thumbnail {
+      width: 60px;
+      height: 60px;
+      background: #333;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border 0.2s;
+      border: 2px solid transparent;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 0.8rem;
+    }
+    .thumbnail.active {
+      border-color: #00b86b;
+    }
+    .thumbnail:hover {
+      border-color: #00e676;
+    }
+    .product-info {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .product-name {
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .product-category {
+      color: #00b86b;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .product-price {
+      color: #00e676;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .product-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .status-badge.active {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+    }
+    .status-badge.inactive {
+      background: #ff525222;
+      color: #ff7979;
+      border: 1px solid #ff5252;
+    }
+    .stock-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .stock-badge.normal {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+    }
+    .stock-badge.low {
+      background: #ff792222;
+      color: #ff7979;
+      border: 1px solid #ff7922;
+    }
+    .stock-badge.out {
+      background: #ff525222;
+      color: #ff5252;
+      border: 1px solid #ff5252;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .info-label {
+      color: #aaa;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .info-value {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .info-value.stock-normal {
+      color: #00e676;
+    }
+    .info-value.stock-low {
+      color: #ff7979;
+    }
+    .info-value.stock-out {
+      color: #ff5252;
+    }
+    .product-description {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #222;
+    }
+    .description-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .description-text {
+      color: #ccc;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .stats-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+      margin-top: 24px;
+    }
+    .stats-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .stat-item {
+      background: #222;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-value {
+      color: #00e676;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      color: #aaa;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        text-align: left;
+        font-size: 1.2rem;
+      }
+      .action-buttons {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .product-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .product-gallery {
+        padding: 20px;
+      }
+      .main-image {
+        height: 250px;
+      }
+      .product-info {
+        padding: 20px;
+      }
+      .product-name {
+        font-size: 1.3rem;
+      }
+      .product-price {
+        font-size: 1.8rem;
+      }
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .stats-container {
+        padding: 20px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+  <script>
+    function selectThumbnail(element, imageUrl) {
+      // Remove active class from all thumbnails
+      document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+      });
+      
+      // Add active class to clicked thumbnail
+      element.classList.add('active');
+      
+      // Update main image (if you have actual images)
+      // document.querySelector('.main-image img').src = imageUrl;
+    }
+    
+    function editProduct() {
+      // Redirect to edit page
+      window.location.href = 'editar-produto.html';
+    }
+    
+    function deleteProduct() {
+      if (confirm('Tem certeza que deseja excluir este produto?')) {
+        alert('Produto excluído com sucesso!');
+        // Redirect to products list
+        window.location.href = 'produtos.html';
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item active" data-page="produtos" tabindex="0" aria-current="page" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <div class="main-content">
+    <div class="header-row">
+      <a href="produtos.html" class="back-btn" aria-label="Voltar para lista de produtos">
+        <span class="material-icons">arrow_back</span>
+        Voltar
+      </a>
+      <div class="page-title">Hot Wheels Mustang GT</div>
+      <div class="action-buttons">
+        <a href="editar-produto.html" class="btn-edit" aria-label="Editar produto">
+          <span class="material-icons">edit</span>
+          Editar
+        </a>
+        <button class="btn-delete" onclick="deleteProduct()" aria-label="Excluir produto">
+          <span class="material-icons">delete</span>
+          Excluir
+        </button>
+      </div>
+    </div>
+    
+    <div class="product-container">
+      <!-- Galeria de Fotos -->
+      <div class="product-gallery">
+        <div class="gallery-title">
+          <span class="material-icons">photo_library</span>
+          Fotos do Produto
+        </div>
+        <div class="main-image">
+          <span>Imagem Principal</span>
+        </div>
+        <div class="thumbnail-gallery">
+          <div class="thumbnail active" onclick="selectThumbnail(this, 'img1.jpg')" tabindex="0" role="button" aria-label="Selecionar imagem 1">
+            IMG 1
+          </div>
+          <div class="thumbnail" onclick="selectThumbnail(this, 'img2.jpg')" tabindex="0" role="button" aria-label="Selecionar imagem 2">
+            IMG 2
+          </div>
+          <div class="thumbnail" onclick="selectThumbnail(this, 'img3.jpg')" tabindex="0" role="button" aria-label="Selecionar imagem 3">
+            IMG 3
+          </div>
+          <div class="thumbnail" onclick="selectThumbnail(this, 'img4.jpg')" tabindex="0" role="button" aria-label="Selecionar imagem 4">
+            IMG 4
+          </div>
+        </div>
+      </div>
+      
+      <!-- Informações do Produto -->
+      <div class="product-info">
+        <h1 class="product-name">Hot Wheels Mustang GT</h1>
+        <div class="product-category">
+          <span class="material-icons">category</span>
+          Hot Wheels
+        </div>
+        <div class="product-price">R$ 45,00</div>
+        
+        <div class="product-status">
+          <span class="status-badge active" aria-label="Produto ativo">
+            <span class="material-icons" style="font-size: 16px;">check_circle</span>
+            Ativo
+          </span>
+          <span class="stock-badge normal" aria-label="Estoque normal, 12 unidades">
+            <span class="material-icons" style="font-size: 16px;">inventory</span>
+            12 em estoque
+          </span>
+        </div>
+        
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Data de Cadastro</span>
+            <span class="info-value">15/06/2025</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Última Atualização</span>
+            <span class="info-value">16/06/2025</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Estoque Disponível</span>
+            <span class="info-value stock-normal">12 unidades</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Categoria</span>
+            <span class="info-value">Hot Wheels</span>
+          </div>
+        </div>
+        
+        <div class="product-description">
+          <div class="description-title">
+            <span class="material-icons">description</span>
+            Descrição
+          </div>
+          <div class="description-text">
+            Hot Wheels Mustang GT em escala 1:64, modelo colecionável da série básica 2025. Carroceria em metal fundido com detalhes em plástico de alta qualidade. Pintura azul metálico com acabamento brilhante e rodas esportivas. Ideal para colecionadores e crianças acima de 3 anos.
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Estatísticas do Produto -->
+    <div class="stats-container">
+      <div class="stats-title">
+        <span class="material-icons">analytics</span>
+        Estatísticas do Produto
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">28</div>
+          <div class="stat-label">Total de Pedidos</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">R$ 1.260</div>
+          <div class="stat-label">Receita Total</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">12</div>
+          <div class="stat-label">Estoque Atual</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item active" data-page="produtos" tabindex="0" aria-current="page" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

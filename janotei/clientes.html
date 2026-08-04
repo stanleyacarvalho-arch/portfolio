@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Clientes - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Seu CSS original mantido */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .btn-new {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-new:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .search-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .search-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1;
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+      min-width: 200px;
+    }
+    .search-input:focus {
+      border-color: #00b86b;
+    }
+    .filter-select {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+      cursor: pointer;
+    }
+    .filter-select:focus {
+      border-color: #00b86b;
+    }
+    .search-btn {
+      background: #00b86b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .search-btn:hover {
+      background: #00e676;
+    }
+    .clients-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+      overflow-x: auto;
+    }
+    .clients-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+    .clients-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .clients-count {
+      color: #00b86b;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .clients-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      min-width: 600px;
+    }
+    .clients-table th {
+      background: #222;
+      color: #ccc;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #333;
+    }
+    .clients-table td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #222;
+      vertical-align: middle;
+    }
+    .clients-table tr:hover {
+      background: #222;
+    }
+    .client-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00b86b, #00e676);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .client-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .client-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .client-name {
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .client-email {
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .client-phone {
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+    .client-orders {
+      color: #00b86b;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .client-total {
+      color: #00e676;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .client-date {
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-badge.active {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+    }
+    .status-badge.inactive {
+      background: #ff525222;
+      color: #ff7979;
+      border: 1px solid #ff5252;
+    }
+    .client-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action {
+      background: transparent;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-action:hover {
+      background: #333;
+    }
+    .btn-action.view:hover {
+      color: #00b86b;
+    }
+    .btn-action.edit:hover {
+      color: #00b86b;
+    }
+    .btn-action.delete:hover {
+      color: #ff5252;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      color: #333;
+    }
+    .empty-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #aaa;
+    }
+    .empty-text {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .search-container {
+        padding: 20px;
+      }
+      .search-row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+      }
+      .search-input, .filter-select {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+      }
+      .search-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+      .clients-container {
+        padding: 20px;
+        overflow-x: auto;
+      }
+      .clients-table {
+        min-width: 600px;
+      }
+      .clients-table th,
+      .clients-table td {
+        padding: 8px;
+        font-size: 0.85rem;
+      }
+      .client-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+      }
+      .client-name {
+        font-size: 0.9rem;
+      }
+      .client-email {
+        font-size: 0.8rem;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script>
+    function searchClients() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const statusFilter = document.getElementById('status-filter').value;
+      const tableRows = document.querySelectorAll('.clients-table tbody tr');
+      
+      tableRows.forEach(row => {
+        const clientName = row.querySelector('.client-name').textContent.toLowerCase();
+        const clientEmail = row.querySelector('.client-email').textContent.toLowerCase();
+        const clientPhone = row.querySelector('.client-phone').textContent.toLowerCase();
+        const clientStatus = row.querySelector('.status-badge').textContent.toLowerCase();
+        
+        const matchesSearch = clientName.includes(searchTerm) || 
+                            clientEmail.includes(searchTerm) || 
+                            clientPhone.includes(searchTerm);
+        
+        const matchesStatus = statusFilter === 'todos' || 
+                            (statusFilter === 'ativo' && clientStatus === 'ativo') ||
+                            (statusFilter === 'inativo' && clientStatus === 'inativo');
+        
+        if (matchesSearch && matchesStatus) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+    
+    function viewClient(id) {
+      // Redireciona para visualizar cliente com id na query string
+      window.location.href = `visualizar-cliente.html?id=${id}`;
+    }
+    
+    function editClient(id) {
+      // Redireciona para editar cliente com id na query string
+      window.location.href = `editar-cliente.html?id=${id}`;
+    }
+    
+    function deleteClient(id, name) {
+      if (confirm(`Tem certeza que deseja excluir o cliente "${name}"?\n\nEsta ação não pode ser desfeita.`)) {
+        alert(`Cliente "${name}" excluído com sucesso!`);
+        // Aqui você removeria o cliente da lista
+      }
+    }
+    
+    function newClient() {
+      window.location.href = 'novo-cliente.html';
+    }
+  </script>
+</head>
+<body>
+  <div class="sidebar" role="navigation" aria-label="Menu principal">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item active" data-page="clientes" tabindex="0" aria-current="page" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <main class="main-content">
+    <div class="header-row">
+      <div class="page-title">Clientes</div>
+      <button class="btn-new" type="button" onclick="newClient()" aria-label="Adicionar novo cliente">
+        <span class="material-icons">add</span>
+        Novo Cliente
+      </button>
+    </div>
+    
+    <div class="search-container">
+      <div class="search-row">
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar por nome, email ou telefone..." onkeyup="searchClients()" aria-label="Campo de busca de clientes" />
+        <select id="status-filter" class="filter-select" onchange="searchClients()" aria-label="Filtro de status do cliente">
+          <option value="todos">Todos os Status</option>
+          <option value="ativo">Apenas Ativos</option>
+          <option value="inativo">Apenas Inativos</option>
+        </select>
+        <button class="search-btn" type="button" onclick="searchClients()" aria-label="Buscar clientes">
+          <span class="material-icons">search</span>
+          Buscar
+        </button>
+      </div>
+    </div>
+    
+    <div class="clients-container" role="region" aria-label="Lista de clientes">
+      <div class="clients-header">
+        <div class="clients-title">
+          <span class="material-icons" aria-hidden="true">people</span>
+          Lista de Clientes
+        </div>
+        <div class="clients-count" aria-live="polite" aria-atomic="true">8 clientes encontrados</div>
+      </div>
+      
+      <table class="clients-table">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Telefone</th>
+            <th>Pedidos</th>
+            <th>Total Gasto</th>
+            <th>Cadastro</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Exemplo de cliente -->
+          <tr>
+            <td>
+              <div class="client-info">
+                <div class="client-avatar">JM</div>
+                <div class="client-details">
+                  <div class="client-name">João Mendes</div>
+                  <div class="client-email">joao.mendes@email.com</div>
+                </div>
+              </div>
+            </td>
+            <td class="client-phone">(11) 99999-8888</td>
+            <td class="client-orders">12</td>
+            <td class="client-total">R$ 2.450,00</td>
+            <td class="client-date">15/06/2025</td>
+            <td><span class="status-badge active">Ativo</span></td>
+            <td>
+              <div class="client-actions">
+                <button class="btn-action view" type="button" onclick="viewClient(1)" title="Visualizar">
+                  <span class="material-icons" aria-hidden="true">visibility</span>
+                </button>
+                <button class="btn-action edit" type="button" onclick="editClient(1)" title="Editar">
+                  <span class="material-icons" aria-hidden="true">edit</span>
+                </button>
+                <button class="btn-action delete" type="button" onclick="deleteClient(1, 'João Mendes')" title="Excluir">
+                  <span class="material-icons" aria-hidden="true">delete</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <!-- Repita para outros clientes -->
+          <!-- ... -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="bottom-nav" role="navigation" aria-label="Menu inferior">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item active" data-page="clientes" tabindex="0" aria-current="page" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

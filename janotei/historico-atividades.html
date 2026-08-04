@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Histórico de Atividades - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .filters-container {
+      background: #181818;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filter-label {
+      color: #ccc;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .filter-select, .filter-input {
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 0.9rem;
+      min-width: 140px;
+    }
+    .filter-select:focus, .filter-input:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .filter-btn {
+      background: #00b86b;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 20px;
+    }
+    .filter-btn:hover {
+      background: #00e676;
+    }
+    .clear-btn {
+      background: #333;
+      color: #ccc;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .clear-btn:hover {
+      background: #444;
+    }
+    .activities-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      overflow: hidden;
+    }
+    .activities-header {
+      background: #222;
+      padding: 20px 24px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .activities-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .activities-count {
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .activities-list {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    .activity-item {
+      padding: 16px 24px;
+      border-bottom: 1px solid #222;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: background 0.2s;
+    }
+    .activity-item:hover {
+      background: #1a1a1a;
+    }
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .activity-icon.create {
+      background: #00b86b22;
+      color: #00b86b;
+    }
+    .activity-icon.edit {
+      background: #ff980022;
+      color: #ff9800;
+    }
+    .activity-icon.delete {
+      background: #ff525222;
+      color: #ff5252;
+    }
+    .activity-icon.login {
+      background: #2196f322;
+      color: #2196f3;
+    }
+    .activity-icon.export {
+      background: #9c27b022;
+      color: #9c27b0;
+    }
+    .activity-content {
+      flex: 1;
+    }
+    .activity-title {
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .activity-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .activity-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .activity-time {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .activity-user {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .activity-ip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    .empty-state .material-icons {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .pagination-btn {
+      background: #222;
+      color: #ccc;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .pagination-btn:hover:not(:disabled) {
+      background: #333;
+      color: #fff;
+    }
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .pagination-btn.active {
+      background: #00b86b;
+      color: #fff;
+    }
+    .pagination-info {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin: 0 16px;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .filters-container {
+        padding: 16px;
+        gap: 12px;
+      }
+      .filter-group {
+        min-width: 100%;
+      }
+      .filter-select, .filter-input {
+        min-width: 100%;
+      }
+      .activities-header {
+        padding: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .activity-item {
+        padding: 12px 16px;
+        gap: 12px;
+      }
+      .activity-icon {
+        width: 36px;
+        height: 36px;
+      }
+      .activity-meta {
+        flex-direction: column;
+        gap: 4px;
+      }
+      .pagination {
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html" data-page="mais">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Histórico de Atividades</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">history</span>
+          Histórico de Atividades
+        </div>
+      </div>
+    </div>
+
+    <div class="filters-container">
+      <div class="filter-group">
+        <label class="filter-label" for="actionFilter">Tipo de Ação</label>
+        <select class="filter-select" id="actionFilter" aria-label="Filtrar por tipo de ação">
+          <option value="">Todas as ações</option>
+          <option value="create">Criação</option>
+          <option value="edit">Edição</option>
+          <option value="delete">Exclusão</option>
+          <option value="login">Login</option>
+          <option value="export">Exportação</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label" for="moduleFilter">Módulo</label>
+        <select class="filter-select" id="moduleFilter" aria-label="Filtrar por módulo">
+          <option value="">Todos os módulos</option>
+          <option value="produtos">Produtos</option>
+          <option value="categorias">Categorias</option>
+          <option value="clientes">Clientes</option>
+          <option value="pedidos">Pedidos</option>
+          <option value="sistema">Sistema</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label" for="startDate">Data Inicial</label>
+        <input type="date" class="filter-input" id="startDate" aria-label="Data inicial para filtro">
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label" for="endDate">Data Final</label>
+        <input type="date" class="filter-input" id="endDate" aria-label="Data final para filtro">
+      </div>
+      
+      <button class="filter-btn" onclick="applyFilters()" aria-label="Aplicar filtros">
+        <span class="material-icons" style="font-size: 16px;">search</span>
+        Filtrar
+      </button>
+      
+      <button class="clear-btn" onclick="clearFilters()" aria-label="Limpar filtros">
+        Limpar
+      </button>
+    </div>
+
+    <div class="activities-container" role="region" aria-live="polite" aria-label="Lista de atividades recentes">
+      <div class="activities-header">
+        <div class="activities-title">
+          <span class="material-icons" aria-hidden="true">list</span>
+          Atividades Recentes
+        </div>
+        <div class="activities-count" id="activitiesCount">
+          Mostrando 50 de 1.247 atividades
+        </div>
+      </div>
+      
+      <div class="activities-list" id="activitiesList" tabindex="0">
+        <!-- As atividades serão carregadas aqui -->
+      </div>
+    </div>
+
+    <div class="pagination" id="pagination" role="navigation" aria-label="Paginação das atividades">
+      <button class="pagination-btn" onclick="changePage(1)" aria-label="Primeira página">
+        <span class="material-icons" style="font-size: 16px;">first_page</span>
+      </button>
+      <button class="pagination-btn" onclick="changePage(currentPage - 1)" aria-label="Página anterior">
+        <span class="material-icons" style="font-size: 16px;">chevron_left</span>
+      </button>
+      <div class="pagination-info">
+        Página <span id="currentPageSpan">1</span> de <span id="totalPagesSpan">25</span>
+      </div>
+      <button class="pagination-btn" onclick="changePage(currentPage + 1)" aria-label="Próxima página">
+        <span class="material-icons" style="font-size: 16px;">chevron_right</span>
+      </button>
+      <button class="pagination-btn" onclick="changePage(totalPages)" aria-label="Última página">
+        <span class="material-icons" style="font-size: 16px;">last_page</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <script>
+    let currentPage = 1;
+    let totalPages = 25;
+    let activities = [];
+
+    const sampleActivities = [
+      {
+        id: 1,
+        type: 'create',
+        icon: 'add_circle',
+        title: 'Produto Criado',
+        description: 'Hot Wheels Ferrari F40 foi adicionado ao catálogo',
+        module: 'produtos',
+        user: 'Admin',
+        time: '2025-01-31 14:30:25',
+        ip: '192.168.1.100'
+      },
+      {
+        id: 2,
+        type: 'edit',
+        icon: 'edit',
+        title: 'Produto Editado',
+        description: 'Preço do Hot Wheels Lamborghini alterado de R$ 15,00 para R$ 18,00',
+        module: 'produtos',
+        user: 'Admin',
+        time: '2025-01-31 14:15:10',
+        ip: '192.168.1.100'
+      },
+      {
+        id: 3,
+        type: 'delete',
+        icon: 'delete',
+        title: 'Categoria Removida',
+        description: 'Categoria "Carros Antigos" foi excluída do sistema',
+        module: 'categorias',
+        user: 'Admin',
+        time: '2025-01-31 13:45:33',
+        ip: '192.168.1.100'
+      },
+      {
+        id: 4,
+        type: 'login',
+        icon: 'login',
+        title: 'Login Realizado',
+        description: 'Usuário fez login no sistema',
+        module: 'sistema',
+        user: 'Admin',
+        time: '2025-01-31 13:00:15',
+        ip: '192.168.1.100'
+      },
+      {
+        id: 5,
+        type: 'create',
+        icon: 'person_add',
+        title: 'Cliente Cadastrado',
+        description: 'Novo cliente "João Silva" foi adicionado via WhatsApp',
+        module: 'clientes',
+        user: 'Sistema',
+        time: '2025-01-31 12:30:45',
+        ip: 'WhatsApp Bot'
+      },
+      {
+        id: 6,
+        type: 'create',
+        icon: 'shopping_cart',
+        title: 'Pedido Criado',
+        description: 'Pedido #1247 criado para cliente Maria Santos',
+        module: 'pedidos',
+        user: 'Sistema',
+        time: '2025-01-31 11:45:20',
+        ip: 'WhatsApp Bot'
+      },
+      {
+        id: 7,
+        type: 'export',
+        icon: 'file_download',
+        title: 'Backup Exportado',
+        description: 'Backup completo dos dados foi gerado',
+        module: 'sistema',
+        user: 'Admin',
+        time: '2025-01-31 10:00:00',
+        ip: '192.168.1.100'
+      },
+      {
+        id: 8,
+        type: 'edit',
+        icon: 'edit',
+        title: 'Configuração Alterada',
+        description: 'Palavra-chave "reserva" foi adicionada ao bot do WhatsApp',
+        module: 'sistema',
+        user: 'Admin',
+        time: '2025-01-30 16:20:10',
+        ip: '192.168.1.100'
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      activities = [...sampleActivities];
+      loadActivities();
+
+      const today = new Date();
+      const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+      document.getElementById('endDate').value = today.toISOString().split('T')[0];
+      document.getElementById('startDate').value = thirtyDaysAgo.toISOString().split('T')[0];
+    });
+
+    function loadActivities() {
+      const activitiesList = document.getElementById('activitiesList');
+
+      if (activities.length === 0) {
+        activitiesList.innerHTML = `
+          <div class="empty-state">
+            <span class="material-icons">history</span>
+            <div>Nenhuma atividade encontrada</div>
+          </div>
+        `;
+        return;
+      }
+
+      activitiesList.innerHTML = activities.map(activity => `
+        <div class="activity-item">
+          <div class="activity-icon ${activity.type}">
+            <span class="material-icons">${activity.icon}</span>
+          </div>
+          <div class="activity-content">
+            <div class="activity-title">${activity.title}</div>
+            <div class="activity-description">${activity.description}</div>
+            <div class="activity-meta">
+              <div class="activity-time">
+                <span class="material-icons" style="font-size: 14px;">schedule</span>
+                ${formatDateTime(activity.time)}
+              </div>
+              <div class="activity-user">
+                <span class="material-icons" style="font-size: 14px;">person</span>
+                ${activity.user}
+              </div>
+              <div class="activity-ip">
+                <span class="material-icons" style="font-size: 14px;">computer</span>
+                ${activity.ip}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function applyFilters() {
+      const actionFilter = document.getElementById('actionFilter').value;
+      const moduleFilter = document.getElementById('moduleFilter').value;
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+
+      let filteredActivities = [...sampleActivities];
+
+      if (actionFilter) {
+        filteredActivities = filteredActivities.filter(activity => activity.type === actionFilter);
+      }
+
+      if (moduleFilter) {
+        filteredActivities = filteredActivities.filter(activity => activity.module === moduleFilter);
+      }
+
+      if (startDate) {
+        filteredActivities = filteredActivities.filter(activity => 
+          new Date(activity.time) >= new Date(startDate)
+        );
+      }
+
+      if (endDate) {
+        filteredActivities = filteredActivities.filter(activity => 
+          new Date(activity.time) <= new Date(endDate + ' 23:59:59')
+        );
+      }
+
+      activities = filteredActivities;
+      loadActivities();
+
+      document.getElementById('activitiesCount').textContent = 
+        `Mostrando ${activities.length} de ${sampleActivities.length} atividades`;
+    }
+
+    function clearFilters() {
+      document.getElementById('actionFilter').value = '';
+      document.getElementById('moduleFilter').value = '';
+      document.getElementById('startDate').value = '';
+      document.getElementById('endDate').value = '';
+
+      activities = [...sampleActivities];
+      loadActivities();
+
+      document.getElementById('activitiesCount').textContent = 
+        `Mostrando ${activities.length} de ${sampleActivities.length} atividades`;
+    }
+
+    function changePage(page) {
+      if (page < 1 || page > totalPages) return;
+
+      currentPage = page;
+      document.getElementById('currentPageSpan').textContent = currentPage;
+
+      // Aqui você faria a requisição para carregar a página específica
+      console.log('Carregando página:', currentPage);
+    }
+
+    function formatDateTime(dateTimeString) {
+      const date = new Date(dateTimeString);
+      const now = new Date();
+      const diffInHours = (now - date) / (1000 * 60 * 60);
+
+      if (diffInHours < 1) {
+        const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+        return `${diffInMinutes} min atrás`;
+      } else if (diffInHours < 24) {
+        return `${Math.floor(diffInHours)} h atrás`;
+      } else {
+        return date.toLocaleDateString('pt-BR') + ' às ' + 
+               date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      }
+    }
+  </script>
+</body>
+</html>

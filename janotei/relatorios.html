@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Relatórios - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .btn-back {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-back:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .export-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-export {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-export:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .filters-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      margin-bottom: 24px;
+      color: #fff;
+    }
+    .filters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+    .filters-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-clear-filters {
+      background: transparent;
+      color: #ff5252;
+      border: 1px solid #ff5252;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-clear-filters:hover {
+      background: #ff5252;
+      color: #fff;
+    }
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-input,
+    .filter-select {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .filter-input:focus,
+    .filter-select:focus {
+      border-color: #00b86b;
+      box-shadow: 0 0 0 2px #00b86b22;
+    }
+    .filter-select {
+      cursor: pointer;
+    }
+    .date-range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .filters-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding-top: 16px;
+      border-top: 1px solid #222;
+    }
+    .btn-generate {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-generate:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .report-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+      display: none;
+    }
+    .report-container.show {
+      display: block;
+    }
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+    .report-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .report-info {
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .report-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .summary-card {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #333;
+    }
+    .summary-value {
+      color: #00e676;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .summary-label {
+      color: #aaa;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .report-chart {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: center;
+      border: 1px solid #333;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chart-placeholder {
+      color: #666;
+      font-size: 3rem;
+    }
+    .chart-text {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    .report-table th {
+      background: #222;
+      color: #ccc;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #333;
+    }
+    .report-table td {
+      padding: 12px;
+      border-bottom: 1px solid #222;
+      vertical-align: middle;
+    }
+    .report-table tr:hover {
+      background: #222;
+    }
+    .report-value {
+      color: #00e676;
+      font-weight: 600;
+    }
+    .report-date {
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .no-data {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+    .no-data-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      color: #333;
+    }
+    .no-data-text {
+      font-size: 0.95rem;
+      color: #aaa;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: #00b86b;
+    }
+    .loading-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+      font-size: 0.95rem;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .export-actions {
+        width: 100%;
+        justify-content: center;
+      }
+      .filters-container {
+        padding: 20px;
+      }
+      .filters-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .filters-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn-generate {
+        width: 100%;
+        justify-content: center;
+      }
+      .report-container {
+        padding: 20px;
+        overflow-x: auto;
+      }
+      .report-summary {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .summary-card {
+        padding: 16px;
+      }
+      .summary-value {
+        font-size: 1.3rem;
+      }
+      .report-table {
+        min-width: 600px;
+      }
+      .report-table th,
+      .report-table td {
+        padding: 8px;
+        font-size: 0.85rem;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script>
+    function clearFilters() {
+      document.getElementById('report-form').reset();
+      document.getElementById('report-container').classList.remove('show');
+    }
+    
+    function generateReport() {
+      const reportContainer = document.getElementById('report-container');
+      const reportContent = document.getElementById('report-content');
+      
+      // Mostrar loading
+      reportContent.innerHTML = `
+        <div class="loading">
+          <div class="loading-icon material-icons">hourglass_empty</div>
+          <div class="loading-text">Gerando relatório...</div>
+        </div>
+      `;
+      reportContainer.classList.add('show');
+      
+      // Simular carregamento
+      setTimeout(() => {
+        showReportResults();
+      }, 2000);
+    }
+    
+    function showReportResults() {
+      const reportType = document.getElementById('report-type').value;
+      const reportContent = document.getElementById('report-content');
+      
+      let content = '';
+      
+      switch(reportType) {
+        case 'vendas':
+          content = generateSalesReport();
+          break;
+        case 'produtos':
+          content = generateProductsReport();
+          break;
+        case 'clientes':
+          content = generateClientsReport();
+          break;
+        case 'categorias':
+          content = generateCategoriesReport();
+          break;
+        default:
+          content = generateSalesReport();
+      }
+      
+      reportContent.innerHTML = content;
+    }
+    
+    function generateSalesReport() {
+      return `
+        <div class="report-header">
+          <div class="report-title">
+            <span class="material-icons">trending_up</span>
+            Relatório de Vendas
+          </div>
+          <div class="report-info">Período: 01/07/2025 a 26/07/2025 | Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
+        </div>
+        
+        <div class="report-summary">
+          <div class="summary-card">
+            <div class="summary-value">R$ 12.450</div>
+            <div class="summary-label">Faturamento Total</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">89</div>
+            <div class="summary-label">Pedidos Realizados</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">R$ 140</div>
+            <div class="summary-label">Ticket Médio</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">67</div>
+            <div class="summary-label">Clientes Únicos</div>
+          </div>
+        </div>
+        
+        <div class="report-chart">
+          <div class="chart-placeholder material-icons">bar_chart</div>
+          <div class="chart-text">Gráfico de vendas por período seria exibido aqui</div>
+        </div>
+        
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Pedido</th>
+              <th>Cliente</th>
+              <th>Produto</th>
+              <th>Valor</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="report-date">26/07/2025</td>
+              <td>#001234</td>
+              <td>João Mendes</td>
+              <td>Hot Wheels Ferrari F40</td>
+              <td class="report-value">R$ 25,00</td>
+              <td><span style="color: #00e676;">Concluído</span></td>
+            </tr>
+            <tr>
+              <td class="report-date">25/07/2025</td>
+              <td>#001233</td>
+              <td>Maria Silva</td>
+              <td>MiniGT Lamborghini Huracán</td>
+              <td class="report-value">R$ 45,00</td>
+              <td><span style="color: #00e676;">Concluído</span></td>
+            </tr>
+            <tr>
+              <td class="report-date">24/07/2025</td>
+              <td>#001232</td>
+              <td>Pedro Costa</td>
+              <td>Pop Race Toyota Supra</td>
+              <td class="report-value">R$ 38,00</td>
+              <td><span style="color: #ffb347;">Pendente</span></td>
+            </tr>
+            <tr>
+              <td class="report-date">23/07/2025</td>
+              <td>#001231</td>
+              <td>Ana Lima</td>
+              <td>Hot Wheels Porsche 911</td>
+              <td class="report-value">R$ 22,00</td>
+              <td><span style="color: #00e676;">Concluído</span></td>
+            </tr>
+            <tr>
+              <td class="report-date">22/07/2025</td>
+              <td>#001230</td>
+              <td>Roberto Santos</td>
+              <td>MiniGT Nissan GT-R</td>
+              <td class="report-value">R$ 42,00</td>
+              <td><span style="color: #00e676;">Concluído</span></td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+    
+    function generateProductsReport() {
+      return `
+        <div class="report-header">
+          <div class="report-title">
+            <span class="material-icons">inventory</span>
+            Relatório de Produtos
+          </div>
+          <div class="report-info">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
+        </div>
+        
+        <div class="report-summary">
+          <div class="summary-card">
+            <div class="summary-value">156</div>
+            <div class="summary-label">Total de Produtos</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">142</div>
+            <div class="summary-label">Produtos Ativos</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">14</div>
+            <div class="summary-label">Produtos Inativos</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">8</div>
+            <div class="summary-label">Categorias</div>
+          </div>
+        </div>
+        
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Categoria</th>
+              <th>Preço</th>
+              <th>Vendas</th>
+              <th>Faturamento</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hot Wheels Ferrari F40</td>
+              <td>Hot Wheels</td>
+              <td class="report-value">R$ 25,00</td>
+              <td>23</td>
+              <td class="report-value">R$ 575,00</td>
+              <td><span style="color: #00e676;">Ativo</span></td>
+            </tr>
+            <tr>
+              <td>MiniGT Lamborghini Huracán</td>
+              <td>MiniGT</td>
+              <td class="report-value">R$ 45,00</td>
+              <td>18</td>
+              <td class="report-value">R$ 810,00</td>
+              <td><span style="color: #00e676;">Ativo</span></td>
+            </tr>
+            <tr>
+              <td>Pop Race Toyota Supra</td>
+              <td>Pop Race</td>
+              <td class="report-value">R$ 38,00</td>
+              <td>15</td>
+              <td class="report-value">R$ 570,00</td>
+              <td><span style="color: #00e676;">Ativo</span></td>
+            </tr>
+            <tr>
+              <td>Hot Wheels Porsche 911</td>
+              <td>Hot Wheels</td>
+              <td class="report-value">R$ 22,00</td>
+              <td>12</td>
+              <td class="report-value">R$ 264,00</td>
+              <td><span style="color: #ff7979;">Inativo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+    
+    function generateClientsReport() {
+      return `
+        <div class="report-header">
+          <div class="report-title">
+            <span class="material-icons">people</span>
+            Relatório de Clientes
+          </div>
+          <div class="report-info">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
+        </div>
+        
+        <div class="report-summary">
+          <div class="summary-card">
+            <div class="summary-value">89</div>
+            <div class="summary-label">Total de Clientes</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">82</div>
+            <div class="summary-label">Clientes Ativos</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">R$ 140</div>
+            <div class="summary-label">Ticket Médio</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">12</div>
+            <div class="summary-label">Novos este Mês</div>
+          </div>
+        </div>
+        
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Email</th>
+              <th>Pedidos</th>
+              <th>Total Gasto</th>
+              <th>Último Pedido</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>João Mendes</td>
+              <td>joao.mendes@email.com</td>
+              <td>12</td>
+              <td class="report-value">R$ 2.450,00</td>
+              <td class="report-date">20/07/2025</td>
+              <td><span style="color: #00e676;">Ativo</span></td>
+            </tr>
+            <tr>
+              <td>Maria Silva</td>
+              <td>maria.silva@email.com</td>
+              <td>8</td>
+              <td class="report-value">R$ 1.680,00</td>
+              <td class="report-date">18/07/2025</td>
+              <td><span style="color: #00e676;">Ativo</span></td>
+            </tr>
+            <tr>
+              <td>Pedro Costa</td>
+              <td>pedro.costa@email.com</td>
+              <td>15</td>
+              <td class="report-value">R$ 3.200,00</td>
+              <td class="report-date">15/07/2025</td>
+              <td><span style="color: #00e676;">Ativo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+    
+    function generateCategoriesReport() {
+      return `
+        <div class="report-header">
+          <div class="report-title">
+            <span class="material-icons">category</span>
+            Relatório de Categorias
+          </div>
+          <div class="report-info">Gerado em: ${new Date().toLocaleString('pt-BR')}</div>
+        </div>
+        
+        <div class="report-summary">
+          <div class="summary-card">
+            <div class="summary-value">8</div>
+            <div class="summary-label">Total de Categorias</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">156</div>
+            <div class="summary-label">Total de Produtos</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">Hot Wheels</div>
+            <div class="summary-label">Categoria Líder</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-value">R$ 4.250</div>
+            <div class="summary-label">Maior Faturamento</div>
+          </div>
+        </div>
+        
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Produtos</th>
+              <th>Vendas</th>
+              <th>Faturamento</th>
+              <th>Participação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hot Wheels</td>
+              <td>45</td>
+              <td>89</td>
+              <td class="report-value">R$ 4.250,00</td>
+              <td>34.1%</td>
+            </tr>
+            <tr>
+              <td>MiniGT</td>
+              <td>32</td>
+              <td>67</td>
+              <td class="report-value">R$ 3.680,00</td>
+              <td>29.6%</td>
+            </tr>
+            <tr>
+              <td>Pop Race</td>
+              <td>28</td>
+              <td>45</td>
+              <td class="report-value">R$ 2.890,00</td>
+              <td>23.2%</td>
+            </tr>
+            <tr>
+              <td>Tomica</td>
+              <td>18</td>
+              <td>23</td>
+              <td class="report-value">R$ 1.630,00</td>
+              <td>13.1%</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+    
+    function exportPDF() {
+      alert('Exportando relatório em PDF...\n\nEm um sistema real, isso geraria um arquivo PDF para download.');
+    }
+    
+    function exportExcel() {
+      alert('Exportando relatório em Excel...\n\nEm um sistema real, isso geraria um arquivo XLSX para download.');
+    }
+    
+    function exportCSV() {
+      alert('Exportando relatório em CSV...\n\nEm um sistema real, isso geraria um arquivo CSV para download.');
+    }
+    
+    function printReport() {
+      window.print();
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</head>
+<body>
+  <div class="sidebar" role="navigation" aria-label="Menu lateral">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item active" data-page="relatorios" tabindex="0" aria-current="page" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="meu-perfil.html" class="nav-item" data-page="meu-perfil" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <main class="main-content" role="main">
+    <div class="header-row">
+      <button class="btn-back" type="button" onclick="goBack()" aria-label="Voltar para a página anterior">
+        <span class="material-icons" aria-hidden="true">arrow_back</span>
+        Voltar
+      </button>
+      <div class="page-title">Relatórios Personalizados</div>
+      <div class="export-actions">
+        <button class="btn-export" onclick="exportPDF()" aria-label="Exportar relatório em PDF">
+          <span class="material-icons">picture_as_pdf</span>
+          PDF
+        </button>
+        <button class="btn-export" onclick="exportExcel()" aria-label="Exportar relatório em Excel">
+          <span class="material-icons">table_chart</span>
+          Excel
+        </button>
+        <button class="btn-export" onclick="exportCSV()" aria-label="Exportar relatório em CSV">
+          <span class="material-icons">description</span>
+          CSV
+        </button>
+        <button class="btn-export" onclick="printReport()" aria-label="Imprimir relatório">
+          <span class="material-icons">print</span>
+          Imprimir
+        </button>
+      </div>
+    </div>
+    
+    <!-- Filtros Personalizados -->
+    <div class="filters-container">
+      <div class="filters-header">
+        <div class="filters-title">
+          <span class="material-icons">tune</span>
+          Filtros Personalizados
+        </div>
+        <button class="btn-clear-filters" onclick="clearFilters()" aria-label="Limpar filtros">
+          Limpar Filtros
+        </button>
+      </div>
+      
+      <form id="report-form">
+        <div class="filters-grid">
+          <!-- Tipo de Relatório -->
+          <div class="filter-group">
+            <label class="filter-label" for="report-type">
+              <span class="material-icons" style="font-size: 16px;">assessment</span>
+              Tipo de Relatório
+            </label>
+            <select id="report-type" class="filter-select" aria-label="Tipo de relatório">
+              <option value="vendas">Relatório de Vendas</option>
+              <option value="produtos">Relatório de Produtos</option>
+              <option value="clientes">Relatório de Clientes</option>
+              <option value="categorias">Relatório de Categorias</option>
+            </select>
+          </div>
+          
+          <!-- Período -->
+          <div class="filter-group">
+            <label class="filter-label" for="period-select">
+              <span class="material-icons" style="font-size: 16px;">date_range</span>
+              Período
+            </label>
+            <select id="period-select" class="filter-select" aria-label="Período">
+              <option value="hoje">Hoje</option>
+              <option value="ontem">Ontem</option>
+              <option value="semana">Esta Semana</option>
+              <option value="mes" selected>Este Mês</option>
+              <option value="trimestre">Este Trimestre</option>
+              <option value="ano">Este Ano</option>
+              <option value="personalizado">Período Personalizado</option>
+            </select>
+          </div>
+          
+          <!-- Data Inicial -->
+          <div class="filter-group">
+            <label class="filter-label" for="start-date">
+              <span class="material-icons" style="font-size: 16px;">event</span>
+              Data Inicial
+            </label>
+            <input id="start-date" type="date" class="filter-input" value="2025-07-01" aria-label="Data inicial" />
+          </div>
+          
+          <!-- Data Final -->
+          <div class="filter-group">
+            <label class="filter-label" for="end-date">
+              <span class="material-icons" style="font-size: 16px;">event</span>
+              Data Final
+            </label>
+            <input id="end-date" type="date" class="filter-input" value="2025-07-26" aria-label="Data final" />
+          </div>
+          
+          <!-- Cliente Específico -->
+          <div class="filter-group">
+            <label class="filter-label" for="client-select">
+              <span class="material-icons" style="font-size: 16px;">person</span>
+              Cliente Específico
+            </label>
+            <select id="client-select" class="filter-select" aria-label="Cliente específico">
+              <option value="">Todos os Clientes</option>
+              <option value="1">João Mendes</option>
+              <option value="2">Maria Silva</option>
+              <option value="3">Pedro Costa</option>
+              <option value="4">Ana Lima</option>
+              <option value="5">Roberto Santos</option>
+            </select>
+          </div>
+          
+          <!-- Categoria -->
+          <div class="filter-group">
+            <label class="filter-label" for="category-select">
+              <span class="material-icons" style="font-size: 16px;">category</span>
+              Categoria
+            </label>
+            <select id="category-select" class="filter-select" aria-label="Categoria">
+              <option value="">Todas as Categorias</option>
+              <option value="hot-wheels">Hot Wheels</option>
+              <option value="minigt">MiniGT</option>
+              <option value="pop-race">Pop Race</option>
+              <option value="tomica">Tomica</option>
+              <option value="majorette">Majorette</option>
+            </select>
+          </div>
+          
+          <!-- Produto Específico -->
+          <div class="filter-group">
+            <label class="filter-label" for="product-input">
+              <span class="material-icons" style="font-size: 16px;">inventory</span>
+              Produto Específico
+            </label>
+            <input id="product-input" type="text" class="filter-input" placeholder="Digite o nome do produto" aria-label="Produto específico" />
+          </div>
+          
+          <!-- Status -->
+          <div class="filter-group">
+            <label class="filter-label" for="status-select">
+              <span class="material-icons" style="font-size: 16px;">toggle_on</span>
+              Status
+            </label>
+            <select id="status-select" class="filter-select" aria-label="Status">
+              <option value="">Todos os Status</option>
+              <option value="concluido">Concluído</option>
+              <option value="pendente">Pendente</option>
+              <option value="cancelado">Cancelado</option>
+            </select>
+          </div>
+          
+          <!-- Valor Mínimo -->
+          <div class="filter-group">
+            <label class="filter-label" for="min-value">
+              <span class="material-icons" style="font-size: 16px;">attach_money</span>
+              Valor Mínimo
+            </label>
+            <input id="min-value" type="number" class="filter-input" placeholder="R$ 0,00" step="0.01" aria-label="Valor mínimo" />
+          </div>
+          
+          <!-- Valor Máximo -->
+          <div class="filter-group">
+            <label class="filter-label" for="max-value">
+              <span class="material-icons" style="font-size: 16px;">attach_money</span>
+              Valor Máximo
+            </label>
+            <input id="max-value" type="number" class="filter-input" placeholder="R$ 999,99" step="0.01" aria-label="Valor máximo" />
+          </div>
+          
+          <!-- Ordenar Por -->
+          <div class="filter-group">
+            <label class="filter-label" for="sort-select">
+              <span class="material-icons" style="font-size: 16px;">sort</span>
+              Ordenar Por
+            </label>
+            <select id="sort-select" class="filter-select" aria-label="Ordenar por">
+              <option value="data-desc">Data (Mais Recente)</option>
+              <option value="data-asc">Data (Mais Antigo)</option>
+              <option value="valor-desc">Valor (Maior)</option>
+              <option value="valor-asc">Valor (Menor)</option>
+              <option value="cliente">Cliente (A-Z)</option>
+              <option value="produto">Produto (A-Z)</option>
+            </select>
+          </div>
+          
+          <!-- Agrupar Por -->
+          <div class="filter-group">
+            <label class="filter-label" for="group-select">
+              <span class="material-icons" style="font-size: 16px;">group_work</span>
+              Agrupar Por
+            </label>
+            <select id="group-select" class="filter-select" aria-label="Agrupar por">
+              <option value="">Sem Agrupamento</option>
+              <option value="dia">Por Dia</option>
+              <option value="semana">Por Semana</option>
+              <option value="mes">Por Mês</option>
+              <option value="categoria">Por Categoria</option>
+              <option value="cliente">Por Cliente</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="filters-actions">
+          <button type="button" class="btn-generate" onclick="generateReport()" aria-label="Gerar relatório">
+            <span class="material-icons">analytics</span>
+            Gerar Relatório
+          </button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Container do Relatório -->
+    <div id="report-container" class="report-container" aria-live="polite" aria-atomic="true">
+      <div id="report-content">
+        <!-- Conteúdo do relatório será inserido aqui -->
+      </div>
+    </div>
+  </main>
+  
+  <div class="bottom-nav" role="navigation" aria-label="Menu inferior para dispositivos móveis">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item active" data-page="relatorios" tabindex="0" aria-current="page" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="meu-perfil.html" class="nav-item" data-page="meu-perfil" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

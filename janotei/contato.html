@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contato - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .contact-intro {
+      background: #181818;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .intro-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .intro-subtitle {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .contact-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .contact-card {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .contact-card:hover {
+      transform: translateY(-4px);
+    }
+    .contact-icon {
+      width: 60px;
+      height: 60px;
+      background: #00b86b22;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00b86b;
+      margin: 0 auto 16px auto;
+    }
+    .contact-icon .material-icons {
+      font-size: 32px;
+    }
+    .contact-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .contact-description {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .contact-info {
+      color: #00b86b;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .contact-form-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .form-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+    }
+    .form-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .priority-options {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .priority-option {
+      flex: 1;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 8px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .priority-option.low {
+      border-color: #4caf50;
+    }
+    .priority-option.medium {
+      border-color: #ff9800;
+    }
+    .priority-option.high {
+      border-color: #f44336;
+    }
+    .priority-option.selected {
+      color: #fff;
+    }
+    .priority-option.low.selected {
+      background: #4caf50;
+    }
+    .priority-option.medium.selected {
+      background: #ff9800;
+    }
+    .priority-option.high.selected {
+      background: #f44336;
+    }
+    .form-submit {
+      background: #00b86b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+      width: 100%;
+    }
+    .form-submit:hover {
+      background: #00e676;
+    }
+    .form-submit:disabled {
+      background: #333;
+      cursor: not-allowed;
+    }
+    .info-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+    }
+    .info-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #222;
+    }
+    .info-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      background: #00b86b22;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00b86b;
+      flex-shrink: 0;
+    }
+    .info-content {
+      flex: 1;
+    }
+    .info-label {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      color: #aaa;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .status-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .status-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .status-item {
+      background: #222;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin: 0 auto 8px auto;
+    }
+    .status-indicator.online {
+      background: #4caf50;
+    }
+    .status-indicator.busy {
+      background: #ff9800;
+    }
+    .status-indicator.offline {
+      background: #666;
+    }
+    .status-label {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .status-time {
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .success-message {
+      background: #4caf5022;
+      border: 1px solid #4caf50;
+      border-radius: 8px;
+      padding: 16px;
+      color: #4caf50;
+      text-align: center;
+      margin-bottom: 20px;
+      display: none;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .contact-options {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .contact-form-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .form-section, .info-section {
+        padding: 20px;
+      }
+      .priority-options {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .status-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html" data-page="mais">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Contato</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">support_agent</span>
+          Fale Conosco
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-intro">
+      <div class="intro-title">Precisa de ajuda?</div>
+      <div class="intro-subtitle">
+        Nossa equipe está pronta para ajudar você. Escolha a melhor forma de entrar em contato conosco.
+      </div>
+    </div>
+
+    <div class="status-container">
+      <div class="status-title">
+        <span class="material-icons">schedule</span>
+        Status do Atendimento
+      </div>
+      <div class="status-grid">
+        <div class="status-item">
+          <div class="status-indicator online"></div>
+          <div class="status-label">Suporte Técnico</div>
+          <div class="status-time">Online - Resposta em até 2h</div>
+        </div>
+        <div class="status-item">
+          <div class="status-indicator online"></div>
+          <div class="status-label">WhatsApp</div>
+          <div class="status-time">Online - Resposta imediata</div>
+        </div>
+        <div class="status-item">
+          <div class="status-indicator busy"></div>
+          <div class="status-label">Telefone</div>
+          <div class="status-time">Ocupado - Tente mais tarde</div>
+        </div>
+        <div class="status-item">
+          <div class="status-indicator online"></div>
+          <div class="status-label">E-mail</div>
+          <div class="status-time">Online - Resposta em até 24h</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-options">
+      <div class="contact-card" onclick="openWhatsApp()" role="button" tabindex="0" aria-label="Contato via WhatsApp">
+        <div class="contact-icon">
+          <span class="material-icons">chat</span>
+        </div>
+        <div class="contact-title">WhatsApp</div>
+        <div class="contact-description">
+          Atendimento rápido e direto pelo WhatsApp. Ideal para dúvidas simples e suporte imediato.
+        </div>
+        <div class="contact-info">(11) 99999-9999</div>
+      </div>
+
+      <div class="contact-card" onclick="callPhone()" role="button" tabindex="0" aria-label="Contato via Telefone">
+        <div class="contact-icon">
+          <span class="material-icons">phone</span>
+        </div>
+        <div class="contact-title">Telefone</div>
+        <div class="contact-description">
+          Fale diretamente com nossa equipe de suporte por telefone durante o horário comercial.
+        </div>
+        <div class="contact-info">(11) 3333-4444</div>
+      </div>
+
+      <div class="contact-card" onclick="sendEmail()" role="button" tabindex="0" aria-label="Contato via E-mail">
+        <div class="contact-icon">
+          <span class="material-icons">email</span>
+        </div>
+        <div class="contact-title">E-mail</div>
+        <div class="contact-description">
+          Envie sua dúvida por e-mail com detalhes. Responderemos em até 24 horas úteis.
+        </div>
+        <div class="contact-info">suporte@janotei.com.br</div>
+      </div>
+    </div>
+
+    <div class="contact-form-container">
+      <div class="form-section">
+        <div class="form-title">
+          <span class="material-icons">send</span>
+          Enviar Mensagem
+        </div>
+
+        <div class="success-message" id="successMessage" role="alert" aria-live="assertive" aria-atomic="true">
+          <span class="material-icons" style="vertical-align: middle; margin-right: 8px;">check_circle</span>
+          Mensagem enviada com sucesso! Entraremos em contato em breve.
+        </div>
+
+        <form id="contactForm">
+          <div class="form-group">
+            <label class="form-label" for="name">Nome Completo *</label>
+            <input type="text" class="form-input" id="name" required aria-required="true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">E-mail *</label>
+            <input type="email" class="form-input" id="email" required aria-required="true" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">Telefone</label>
+            <input type="tel" class="form-input" id="phone" placeholder="(11) 99999-9999" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="requestType">Tipo de Solicitação *</label>
+            <select class="form-select" id="requestType" required aria-required="true">
+              <option value="">Selecione o tipo</option>
+              <option value="suporte-tecnico">Suporte Técnico</option>
+              <option value="duvida-uso">Dúvida sobre Uso</option>
+              <option value="problema-whatsapp">Problema com WhatsApp</option>
+              <option value="sugestao">Sugestão de Melhoria</option>
+              <option value="bug">Relatar Bug</option>
+              <option value="comercial">Questão Comercial</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Prioridade</label>
+            <div class="priority-options" role="radiogroup" aria-label="Prioridade da solicitação">
+              <div class="priority-option low" role="radio" tabindex="0" aria-checked="false" onclick="selectPriority('low', this)" onkeydown="handlePriorityKey(event, 'low', this)">
+                <div>Baixa</div>
+              </div>
+              <div class="priority-option medium selected" role="radio" tabindex="0" aria-checked="true" onclick="selectPriority('medium', this)" onkeydown="handlePriorityKey(event, 'medium', this)">
+                <div>Média</div>
+              </div>
+              <div class="priority-option high" role="radio" tabindex="0" aria-checked="false" onclick="selectPriority('high', this)" onkeydown="handlePriorityKey(event, 'high', this)">
+                <div>Alta</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">Mensagem *</label>
+            <textarea class="form-textarea" id="message" placeholder="Descreva sua dúvida ou problema com o máximo de detalhes possível..." required aria-required="true"></textarea>
+          </div>
+
+          <button type="submit" class="form-submit" aria-label="Enviar mensagem">
+            <span class="material-icons" style="font-size: 18px;">send</span>
+            Enviar Mensagem
+          </button>
+        </form>
+      </div>
+
+      <div class="info-section" aria-label="Informações de contato">
+        <div class="info-title">
+          <span class="material-icons">info</span>
+          Informações de Contato
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <span class="material-icons">schedule</span>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Horário de Atendimento</div>
+            <div class="info-value">
+              Segunda a Sexta: 8h às 18h<br />
+              Sábado: 8h às 12h<br />
+              Domingo: Fechado
+            </div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <span class="material-icons">location_on</span>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Endereço</div>
+            <div class="info-value">
+              Rua das Empresas, 123<br />
+              Centro - São Paulo/SP<br />
+              CEP: 01234-567
+            </div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <span class="material-icons">language</span>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Website</div>
+            <div class="info-value">
+              www.janotei.com.br<br />
+              Central de Ajuda: help.janotei.com.br
+            </div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon">
+            <span class="material-icons">speed</span>
+          </div>
+          <div class="info-content">
+            <div class="info-label">Tempo de Resposta</div>
+            <div class="info-value">
+              WhatsApp: Imediato<br />
+              E-mail: Até 24h<br />
+              Telefone: Imediato
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <script>
+    let selectedPriority = 'medium';
+
+    function selectPriority(priority, element) {
+      document.querySelectorAll('.priority-option').forEach(option => {
+        option.classList.remove('selected');
+        option.setAttribute('aria-checked', 'false');
+      });
+      element.classList.add('selected');
+      element.setAttribute('aria-checked', 'true');
+      selectedPriority = priority;
+    }
+
+    function handlePriorityKey(event, priority, element) {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        selectPriority(priority, element);
+      }
+    }
+
+    function openWhatsApp() {
+      const message = encodeURIComponent('Olá! Preciso de ajuda com o sistema JANOTEI.');
+      window.open(`https://wa.me/5511999999999?text=${message}`, '_blank');
+    }
+
+    function callPhone() {
+      window.open('tel:+551133334444');
+    }
+
+    function sendEmail() {
+      window.open('mailto:suporte@janotei.com.br?subject=Suporte JANOTEI');
+    }
+
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const submitButton = document.querySelector('.form-submit');
+      const originalText = submitButton.innerHTML;
+
+      submitButton.innerHTML = '<span class="material-icons" style="font-size: 18px;">hourglass_empty</span> Enviando...';
+      submitButton.disabled = true;
+
+      setTimeout(() => {
+        document.getElementById('successMessage').style.display = 'block';
+        this.reset();
+
+        document.querySelectorAll('.priority-option').forEach(option => {
+          option.classList.remove('selected');
+          option.setAttribute('aria-checked', 'false');
+        });
+        document.querySelector('.priority-option.medium').classList.add('selected');
+        document.querySelector('.priority-option.medium').setAttribute('aria-checked', 'true');
+        selectedPriority = 'medium';
+
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+
+        setTimeout(() => {
+          document.getElementById('successMessage').style.display = 'none';
+        }, 5000);
+
+        document.querySelector('.success-message').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 2000);
+    });
+
+    document.getElementById('phone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+
+      if (value.length <= 11) {
+        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        if (value.length < 14) {
+          value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        }
+      }
+
+      e.target.value = value;
+    });
+  </script>
+</body>
+</html>

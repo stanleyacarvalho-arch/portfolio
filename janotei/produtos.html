@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Produtos - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%),
+        radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+        linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .new-product-btn {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px #00b86b33;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .new-product-btn:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .filters-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .search-input,
+    .filter-select {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .search-input:focus,
+    .filter-select:focus {
+      border-color: #00e676;
+    }
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+    }
+    .filter-select {
+      min-width: 150px;
+    }
+    .products-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      color: #aaa;
+      font-weight: 500;
+      margin-bottom: 16px;
+      padding: 0 4px;
+      border-bottom: 1px solid #222;
+      padding-bottom: 8px;
+    }
+    .header-produto {
+      flex: 2;
+    }
+    .header-categoria {
+      flex: 1;
+      text-align: center;
+    }
+    .header-preco {
+      flex: 1;
+      text-align: center;
+    }
+    .header-estoque {
+      flex: 0.8;
+      text-align: center;
+    }
+    .header-status {
+      flex: 1;
+      text-align: center;
+    }
+    .header-acoes {
+      flex: 1.2;
+      text-align: center;
+    }
+    .products-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .product-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 4px;
+      border-bottom: 1px solid #222;
+      transition: background 0.2s;
+    }
+    .product-item:hover {
+      background: #222;
+      border-radius: 8px;
+    }
+    .product-item:last-child {
+      border-bottom: none;
+    }
+    .product-item.inactive {
+      opacity: 0.6;
+    }
+    .product-info {
+      color: #fff;
+      font-size: 1.1rem;
+      flex: 2;
+      font-weight: 600;
+    }
+    .product-categoria {
+      color: #00b86b;
+      font-size: 0.95rem;
+      flex: 1;
+      text-align: center;
+    }
+    .product-preco {
+      color: #00e676;
+      font-size: 1rem;
+      flex: 1;
+      text-align: center;
+      font-weight: 600;
+    }
+    .product-estoque {
+      color: #fff;
+      font-size: 0.95rem;
+      flex: 0.8;
+      text-align: center;
+      font-weight: 500;
+    }
+    .product-estoque.low-stock {
+      color: #ff7979;
+      font-weight: 600;
+    }
+    .product-estoque.out-of-stock {
+      color: #ff5252;
+      font-weight: 700;
+    }
+    .product-status {
+      flex: 1;
+      text-align: center;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .status-badge.active {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+    }
+    .status-badge.inactive {
+      background: #ff525222;
+      color: #ff7979;
+      border: 1px solid #ff5252;
+    }
+    .product-acoes {
+      flex: 1.2;
+      text-align: center;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .action-btn {
+      background: none;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .action-btn:hover {
+      background: #333;
+    }
+    .action-btn.view:hover {
+      color: #00b86b;
+    }
+    .action-btn.edit:hover {
+      color: #00b86b;
+    }
+    .action-btn.delete:hover {
+      color: #ff5252;
+    }
+    .empty-state {
+      text-align: center;
+      color: #666;
+      padding: 40px 20px;
+      font-size: 1.1rem;
+    }
+    /* Modal de confirmação */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #181818;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #ff5252;
+    }
+    .modal-message {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    .product-name-highlight {
+      color: #00b86b;
+      font-weight: 600;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .modal-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn-cancel {
+      background: #222;
+      color: #ccc;
+      border: 1.2px solid #444;
+    }
+    .modal-btn-cancel:hover {
+      background: #333;
+      color: #fff;
+    }
+    .modal-btn-confirm {
+      background: #ff5252;
+      color: #fff;
+    }
+    .modal-btn-confirm:hover {
+      background: #c62828;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .filters-row {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .search-input {
+        min-width: auto;
+      }
+      .products-header {
+        display: none;
+      }
+      .product-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 8px;
+        gap: 8px;
+      }
+      .product-info,
+      .product-categoria,
+      .product-preco,
+      .product-estoque,
+      .product-status,
+      .product-acoes {
+        flex: none;
+        text-align: left;
+        width: 100%;
+      }
+      .product-acoes {
+        justify-content: flex-start;
+      }
+      .modal-content {
+        width: 95%;
+        padding: 20px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script>
+    let productToDelete = null;
+
+    function showDeleteModal(productName) {
+      productToDelete = productName;
+      document.getElementById('modal-message').innerHTML = `Tem certeza que deseja excluir o produto<br><span class="product-name-highlight">${productName}</span>?<br><br>Esta ação não pode ser desfeita.`;
+      document.getElementById('delete-modal').style.display = 'flex';
+    }
+
+    function hideModal() {
+      document.getElementById('delete-modal').style.display = 'none';
+      productToDelete = null;
+      history.back(); // Volta para a página anterior
+    }
+
+    function confirmDelete() {
+      if (productToDelete) {
+        alert(`Produto "${productToDelete}" excluído com sucesso!`);
+        hideModal();
+      }
+    }
+
+    // Fechar modal clicando fora dele
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('delete-modal').addEventListener('click', function (e) {
+        if (e.target === this) {
+          hideModal();
+        }
+      });
+    });
+  </script>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item active" data-page="produtos" tabindex="0" aria-current="page" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div class="page-title">Gerenciar Produtos</div>
+      <button class="new-product-btn" onclick="Navigation.goTo('novo-produto')">
+        <span class="material-icons">add</span>
+        Novo Produto
+      </button>
+    </div>
+
+    <div class="filters-row">
+      <input type="text" class="search-input" placeholder="Buscar produtos..." />
+      <select class="filter-select">
+        <option value="">Todas as categorias</option>
+        <option value="hot-wheels">Hot Wheels</option>
+        <option value="minigt">MiniGT</option>
+        <option value="pop-race">Pop Race</option>
+        <option value="madeiras">Madeiras</option>
+      </select>
+      <select class="filter-select">
+        <option value="">Todos os status</option>
+        <option value="ativo">Ativo</option>
+        <option value="inativo">Inativo</option>
+      </select>
+    </div>
+
+    <div class="products-container">
+      <div class="products-header">
+        <span class="header-produto">Produto</span>
+        <span class="header-categoria">Categoria</span>
+        <span class="header-preco">Preço</span>
+        <span class="header-estoque">Estoque</span>
+        <span class="header-status">Status</span>
+        <span class="header-acoes">Ações</span>
+      </div>
+      <ul class="products-list">
+        <li class="product-item">
+          <span class="product-info">Hot Wheels Mustang GT</span>
+          <span class="product-categoria">Hot Wheels</span>
+          <span class="product-preco">R$ 45,00</span>
+          <span class="product-estoque">15</span>
+          <div class="product-status">
+            <span class="status-badge active">Ativo</span>
+          </div>
+          <div class="product-acoes">
+            <button
+              class="action-btn view"
+              title="Visualizar"
+              onclick="Navigation.goTo('visualizar-produto')"
+            >
+              <span class="material-icons">visibility</span>
+            </button>
+            <button
+              class="action-btn edit"
+              title="Editar"
+              onclick="Navigation.goTo('editar-produto')"
+            >
+              <span class="material-icons">edit</span>
+            </button>
+            <button
+              class="action-btn delete"
+              title="Excluir"
+              onclick="showDeleteModal('Hot Wheels Mustang GT')"
+            >
+              <span class="material-icons">delete</span>
+            </button>
+          </div>
+        </li>
+        <!-- ... repita para os outros produtos ... -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação de exclusão -->
+  <div id="delete-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">
+        <span class="material-icons">warning</span>
+        Confirmar Exclusão
+      </div>
+      <div id="modal-message" class="modal-message"></div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-cancel" onclick="hideModal()">Cancelar</button>
+        <button class="modal-btn modal-btn-confirm" onclick="confirmDelete()">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item active" data-page="produtos" tabindex="0" aria-current="page" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

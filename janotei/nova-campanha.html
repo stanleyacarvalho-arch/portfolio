@@ -1,0 +1,1969 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Nova Campanha - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    /* Tabs para alternar entre tipos de campanha */
+    .campaign-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 32px;
+      background: #181818;
+      border-radius: 12px;
+      padding: 6px;
+      max-width: 600px;
+      margin: 0 auto 32px auto;
+    }
+    .campaign-tab {
+      flex: 1;
+      background: transparent;
+      color: #aaa;
+      border: none;
+      border-radius: 8px;
+      padding: 16px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .campaign-tab:hover {
+      color: #fff;
+      background: #222;
+    }
+    .campaign-tab.active {
+      background: #00b86b;
+      color: #fff;
+    }
+    .campaign-tab .material-icons {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .campaign-content {
+      display: none;
+    }
+    .campaign-content.active {
+      display: block;
+    }
+
+    .form-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 32px;
+      color: #fff;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .form-section {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #222;
+    }
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group.full-width {
+      width: 100% !important;
+      margin: 0 !important;
+      padding-left: 16px;
+      padding-right: 16px;
+      box-sizing: border-box;
+      grid-column: 1 / -1;
+    }
+    }
+    .form-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .form-label.required::after {
+      content: "*";
+      color: #ff5252;
+      margin-left: 4px;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #00b86b;
+      box-shadow: 0 0 0 2px #00b86b22;
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .form-help {
+      color: #666;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    /* Upload de imagens para disparo de mensagens */
+    .image-upload-area {
+      border: 2px dashed #333;
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      background: #222;
+      transition: all 0.2s;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .image-upload-area:hover {
+      border-color: #00b86b;
+      background: #00b86b11;
+    }
+    .image-upload-area.dragover {
+      border-color: #00b86b;
+      background: #00b86b22;
+    }
+    .upload-icon {
+      font-size: 48px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+    .upload-text {
+      color: #aaa;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .upload-hint {
+      color: #666;
+      font-size: 0.8rem;
+    }
+    .uploaded-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .uploaded-image {
+      position: relative;
+      background: #333;
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 1;
+    }
+    .uploaded-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .remove-image {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: #ff4444;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .schedule-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .schedule-option {
+      background: #222;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .schedule-option:hover {
+      border-color: #00b86b;
+    }
+    .schedule-option.selected {
+      border-color: #00b86b;
+      background: #00b86b11;
+    }
+    .schedule-option-icon {
+      font-size: 2rem;
+      color: #00b86b;
+      margin-bottom: 8px;
+    }
+    .schedule-option-title {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .schedule-option-desc {
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .schedule-details {
+      display: none;
+      background: #222;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .schedule-details.show {
+      display: block;
+    }
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .weekdays-selector {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .weekday-btn {
+      background: #333;
+      color: #aaa;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .weekday-btn:hover {
+      border-color: #00b86b;
+      color: #00b86b;
+    }
+    .weekday-btn.selected {
+      background: #00b86b;
+      color: #fff;
+      border-color: #00b86b;
+    }
+    .products-section {
+      background: #222;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+    }
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .products-search-bar {
+      display: flex;
+      gap: 12px;
+      flex: 1;
+      max-width: 400px;
+    }
+    .search-input {
+      flex: 1;
+      background: #333;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: #00b86b;
+    }
+    .filter-select {
+      background: #333;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+    .product-card {
+      background: #333;
+      border-radius: 8px;
+      padding: 16px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .product-card:hover {
+      border-color: #00b86b;
+    }
+    .product-card.selected {
+      border-color: #00b86b;
+      background: #00b86b11;
+    }
+    .product-card.out-of-stock {
+      opacity: 0.6;
+      border-color: #ff5252;
+    }
+    .product-checkbox {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 18px;
+      height: 18px;
+      accent-color: #00b86b;
+    }
+    .product-info {
+      margin-right: 40px;
+    }
+    .product-name {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+    .product-category {
+      color: #aaa;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+    .product-price {
+      color: #00e676;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .product-stock {
+      color: #aaa;
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+    .product-stock.out {
+      color: #ff5252;
+    }
+    .selected-products-summary {
+      background: #333;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .summary-header {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .selected-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .selected-item {
+      background: #444;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .remove-item {
+      background: none;
+      border: none;
+      color: #ff5252;
+      cursor: pointer;
+      padding: 0;
+      font-size: 0.7rem;
+    }
+    .delivery-forecast {
+      background: #333;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid #444;
+    }
+    .delivery-forecast.required {
+      border-color: #ff5252;
+    }
+    .delivery-forecast-header {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .delivery-forecast-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .message-preview {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .preview-header {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .whatsapp-preview {
+      background: #075e54;
+      border-radius: 12px;
+      padding: 16px;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      line-height: 1.4;
+      max-width: 300px;
+    }
+    .preview-message {
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+    }
+    .preview-products {
+      border-top: 1px solid #ffffff33;
+      padding-top: 8px;
+      font-size: 0.85rem;
+    }
+    .preview-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .preview-image {
+      background: #ffffff22;
+      border-radius: 6px;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #ccc;
+    }
+    .product-preview-item {
+      background: #ffffff11;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-left: 3px solid #00e676;
+    }
+    .product-preview-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .product-preview-price {
+      color: #00e676;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .product-preview-delivery {
+      color: #ccc;
+      font-size: 0.8rem;
+    }
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+      padding-top: 32px;
+      border-top: 1px solid #222;
+      margin-top: 32px;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #aaa;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      color: #fff;
+      border-color: #666;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .success-message {
+      background: #00b86b22;
+      border: 1px solid #00b86b;
+      border-radius: 8px;
+      padding: 16px;
+      color: #00e676;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .success-message.show {
+      display: flex;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .campaign-tabs {
+        max-width: none;
+      }
+      .campaign-tab {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+      }
+      .form-container {
+        padding: 24px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .schedule-options {
+        grid-template-columns: 1fr;
+      }
+      .time-grid {
+        grid-template-columns: 1fr;
+      }
+      .weekdays-selector {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
+      .products-grid {
+        grid-template-columns: 1fr;
+        max-height: 300px;
+      }
+      .products-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .products-search-bar {
+        max-width: none;
+      }
+      .form-actions {
+        flex-direction: column;
+      }
+      .uploaded-images {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script>
+    let selectedProducts = [];
+    let selectedScheduleType = '';
+    let selectedWeekdays = [];
+    let uploadedImages = [];
+    let currentCampaignType = 'products'; // 'products' ou 'messages'
+
+    // Dados dos produtos (simulando banco de dados)
+    const productsData = {
+      1: { id: 1, name: 'Hot Wheels Ferrari F40', price: 25.00, category: 'Hot Wheels', stock: 15, description: 'Miniatura colecionável Ferrari F40 escala 1:64' },
+      2: { id: 2, name: 'MiniGT Lamborghini Huracán', price: 45.00, category: 'MiniGT', stock: 8, description: 'Lamborghini Huracán com detalhes premium' },
+      3: { id: 3, name: 'Pop Race Toyota Supra', price: 38.00, category: 'Pop Race', stock: 12, description: 'Toyota Supra A90 edição especial' },
+      4: { id: 4, name: 'Hot Wheels Porsche 911', price: 22.00, category: 'Hot Wheels', stock: 0, description: 'Porsche 911 clássico vermelho' },
+      5: { id: 5, name: 'MiniGT Nissan GT-R', price: 42.00, category: 'MiniGT', stock: 6, description: 'Nissan GT-R R35 azul metálico' },
+      6: { id: 6, name: 'Tomica Honda Civic', price: 28.00, category: 'Tomica', stock: 20, description: 'Honda Civic Type R branco' },
+      7: { id: 7, name: 'Majorette BMW M3', price: 35.00, category: 'Majorette', stock: 4, description: 'BMW M3 Competition prata' },
+      8: { id: 8, name: 'Hot Wheels McLaren P1', price: 30.00, category: 'Hot Wheels', stock: 10, description: 'McLaren P1 laranja fosco' }
+    };
+
+    function switchCampaignType(type) {
+      currentCampaignType = type;
+
+      // Atualizar tabs
+      document.querySelectorAll('.campaign-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`[data-type="${type}"]`).classList.add('active');
+
+      // Mostrar/esconder conteúdo
+      document.querySelectorAll('.campaign-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`${type}-campaign`).classList.add('active');
+
+      // Resetar formulários
+      resetForm();
+    }
+
+    function handleImageUpload(event) {
+      const files = event.target.files;
+      for (let file of files) {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            uploadedImages.push({
+              id: Date.now() + Math.random(),
+              src: e.target.result,
+              name: file.name
+            });
+            updateUploadedImages();
+            updateMessagePreview();
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+      event.target.value = ''; // Limpar input
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const uploadArea = document.getElementById('imageUploadArea');
+      uploadArea.classList.remove('dragover');
+
+      const files = event.dataTransfer.files;
+      for (let file of files) {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            uploadedImages.push({
+              id: Date.now() + Math.random(),
+              src: e.target.result,
+              name: file.name
+            });
+            updateUploadedImages();
+            updateMessagePreview();
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      document.getElementById('imageUploadArea').classList.add('dragover');
+    }
+
+    function handleDragLeave(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      document.getElementById('imageUploadArea').classList.remove('dragover');
+    }
+
+    function removeImage(imageId) {
+      uploadedImages = uploadedImages.filter(img => img.id !== imageId);
+      updateUploadedImages();
+      updateMessagePreview();
+    }
+
+    function updateUploadedImages() {
+      const container = document.getElementById('uploadedImages');
+
+      if (uploadedImages.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = uploadedImages.map(image => `
+        <div class="uploaded-image">
+          <img src="${image.src}" alt="${image.name}">
+          <button class="remove-image" onclick="removeImage(${image.id})">
+            <span class="material-icons" style="font-size: 14px;">close</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function selectScheduleType(type) {
+      selectedScheduleType = type;
+
+      // Remove seleção anterior
+      document.querySelectorAll('.schedule-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+
+      // Adiciona seleção atual
+      document.querySelector(`[data-schedule="${type}"]`).classList.add('selected');
+
+      // Mostra/esconde detalhes
+      document.querySelectorAll('.schedule-details').forEach(detail => {
+        detail.classList.remove('show');
+      });
+
+      const detailElement = document.getElementById(`${type}-details`);
+      if (detailElement) {
+        detailElement.classList.add('show');
+      }
+
+      if (currentCampaignType === 'products') {
+        updatePreview();
+      } else {
+        updateMessagePreview();
+      }
+    }
+
+    function toggleWeekday(day) {
+      const btn = document.querySelector(`[data-day="${day}"]`);
+      const index = selectedWeekdays.indexOf(day);
+
+      if (index === -1) {
+        selectedWeekdays.push(day);
+        btn.classList.add('selected');
+      } else {
+        selectedWeekdays.splice(index, 1);
+        btn.classList.remove('selected');
+      }
+
+      if (currentCampaignType === 'products') {
+        updatePreview();
+      } else {
+        updateMessagePreview();
+      }
+    }
+
+    function toggleProduct(id, name, price, category, stock) {
+      const card = document.querySelector(`[data-product="${id}"]`);
+      const checkbox = card.querySelector('.product-checkbox');
+      const productIndex = selectedProducts.findIndex(p => p.id === id);
+
+      if (productIndex === -1) {
+        selectedProducts.push({ id, name, price, category, stock });
+        card.classList.add('selected');
+        checkbox.checked = true;
+      } else {
+        selectedProducts.splice(productIndex, 1);
+        card.classList.remove('selected');
+        checkbox.checked = false;
+      }
+
+      updateSelectedProductsSummary();
+      updatePreview();
+    }
+
+    function removeProduct(id) {
+      selectedProducts = selectedProducts.filter(p => p.id !== id);
+      const card = document.querySelector(`[data-product="${id}"]`);
+      const checkbox = card.querySelector('.product-checkbox');
+
+      card.classList.remove('selected');
+      checkbox.checked = false;
+
+      updateSelectedProductsSummary();
+      updatePreview();
+    }
+
+    function updateSelectedProductsSummary() {
+      const container = document.getElementById('selectedProductsSummary');
+      const countElement = document.getElementById('selectedCount');
+
+      countElement.textContent = selectedProducts.length;
+
+      if (selectedProducts.length === 0) {
+        container.innerHTML = '<div style="color: #666; font-size: 0.85rem;">Nenhum produto selecionado</div>';
+        return;
+      }
+
+      container.innerHTML = selectedProducts.map(product => `
+        <div class="selected-item">
+          ${product.name}
+          <button class="remove-item" onclick="removeProduct(${product.id})">
+            <span class="material-icons" style="font-size: 14px;">close</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function searchProducts() {
+      const searchTerm = document.getElementById('productsSearch').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      const productCards = document.querySelectorAll('.product-card');
+
+      productCards.forEach(card => {
+        const productName = card.querySelector('.product-name').textContent.toLowerCase();
+        const productCategory = card.querySelector('.product-category').textContent;
+
+        const matchesSearch = productName.includes(searchTerm);
+        const matchesCategory = !categoryFilter || productCategory === categoryFilter;
+
+        if (matchesSearch && matchesCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function updatePreview() {
+      const message = document.getElementById('campaignMessage').value;
+      const deliveryForecast = document.getElementById('deliveryForecast').value;
+      const previewMessage = document.getElementById('previewMessage');
+      const previewProducts = document.getElementById('previewProducts');
+
+      previewMessage.textContent = message || 'Digite sua mensagem...';
+
+      if (selectedProducts.length > 0) {
+        previewProducts.innerHTML = `
+          <strong>🛒 Produtos disponíveis:</strong><br><br>
+          ${selectedProducts.map(p => `
+            <div class="product-preview-item">
+              <div class="product-preview-name">${p.name}</div>
+              <div class="product-preview-price">R$ ${p.price.toFixed(2)}</div>
+              <div class="product-preview-delivery">📅 ${deliveryForecast || 'Previsão não informada'}</div>
+            </div>
+          `).join('')}
+        `;
+      } else {
+        previewProducts.innerHTML = '<em>Nenhum produto selecionado</em>';
+      }
+    }
+
+    function updateMessagePreview() {
+      const message = document.getElementById('messageContent').value;
+      const previewMessage = document.getElementById('messagePreviewText');
+      const previewImages = document.getElementById('messagePreviewImages');
+
+      previewMessage.textContent = message || 'Digite sua mensagem...';
+
+      if (uploadedImages.length > 0) {
+        previewImages.innerHTML = uploadedImages.map(img => `
+          <div class="preview-image">
+            📷 Imagem
+          </div>
+        `).join('');
+      } else {
+        previewImages.innerHTML = '<div class="preview-image">Nenhuma imagem</div>';
+      }
+    }
+
+    function saveCampaign() {
+      if (currentCampaignType === 'products') {
+        saveProductCampaign();
+      } else {
+        saveMessageCampaign();
+      }
+    }
+
+    function saveProductCampaign() {
+      const form = document.getElementById('productCampaignForm');
+      const formData = new FormData(form);
+
+      // Validações
+      if (!formData.get('campaignName')) {
+        alert('Por favor, digite o nome da campanha.');
+        return;
+      }
+
+      if (!formData.get('campaignMessage')) {
+        alert('Por favor, digite a mensagem da campanha.');
+        return;
+      }
+
+      if (!selectedScheduleType) {
+        alert('Por favor, selecione o tipo de agendamento.');
+        return;
+      }
+
+      if (selectedProducts.length === 0) {
+        alert('Por favor, selecione pelo menos um produto.');
+        return;
+      }
+
+      if (!document.getElementById('deliveryForecast').value) {
+        alert('Por favor, informe a previsão de entrega.');
+        document.getElementById('deliveryForecast').focus();
+        return;
+      }
+
+      // Validações específicas por tipo de agendamento
+      if (selectedScheduleType === 'weekly' && selectedWeekdays.length === 0) {
+        alert('Por favor, selecione pelo menos um dia da semana.');
+        return;
+      }
+
+      showSuccessMessage('Campanha de produtos criada com sucesso! Cada produto será enviado individualmente no grupo conforme agendamento.');
+    }
+
+    function saveMessageCampaign() {
+      const form = document.getElementById('messageCampaignForm');
+      const formData = new FormData(form);
+
+      // Validações
+      if (!formData.get('messageCampaignName')) {
+        alert('Por favor, digite o nome da campanha.');
+        return;
+      }
+
+      if (!formData.get('messageContent')) {
+        alert('Por favor, digite a mensagem.');
+        return;
+      }
+
+      if (!selectedScheduleType) {
+        alert('Por favor, selecione o tipo de agendamento.');
+        return;
+      }
+
+      // Validações específicas por tipo de agendamento
+      if (selectedScheduleType === 'weekly' && selectedWeekdays.length === 0) {
+        alert('Por favor, selecione pelo menos um dia da semana.');
+        return;
+      }
+
+      showSuccessMessage('Campanha de mensagem criada com sucesso! A mensagem será enviada conforme agendamento.');
+    }
+
+    function showSuccessMessage(message) {
+      const successDiv = document.getElementById('successMessage');
+      successDiv.querySelector('span:last-child').textContent = message;
+      successDiv.classList.add('show');
+
+      // Scroll para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Esconder mensagem após 5 segundos
+      setTimeout(() => {
+        successDiv.classList.remove('show');
+      }, 5000);
+    }
+
+    function resetForm() {
+      // Reset comum
+      selectedScheduleType = '';
+      selectedWeekdays = [];
+
+      document.querySelectorAll('.schedule-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+
+      document.querySelectorAll('.schedule-details').forEach(detail => {
+        detail.classList.remove('show');
+      });
+
+      document.querySelectorAll('.weekday-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+
+      if (currentCampaignType === 'products') {
+        document.getElementById('productCampaignForm').reset();
+        selectedProducts = [];
+
+        document.querySelectorAll('.product-card').forEach(card => {
+          card.classList.remove('selected');
+          card.querySelector('.product-checkbox').checked = false;
+        });
+
+        updateSelectedProductsSummary();
+        updatePreview();
+      } else {
+        document.getElementById('messageCampaignForm').reset();
+        uploadedImages = [];
+        updateUploadedImages();
+        updateMessagePreview();
+      }
+    }
+
+    // Inicializar página
+    document.addEventListener('DOMContentLoaded', function() {
+      updateSelectedProductsSummary();
+      updatePreview();
+      updateMessagePreview();
+
+      // Listeners para atualizar preview
+      document.getElementById('campaignMessage').addEventListener('input', updatePreview);
+      document.getElementById('deliveryForecast').addEventListener('input', updatePreview);
+      document.getElementById('messageContent').addEventListener('input', updateMessagePreview);
+
+      // Setup drag and drop
+      const uploadArea = document.getElementById('imageUploadArea');
+      uploadArea.addEventListener('dragover', handleDragOver);
+      uploadArea.addEventListener('dragleave', handleDragLeave);
+      uploadArea.addEventListener('drop', handleDrop);
+    });
+  </script>
+  <script src="js/app.js"></script>
+
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+  <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+  <a href="dashboard.html" class="nav-item active" data-page="dashboard">
+    <span class="material-icons">home</span>
+    Início
+  </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="meu-perfil.html" class="nav-item" data-page="meu-perfil">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="#">Disparos WhatsApp</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Nova Campanha</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">add_circle</span>
+          Nova Campanha de Disparo
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs para escolher tipo de campanha -->
+    <div class="campaign-tabs">
+      <button class="campaign-tab active" data-type="products" onclick="switchCampaignType('products')">
+        <span class="material-icons">inventory</span>
+        Disparo de Produtos
+      </button>
+      <button class="campaign-tab" data-type="messages" onclick="switchCampaignType('messages')">
+        <span class="material-icons">message</span>
+        Disparo de Mensagens
+      </button>
+    </div>
+
+    <!-- Mensagem de Sucesso -->
+    <div id="successMessage" class="success-message">
+      <span class="material-icons">check_circle</span>
+      <span>Campanha criada com sucesso!</span>
+    </div>
+    
+    <!-- CAMPANHA DE PRODUTOS -->
+    <div id="products-campaign" class="campaign-content active">
+      <div class="form-container">
+        <form id="productCampaignForm">
+          <!-- Seção 1: Informações Básicas -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">info</span>
+              Informações Básicas
+            </div>
+            <div class="section-description">
+              Configure o nome e a mensagem principal da sua campanha de disparo de produtos.
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">campaign</span>
+                  Nome da Campanha
+                </label>
+                <input type="text" name="campaignName" class="form-input" placeholder="Ex: Lançamentos Hot Wheels Julho" required>
+                <div class="form-help">Escolha um nome descritivo para identificar facilmente sua campanha</div>
+<!-- Seção Modalidade da Campanha -->
+<div class="form-group full-width" style="margin-top: 24px; padding: 16px; border: 1px solid #333; border-radius: 8px; background-color: #1a1a1a;">
+  <label class="form-label required" style="font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+    <span class="material-icons" style="font-size: 20px;">settings</span>Modalidade da Campanha
+  </label>
+  <div style="color:#aaa; font-size:0.9rem; margin: 8px 0 16px 0;">
+    Escolha uma modalidade para a campanha. Apenas uma opção pode ser selecionada:
+    <ul style="margin: 8px 0 0 20px; padding: 0; list-style-type: disc;">
+      <li><strong>Pronta Entrega:</strong> Produtos disponíveis para envio imediato.</li>
+      <li><strong>Produto de Importação:</strong> Produtos que são importados e podem ter prazo maior.</li>
+    </ul>
+  </div>
+  <div style="display:flex; gap: 32px; align-items: center;">
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="prontaEntrega" name="modalidadeCampanha" value="prontaEntrega" onclick="toggleCheckboxExclusive(this)" />
+      Pronta Entrega
+    </label>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="produtoImportacao" name="modalidadeCampanha" value="produtoImportacao" onclick="toggleCheckboxExclusive(this)" />
+      Produto de Importação
+    </label>
+  </div>
+</div>
+
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons" style="font-size: 16px;">label</span>
+                  Categoria da Campanha
+                </label>
+                <select name="campaignCategory" class="form-select">
+                  <option value="">Selecione uma categoria</option>
+                  <option value="lancamentos">Lançamentos</option>
+                  <option value="promocoes">Promoções</option>
+                  <option value="estoque">Controle de Estoque</option>
+                  <option value="geral">Geral</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">message</span>
+                Mensagem Introdutória
+              </label>
+              <textarea id="campaignMessage" name="campaignMessage" class="form-textarea" placeholder="Digite a mensagem introdutória que será enviada antes dos produtos...
+
+Exemplo:
+🔥 NOVIDADES CHEGARAM! 🔥
+
+Confira os lançamentos mais esperados que acabaram de chegar:
+
+💬 Responda com 'QUERO' + nome do produto para reservar!
+⏰ Vagas limitadas!" required></textarea>
+              <div class="form-help">Esta mensagem será enviada primeiro, seguida de cada produto individualmente com foto e detalhes.</div>
+            </div>
+          </div>
+
+          <!-- Seção 2: Agendamento -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">schedule</span>
+              Agendamento da Campanha
+            </div>
+            <div class="section-description">
+              Defina quando e com que frequência sua campanha será executada.
+            </div>
+
+            <div class="schedule-options">
+              <div class="schedule-option" data-schedule="once" onclick="selectScheduleType('once')">
+                <div class="schedule-option-icon material-icons">event</div>
+                <div class="schedule-option-title">Envio Único</div>
+                <div class="schedule-option-desc">Enviar apenas uma vez</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="daily" onclick="selectScheduleType('daily')">
+                <div class="schedule-option-icon material-icons">today</div>
+                <div class="schedule-option-title">Diário</div>
+                <div class="schedule-option-desc">Todos os dias no mesmo horário</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="weekly" onclick="selectScheduleType('weekly')">
+                <div class="schedule-option-icon material-icons">date_range</div>
+                <div class="schedule-option-title">Semanal</div>
+                <div class="schedule-option-desc">Dias específicos da semana</div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Único -->
+            <div id="once-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data do Envio
+                  </label>
+                  <input type="date" name="onceDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário do Envio
+                  </label>
+                  <input type="time" name="onceTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Diário -->
+            <div id="daily-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="dailyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="dailyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário Diário
+                  </label>
+                  <input type="time" name="dailyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Semanal -->
+            <div id="weekly-details" class="schedule-details">
+              <div class="form-group">
+                <label class="form-label required">Dias da Semana</label>
+                <div class="weekdays-selector">
+                  <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(0)">Dom</button>
+                  <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(1)">Seg</button>
+                  <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(2)">Ter</button>
+                  <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(3)">Qua</button>
+                  <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(4)">Qui</button>
+                  <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(5)">Sex</button>
+                  <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(6)">Sáb</button>
+                </div>
+              </div>
+
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="weeklyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="weeklyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário
+                  </label>
+                  <input type="time" name="weeklyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 3: Seleção de Produtos -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">inventory</span>
+              Produtos para Disparo (<span id="selectedCount">0</span> selecionados)
+            </div>
+            <div class="section-description">
+              Selecione os produtos que serão incluídos nesta campanha. Cada produto será enviado individualmente com foto e informações específicas.
+            </div>
+
+            <div class="products-section">
+              <div class="products-header">
+                <div class="products-search-bar">
+                  <input type="text" id="productsSearch" class="search-input" placeholder="Buscar produtos..." onkeyup="searchProducts()">
+                  <select id="categoryFilter" class="filter-select" onchange="searchProducts()">
+                    <option value="">Todas as categorias</option>
+                    <option value="Hot Wheels">Hot Wheels</option>
+                    <option value="MiniGT">MiniGT</option>
+                    <option value="Pop Race">Pop Race</option>
+                    <option value="Tomica">Tomica</option>
+                    <option value="Majorette">Majorette</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="products-grid">
+                <!-- Produto 1 -->
+                <div class="product-card" data-product="1" onclick="toggleProduct(1, 'Hot Wheels Ferrari F40', 25.00, 'Hot Wheels', 15)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Hot Wheels Ferrari F40</div>
+                    <div class="product-category">Hot Wheels</div>
+                    <div class="product-price">R$ 25,00</div>
+                    <div class="product-stock">15 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 2 -->
+                <div class="product-card" data-product="2" onclick="toggleProduct(2, 'MiniGT Lamborghini Huracán', 45.00, 'MiniGT', 8)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">MiniGT Lamborghini Huracán</div>
+                    <div class="product-category">MiniGT</div>
+                    <div class="product-price">R$ 45,00</div>
+                    <div class="product-stock">8 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 3 -->
+                <div class="product-card" data-product="3" onclick="toggleProduct(3, 'Pop Race Toyota Supra', 38.00, 'Pop Race', 12)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Pop Race Toyota Supra</div>
+                    <div class="product-category">Pop Race</div>
+                    <div class="product-price">R$ 38,00</div>
+                    <div class="product-stock">12 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 4 - Sem estoque -->
+                <div class="product-card out-of-stock" data-product="4" onclick="toggleProduct(4, 'Hot Wheels Porsche 911', 22.00, 'Hot Wheels', 0)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Hot Wheels Porsche 911</div>
+                    <div class="product-category">Hot Wheels</div>
+                    <div class="product-price">R$ 22,00</div>
+                    <div class="product-stock out">Sem estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 5 -->
+                <div class="product-card" data-product="5" onclick="toggleProduct(5, 'MiniGT Nissan GT-R', 42.00, 'MiniGT', 6)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">MiniGT Nissan GT-R</div>
+                    <div class="product-category">MiniGT</div>
+                    <div class="product-price">R$ 42,00</div>
+                    <div class="product-stock">6 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 6 -->
+                <div class="product-card" data-product="6" onclick="toggleProduct(6, 'Tomica Honda Civic', 28.00, 'Tomica', 20)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Tomica Honda Civic</div>
+                    <div class="product-category">Tomica</div>
+                    <div class="product-price">R$ 28,00</div>
+                    <div class="product-stock">20 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 7 -->
+                <div class="product-card" data-product="7" onclick="toggleProduct(7, 'Majorette BMW M3', 35.00, 'Majorette', 4)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Majorette BMW M3</div>
+                    <div class="product-category">Majorette</div>
+                    <div class="product-price">R$ 35,00</div>
+                    <div class="product-stock">4 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 8 -->
+                <div class="product-card" data-product="8" onclick="toggleProduct(8, 'Hot Wheels McLaren P1', 30.00, 'Hot Wheels', 10)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Hot Wheels McLaren P1</div>
+                    <div class="product-category">Hot Wheels</div>
+                    <div class="product-price">R$ 30,00</div>
+                    <div class="product-stock">10 em estoque</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="selected-products-summary">
+                <div class="summary-header">
+                  <span class="material-icons">shopping_cart</span>
+                  Produtos Selecionados
+                </div>
+                <div id="selectedProductsSummary" class="selected-items">
+                  <!-- Produtos selecionados aparecerão aqui -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Campo de Previsão de Entrega -->
+            <div class="delivery-forecast">
+              <div class="delivery-forecast-header">
+                <span class="material-icons">local_shipping</span>
+                Previsão de Entrega
+              </div>
+              <div class="delivery-forecast-description">
+                Esta informação será incluída em cada produto enviado no grupo. Seja específico para que os clientes saibam quando esperar a chegada.
+              </div>
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">schedule</span>
+                  Data Prevista de Chegada
+                </label>
+                <input type="text" id="deliveryForecast" name="deliveryForecast" class="form-input" placeholder="Ex: 15 a 20 dias úteis, Primeira semana de agosto, 25/08/2024" required>
+                <div class="form-help">Exemplos: "15 a 20 dias úteis", "Primeira semana de agosto", "25/08/2024", "Final do mês"</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 4: Preview da Mensagem -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">preview</span>
+              Preview dos Disparos
+            </div>
+            <div class="section-description">
+              Veja como suas mensagens aparecerão no WhatsApp. Primeiro será enviada a mensagem introdutória, depois cada produto individualmente.
+            </div>
+
+            <div class="message-preview">
+              <div class="preview-header">
+                <span class="material-icons">phone_android</span>
+                Como aparecerá no WhatsApp
+              </div>
+
+              <div class="whatsapp-preview">
+                <div class="preview-message" id="previewMessage">Digite sua mensagem...</div>
+                <div class="preview-products" id="previewProducts">
+                  <em>Nenhum produto selecionado</em>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="resetForm()">
+              <span class="material-icons" style="font-size: 18px;">refresh</span>
+              Limpar Formulário
+            </button>
+            <button type="button" class="btn-primary" onclick="saveCampaign()">
+              <span class="material-icons" style="font-size: 18px;">send</span>
+              Criar Campanha
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- CAMPANHA DE MENSAGENS -->
+    <div id="messages-campaign" class="campaign-content">
+      <div class="form-container">
+        <form id="messageCampaignForm">
+          <!-- Seção 1: Informações Básicas -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">info</span>
+              Informações Básicas
+            </div>
+            <div class="section-description">
+              Configure o nome e o conteúdo da sua campanha de disparo de mensagens.
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">campaign</span>
+                  Nome da Campanha
+                </label>
+                <input type="text" name="messageCampaignName" class="form-input" placeholder="Ex: Promoção Final de Semana" required>
+                <div class="form-help">Escolha um nome descritivo para identificar facilmente sua campanha</div>
+<!-- Seção Modalidade da Campanha -->
+<div class="form-group full-width" style="margin-top: 24px; padding: 16px; border: 1px solid #333; border-radius: 8px; background-color: #1a1a1a;">
+  <label class="form-label required" style="font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+    <span class="material-icons" style="font-size: 20px;">settings</span>Modalidade da Campanha
+  </label>
+  <div style="color:#aaa; font-size:0.9rem; margin: 8px 0 16px 0;">
+    Escolha uma modalidade para a campanha. Apenas uma opção pode ser selecionada:
+    <ul style="margin: 8px 0 0 20px; padding: 0; list-style-type: disc;">
+      <li><strong>Pronta Entrega:</strong> Produtos disponíveis para envio imediato.</li>
+      <li><strong>Produto de Importação:</strong> Produtos que são importados e podem ter prazo maior.</li>
+    </ul>
+  </div>
+  <div style="display:flex; gap: 32px; align-items: center;">
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="prontaEntrega" name="modalidadeCampanha" value="prontaEntrega" onclick="toggleCheckboxExclusive(this)" />
+      Pronta Entrega
+    </label>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="produtoImportacao" name="modalidadeCampanha" value="produtoImportacao" onclick="toggleCheckboxExclusive(this)" />
+      Produto de Importação
+    </label>
+  </div>
+</div>
+
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons" style="font-size: 16px;">label</span>
+                  Categoria da Campanha
+                </label>
+                <select name="messageCampaignCategory" class="form-select">
+                  <option value="">Selecione uma categoria</option>
+                  <option value="promocoes">Promoções</option>
+                  <option value="avisos">Avisos</option>
+                  <option value="novidades">Novidades</option>
+                  <option value="geral">Geral</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 2: Conteúdo da Mensagem -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">message</span>
+              Conteúdo da Mensagem
+            </div>
+            <div class="section-description">
+              Digite o texto da mensagem e adicione imagens se necessário.
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">edit</span>
+                Texto da Mensagem
+              </label>
+              <textarea id="messageContent" name="messageContent" class="form-textarea" placeholder="Digite sua mensagem aqui...
+
+Exemplo:
+🎉 PROMOÇÃO ESPECIAL! 🎉
+
+Aproveite nossos preços especiais neste final de semana!
+
+✨ Descontos de até 30%
+🚚 Frete grátis acima de R$ 100
+⏰ Válido até domingo
+
+Entre em contato para mais informações!" required></textarea>
+              <div class="form-help">Esta mensagem será enviada exatamente como digitada para todos os contatos do grupo.</div>
+            </div>
+
+            <!-- Upload de Imagens -->
+            <div class="form-group full-width">
+              <label class="form-label">
+                <span class="material-icons" style="font-size: 16px;">image</span>
+                Imagens (opcional)
+              </label>
+
+              <div id="imageUploadArea" class="image-upload-area" onclick="document.getElementById('imageInput').click()">
+                <div class="upload-icon material-icons">cloud_upload</div>
+                <div class="upload-text">Clique para selecionar imagens</div>
+                <div class="upload-hint">ou arraste e solte aqui</div>
+                <input type="file" id="imageInput" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+              </div>
+
+              <div id="uploadedImages" class="uploaded-images">
+                <!-- Imagens carregadas aparecerão aqui -->
+              </div>
+
+              <div class="form-help">Você pode adicionar até 10 imagens. Formatos aceitos: JPG, PNG, GIF (máx. 5MB cada)</div>
+            </div>
+          </div>
+
+          <!-- Seção 3: Agendamento -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">schedule</span>
+              Agendamento da Campanha
+            </div>
+            <div class="section-description">
+              Defina quando e com que frequência sua campanha será executada.
+            </div>
+
+            <div class="schedule-options">
+              <div class="schedule-option" data-schedule="once" onclick="selectScheduleType('once')">
+                <div class="schedule-option-icon material-icons">event</div>
+                <div class="schedule-option-title">Envio Único</div>
+                <div class="schedule-option-desc">Enviar apenas uma vez</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="daily" onclick="selectScheduleType('daily')">
+                <div class="schedule-option-icon material-icons">today</div>
+                <div class="schedule-option-title">Diário</div>
+                <div class="schedule-option-desc">Todos os dias no mesmo horário</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="weekly" onclick="selectScheduleType('weekly')">
+                <div class="schedule-option-icon material-icons">date_range</div>
+                <div class="schedule-option-title">Semanal</div>
+                <div class="schedule-option-desc">Dias específicos da semana</div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Único -->
+            <div id="once-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data do Envio
+                  </label>
+                  <input type="date" name="messageOnceDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário do Envio
+                  </label>
+                  <input type="time" name="messageOnceTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Diário -->
+            <div id="daily-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="messageDailyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="messageDailyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário Diário
+                  </label>
+                  <input type="time" name="messageDailyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Semanal -->
+            <div id="weekly-details" class="schedule-details">
+              <div class="form-group">
+                <label class="form-label required">Dias da Semana</label>
+                <div class="weekdays-selector">
+                  <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(0)">Dom</button>
+                  <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(1)">Seg</button>
+                  <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(2)">Ter</button>
+                  <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(3)">Qua</button>
+                  <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(4)">Qui</button>
+                  <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(5)">Sex</button>
+                  <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(6)">Sáb</button>
+                </div>
+              </div>
+
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="messageWeeklyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="messageWeeklyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário
+                  </label>
+                  <input type="time" name="messageWeeklyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 4: Preview da Mensagem -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">preview</span>
+              Preview da Mensagem
+            </div>
+            <div class="section-description">
+              Veja como sua mensagem aparecerá no WhatsApp.
+            </div>
+
+            <div class="message-preview">
+              <div class="preview-header">
+                <span class="material-icons">phone_android</span>
+                Como aparecerá no WhatsApp
+              </div>
+
+              <div class="whatsapp-preview">
+                <div id="messagePreviewImages" class="preview-images">
+                  <div class="preview-image">Nenhuma imagem</div>
+                </div>
+                <div class="preview-message" id="messagePreviewText">Digite sua mensagem...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="resetForm()">
+              <span class="material-icons" style="font-size: 18px;">refresh</span>
+              Limpar Formulário
+            </button>
+            <button type="button" class="btn-primary" onclick="saveCampaign()">
+              <span class="material-icons" style="font-size: 18px;">send</span>
+              Criar Campanha
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu inferior para dispositivos móveis -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item active" data-page="dashboard">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="meu-perfil.html" class="nav-item" data-page="meu-perfil">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

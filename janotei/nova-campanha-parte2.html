@@ -1,0 +1,493 @@
+  <script>
+    let selectedProducts = [];
+    let selectedScheduleType = '';
+    let selectedWeekdays = [];
+    let uploadedImages = [];
+    let currentCampaignType = 'products'; // 'products' ou 'messages'
+
+    // Dados dos produtos (simulando banco de dados)
+    const productsData = {
+      1: { id: 1, name: 'Hot Wheels Ferrari F40', price: 25.00, category: 'Hot Wheels', stock: 15, description: 'Miniatura colecionável Ferrari F40 escala 1:64' },
+      2: { id: 2, name: 'MiniGT Lamborghini Huracán', price: 45.00, category: 'MiniGT', stock: 8, description: 'Lamborghini Huracán com detalhes premium' },
+      3: { id: 3, name: 'Pop Race Toyota Supra', price: 38.00, category: 'Pop Race', stock: 12, description: 'Toyota Supra A90 edição especial' },
+      4: { id: 4, name: 'Hot Wheels Porsche 911', price: 22.00, category: 'Hot Wheels', stock: 0, description: 'Porsche 911 clássico vermelho' },
+      5: { id: 5, name: 'MiniGT Nissan GT-R', price: 42.00, category: 'MiniGT', stock: 6, description: 'Nissan GT-R R35 azul metálico' },
+      6: { id: 6, name: 'Tomica Honda Civic', price: 28.00, category: 'Tomica', stock: 20, description: 'Honda Civic Type R branco' },
+      7: { id: 7, name: 'Majorette BMW M3', price: 35.00, category: 'Majorette', stock: 4, description: 'BMW M3 Competition prata' },
+      8: { id: 8, name: 'Hot Wheels McLaren P1', price: 30.00, category: 'Hot Wheels', stock: 10, description: 'McLaren P1 laranja fosco' }
+    };
+
+    function switchCampaignType(type) {
+      currentCampaignType = type;
+
+      // Atualizar tabs
+      document.querySelectorAll('.campaign-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`[data-type="${type}"]`).classList.add('active');
+
+      // Mostrar/esconder conteúdo
+      document.querySelectorAll('.campaign-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`${type}-campaign`).classList.add('active');
+
+      // Resetar formulários
+      resetForm();
+    }
+
+    function handleImageUpload(event) {
+      const files = event.target.files;
+      for (let file of files) {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            uploadedImages.push({
+              id: Date.now() + Math.random(),
+              src: e.target.result,
+              name: file.name
+            });
+            updateUploadedImages();
+            updateMessagePreview();
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+      event.target.value = ''; // Limpar input
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const uploadArea = document.getElementById('imageUploadArea');
+      uploadArea.classList.remove('dragover');
+
+      const files = event.dataTransfer.files;
+      for (let file of files) {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            uploadedImages.push({
+              id: Date.now() + Math.random(),
+              src: e.target.result,
+              name: file.name
+            });
+            updateUploadedImages();
+            updateMessagePreview();
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      document.getElementById('imageUploadArea').classList.add('dragover');
+    }
+
+    function handleDragLeave(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      document.getElementById('imageUploadArea').classList.remove('dragover');
+    }
+
+    function removeImage(imageId) {
+      uploadedImages = uploadedImages.filter(img => img.id !== imageId);
+      updateUploadedImages();
+      updateMessagePreview();
+    }
+
+    function updateUploadedImages() {
+      const container = document.getElementById('uploadedImages');
+
+      if (uploadedImages.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = uploadedImages.map(image => `
+        <div class="uploaded-image">
+          <img src="${image.src}" alt="${image.name}">
+          <button class="remove-image" onclick="removeImage(${image.id})">
+            <span class="material-icons" style="font-size: 14px;">close</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function selectScheduleType(type) {
+      selectedScheduleType = type;
+
+      // Remove seleção anterior
+      document.querySelectorAll('.schedule-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+
+      // Adiciona seleção atual
+      document.querySelector(`[data-schedule="${type}"]`).classList.add('selected');
+
+      // Mostra/esconde detalhes
+      document.querySelectorAll('.schedule-details').forEach(detail => {
+        detail.classList.remove('show');
+      });
+
+      const detailElement = document.getElementById(`${type}-details`);
+      if (detailElement) {
+        detailElement.classList.add('show');
+      }
+
+      if (currentCampaignType === 'products') {
+        updatePreview();
+      } else {
+        updateMessagePreview();
+      }
+    }
+
+    function toggleWeekday(day) {
+      const btn = document.querySelector(`[data-day="${day}"]`);
+      const index = selectedWeekdays.indexOf(day);
+
+      if (index === -1) {
+        selectedWeekdays.push(day);
+        btn.classList.add('selected');
+      } else {
+        selectedWeekdays.splice(index, 1);
+        btn.classList.remove('selected');
+      }
+
+      if (currentCampaignType === 'products') {
+        updatePreview();
+      } else {
+        updateMessagePreview();
+      }
+    }
+
+    function toggleProduct(id, name, price, category, stock) {
+      const card = document.querySelector(`[data-product="${id}"]`);
+      const checkbox = card.querySelector('.product-checkbox');
+      const productIndex = selectedProducts.findIndex(p => p.id === id);
+
+      if (productIndex === -1) {
+        selectedProducts.push({ id, name, price, category, stock });
+        card.classList.add('selected');
+        checkbox.checked = true;
+      } else {
+        selectedProducts.splice(productIndex, 1);
+        card.classList.remove('selected');
+        checkbox.checked = false;
+      }
+
+      updateSelectedProductsSummary();
+      updatePreview();
+    }
+
+    function removeProduct(id) {
+      selectedProducts = selectedProducts.filter(p => p.id !== id);
+      const card = document.querySelector(`[data-product="${id}"]`);
+      const checkbox = card.querySelector('.product-checkbox');
+
+      card.classList.remove('selected');
+      checkbox.checked = false;
+
+      updateSelectedProductsSummary();
+      updatePreview();
+    }
+
+    function updateSelectedProductsSummary() {
+      const container = document.getElementById('selectedProductsSummary');
+      const countElement = document.getElementById('selectedCount');
+
+      countElement.textContent = selectedProducts.length;
+
+      if (selectedProducts.length === 0) {
+        container.innerHTML = '<div style="color: #666; font-size: 0.85rem;">Nenhum produto selecionado</div>';
+        return;
+      }
+
+      container.innerHTML = selectedProducts.map(product => `
+        <div class="selected-item">
+          ${product.name}
+          <button class="remove-item" onclick="removeProduct(${product.id})">
+            <span class="material-icons" style="font-size: 14px;">close</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function searchProducts() {
+      const searchTerm = document.getElementById('productsSearch').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      const productCards = document.querySelectorAll('.product-card');
+
+      productCards.forEach(card => {
+        const productName = card.querySelector('.product-name').textContent.toLowerCase();
+        const productCategory = card.querySelector('.product-category').textContent;
+
+        const matchesSearch = productName.includes(searchTerm);
+        const matchesCategory = !categoryFilter || productCategory === categoryFilter;
+
+        if (matchesSearch && matchesCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function updatePreview() {
+      const message = document.getElementById('campaignMessage').value;
+      const deliveryForecast = document.getElementById('deliveryForecast').value;
+      const previewMessage = document.getElementById('previewMessage');
+      const previewProducts = document.getElementById('previewProducts');
+
+      previewMessage.textContent = message || 'Digite sua mensagem...';
+
+      if (selectedProducts.length > 0) {
+        previewProducts.innerHTML = `
+          <strong>🛒 Produtos disponíveis:</strong><br><br>
+          ${selectedProducts.map(p => `
+            <div class="product-preview-item">
+              <div class="product-preview-name">${p.name}</div>
+              <div class="product-preview-price">R$ ${p.price.toFixed(2)}</div>
+              <div class="product-preview-delivery">📅 ${deliveryForecast || 'Previsão não informada'}</div>
+            </div>
+          `).join('')}
+        `;
+      } else {
+        previewProducts.innerHTML = '<em>Nenhum produto selecionado</em>';
+      }
+    }
+
+    function updateMessagePreview() {
+      const message = document.getElementById('messageContent').value;
+      const previewMessage = document.getElementById('messagePreviewText');
+      const previewImages = document.getElementById('messagePreviewImages');
+
+      previewMessage.textContent = message || 'Digite sua mensagem...';
+
+      if (uploadedImages.length > 0) {
+        previewImages.innerHTML = uploadedImages.map(img => `
+          <div class="preview-image">
+            📷 Imagem
+          </div>
+        `).join('');
+      } else {
+        previewImages.innerHTML = '<div class="preview-image">Nenhuma imagem</div>';
+      }
+    }
+
+    function saveCampaign() {
+      if (currentCampaignType === 'products') {
+        saveProductCampaign();
+      } else {
+        saveMessageCampaign();
+      }
+    }
+
+    function saveProductCampaign() {
+      const form = document.getElementById('productCampaignForm');
+      const formData = new FormData(form);
+
+      // Validações
+      if (!formData.get('campaignName')) {
+        alert('Por favor, digite o nome da campanha.');
+        return;
+      }
+
+      if (!formData.get('campaignMessage')) {
+        alert('Por favor, digite a mensagem da campanha.');
+        return;
+      }
+
+      if (!selectedScheduleType) {
+        alert('Por favor, selecione o tipo de agendamento.');
+        return;
+      }
+
+      if (selectedProducts.length === 0) {
+        alert('Por favor, selecione pelo menos um produto.');
+        return;
+      }
+
+      if (!document.getElementById('deliveryForecast').value) {
+        alert('Por favor, informe a previsão de entrega.');
+        document.getElementById('deliveryForecast').focus();
+        return;
+      }
+
+      // Validações específicas por tipo de agendamento
+      if (selectedScheduleType === 'weekly' && selectedWeekdays.length === 0) {
+        alert('Por favor, selecione pelo menos um dia da semana.');
+        return;
+      }
+
+      showSuccessMessage('Campanha de produtos criada com sucesso! Cada produto será enviado individualmente no grupo conforme agendamento.');
+    }
+
+    function saveMessageCampaign() {
+      const form = document.getElementById('messageCampaignForm');
+      const formData = new FormData(form);
+
+      // Validações
+      if (!formData.get('messageCampaignName')) {
+        alert('Por favor, digite o nome da campanha.');
+        return;
+      }
+
+      if (!formData.get('messageContent')) {
+        alert('Por favor, digite a mensagem.');
+        return;
+      }
+
+      if (!selectedScheduleType) {
+        alert('Por favor, selecione o tipo de agendamento.');
+        return;
+      }
+
+      // Validações específicas por tipo de agendamento
+      if (selectedScheduleType === 'weekly' && selectedWeekdays.length === 0) {
+        alert('Por favor, selecione pelo menos um dia da semana.');
+        return;
+      }
+
+      showSuccessMessage('Campanha de mensagem criada com sucesso! A mensagem será enviada conforme agendamento.');
+    }
+
+    function showSuccessMessage(message) {
+      const successDiv = document.getElementById('successMessage');
+      successDiv.querySelector('span:last-child').textContent = message;
+      successDiv.classList.add('show');
+
+      // Scroll para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Esconder mensagem após 5 segundos
+      setTimeout(() => {
+        successDiv.classList.remove('show');
+      }, 5000);
+    }
+
+    function resetForm() {
+      // Reset comum
+      selectedScheduleType = '';
+      selectedWeekdays = [];
+
+      document.querySelectorAll('.schedule-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+
+      document.querySelectorAll('.schedule-details').forEach(detail => {
+        detail.classList.remove('show');
+      });
+
+      document.querySelectorAll('.weekday-btn').forEach(btn => {
+        btn.classList.remove('selected');
+      });
+
+      if (currentCampaignType === 'products') {
+        document.getElementById('productCampaignForm').reset();
+        selectedProducts = [];
+
+        document.querySelectorAll('.product-card').forEach(card => {
+          card.classList.remove('selected');
+          card.querySelector('.product-checkbox').checked = false;
+        });
+
+        updateSelectedProductsSummary();
+        updatePreview();
+      } else {
+        document.getElementById('messageCampaignForm').reset();
+        uploadedImages = [];
+        updateUploadedImages();
+        updateMessagePreview();
+      }
+    }
+
+    // Inicializar página
+    document.addEventListener('DOMContentLoaded', function() {
+      updateSelectedProductsSummary();
+      updatePreview();
+      updateMessagePreview();
+
+      // Listeners para atualizar preview
+      document.getElementById('campaignMessage').addEventListener('input', updatePreview);
+      document.getElementById('deliveryForecast').addEventListener('input', updatePreview);
+      document.getElementById('messageContent').addEventListener('input', updateMessagePreview);
+
+      // Setup drag and drop
+      const uploadArea = document.getElementById('imageUploadArea');
+      uploadArea.addEventListener('dragover', handleDragOver);
+      uploadArea.addEventListener('dragleave', handleDragLeave);
+      uploadArea.addEventListener('drop', handleDrop);
+    });
+  </script>
+  <script src="js/app.js"></script>
+
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="#">Disparos WhatsApp</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Nova Campanha</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">add_circle</span>
+          Nova Campanha de Disparo
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs para escolher tipo de campanha -->
+    <div class="campaign-tabs">
+      <button class="campaign-tab active" data-type="products" onclick="switchCampaignType('products')">
+        <span class="material-icons">inventory</span>
+        Disparo de Produtos
+      </button>
+      <button class="campaign-tab" data-type="messages" onclick="switchCampaignType('messages')">
+        <span class="material-icons">message</span>
+        Disparo de Mensagens
+      </button>
+    </div>
+
+    <!-- Mensagem de Sucesso -->
+    <div id="successMessage" class="success-message">
+      <span class="material-icons">check_circle</span>
+      <span>Campanha criada com sucesso!</span>
+    </div>

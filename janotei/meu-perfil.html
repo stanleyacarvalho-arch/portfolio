@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Meu Perfil - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .profile-header {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      background: #00b86b22;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00b86b;
+      font-size: 3rem;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .profile-avatar:hover {
+      background: #00b86b33;
+      transform: scale(1.05);
+    }
+    .avatar-upload {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      background: #00b86b;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .avatar-upload:hover {
+      background: #00e676;
+    }
+    .profile-info {
+      flex: 1;
+    }
+    .profile-name {
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .profile-email {
+      color: #00b86b;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .profile-role {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+    .profile-stats {
+      display: flex;
+      gap: 24px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .stat-label {
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .profile-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    .profile-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      overflow: hidden;
+    }
+    .section-header {
+      background: #222;
+      padding: 20px 24px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .edit-button {
+      background: #333;
+      color: #ccc;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .edit-button:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .section-content {
+      padding: 24px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .form-input:disabled, .form-select:disabled {
+      background: #1a1a1a;
+      color: #666;
+      cursor: not-allowed;
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #666;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    input:checked + .toggle-slider {
+      background-color: #00b86b;
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+      background-color: #fff;
+    }
+    .preference-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #222;
+    }
+    .preference-item:last-child {
+      border-bottom: none;
+    }
+    .preference-info {
+      flex: 1;
+    }
+    .preference-title {
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .preference-description {
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .save-button {
+      background: #00b86b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    .save-button:hover {
+      background: #00e676;
+    }
+    .save-button:disabled {
+      background: #333;
+      cursor: not-allowed;
+    }
+    .danger-zone {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #ff525222;
+      border: 1px solid #ff525233;
+      margin-top: 24px;
+    }
+    .danger-header {
+      background: #ff525222;
+      padding: 20px 24px;
+      border-bottom: 1px solid #ff525233;
+    }
+    .danger-title {
+      color: #ff5252;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .danger-content {
+      padding: 24px;
+    }
+    .danger-description {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .danger-button {
+      background: #ff5252;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .danger-button:hover {
+      background: #ff1744;
+    }
+    .success-message {
+      background: #4caf5022;
+      border: 1px solid #4caf50;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #4caf50;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 24px;
+        gap: 16px;
+      }
+      .profile-stats {
+        justify-content: center;
+      }
+      .profile-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .section-content {
+        padding: 20px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html" data-page="mais">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Meu Perfil</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">account_circle</span>
+          Meu Perfil
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-header">
+      <div class="profile-avatar" onclick="uploadAvatar()">
+        <span class="material-icons">person</span>
+        <div class="avatar-upload">
+          <span class="material-icons" style="font-size: 16px;">camera_alt</span>
+        </div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name">João Silva</div>
+        <div class="profile-email">joao.silva@email.com</div>
+        <div class="profile-role">Administrador • Membro desde Jan 2025</div>
+        <div class="profile-stats">
+          <div class="stat-item">
+            <div class="stat-number">247</div>
+            <div class="stat-label">Produtos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">1.2k</div>
+            <div class="stat-label">Vendas</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">89</div>
+            <div class="stat-label">Clientes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-content">
+      <div class="profile-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="material-icons">person</span>
+            Informações Pessoais
+          </div>
+          <button class="edit-button" onclick="toggleEdit('personal')">
+            <span class="material-icons" style="font-size: 14px;">edit</span>
+            Editar
+          </button>
+        </div>
+        <div class="section-content">
+          <div class="success-message" id="personalSuccess">
+            <span class="material-icons" style="font-size: 18px;">check_circle</span>
+            Informações atualizadas com sucesso!
+          </div>
+          <form id="personalForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Nome *</label>
+                <input type="text" class="form-input" id="firstName" value="João" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Sobrenome *</label>
+                <input type="text" class="form-input" id="lastName" value="Silva" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">E-mail *</label>
+              <input type="email" class="form-input" id="email" value="joao.silva@email.com" disabled>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Telefone</label>
+                <input type="tel" class="form-input" id="phone" value="(11) 99999-9999" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Data de Nascimento</label>
+                <input type="date" class="form-input" id="birthDate" value="1990-01-15" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Empresa</label>
+              <input type="text" class="form-input" id="company" value="Hot Wheels Colecionáveis" disabled>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bio</label>
+              <textarea class="form-textarea" id="bio" disabled placeholder="Conte um pouco sobre você...">Colecionador e vendedor de Hot Wheels há mais de 10 anos. Especialista em modelos raros e edições limitadas.</textarea>
+            </div>
+            <button type="submit" class="save-button" id="personalSave" style="display: none;">
+              <span class="material-icons" style="font-size: 18px;">save</span>
+              Salvar Alterações
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div>
+        <div class="profile-section">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="material-icons">settings</span>
+              Configurações da Conta
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="preference-item">
+              <div class="preference-info">
+                <div class="preference-title">Notificações por E-mail</div>
+                <div class="preference-description">Receber atualizações e novidades</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="preference-item">
+              <div class="preference-info">
+                <div class="preference-title">Notificações WhatsApp</div>
+                <div class="preference-description">Alertas de novas reservas</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="preference-item">
+              <div class="preference-info">
+                <div class="preference-title">Backup Automático</div>
+                <div class="preference-description">Backup diário dos dados</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="preference-item">
+              <div class="preference-info">
+                <div class="preference-title">Modo Escuro</div>
+                <div class="preference-description">Interface com tema escuro</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-section" style="margin-top: 24px;">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="material-icons">security</span>
+              Segurança
+            </div>
+          </div>
+          <div class="section-content">
+            <div class="form-group">
+              <label class="form-label">Alterar Senha</label>
+              <button type="button" class="save-button" onclick="changePassword()">
+                <span class="material-icons" style="font-size: 18px;">lock</span>
+                Alterar Senha
+              </button>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Autenticação em Duas Etapas</label>
+              <button type="button" class="save-button" onclick="setup2FA()" style="background: #333; color: #ccc;">
+                <span class="material-icons" style="font-size: 18px;">security</span>
+                Configurar 2FA
+              </button>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sessões Ativas</label>
+              <button type="button" class="save-button" onclick="viewSessions()" style="background: #333; color: #ccc;">
+                <span class="material-icons" style="font-size: 18px;">devices</span>
+                Ver Sessões (3 ativas)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="danger-zone">
+      <div class="danger-header">
+        <div class="danger-title">
+          <span class="material-icons">warning</span>
+          Zona de Perigo
+        </div>
+      </div>
+      <div class="danger-content">
+        <div class="danger-description">
+          As ações abaixo são irreversíveis e podem resultar na perda permanente de dados. 
+          Certifique-se de fazer backup antes de prosseguir.
+        </div>
+        <button class="danger-button" onclick="deleteAccount()">
+          <span class="material-icons" style="font-size: 16px;">delete_forever</span>
+          Excluir Conta
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <script>
+    function toggleEdit(section) {
+      if (section === 'personal') {
+        const inputs = document.querySelectorAll('#personalForm input, #personalForm textarea');
+        const saveButton = document.getElementById('personalSave');
+        const editButton = document.querySelector('[onclick="toggleEdit(\'personal\')"]');
+        const isDisabled = inputs[0].disabled;
+        inputs.forEach(input => input.disabled = !isDisabled);
+        if (isDisabled) {
+          saveButton.style.display = 'flex';
+          editButton.innerHTML = '<span class="material-icons" style="font-size: 14px;">close</span>Cancelar';
+          editButton.style.background = '#ff5252';
+        } else {
+          saveButton.style.display = 'none';
+          editButton.innerHTML = '<span class="material-icons" style="font-size: 14px;">edit</span>Editar';
+          editButton.style.background = '#333';
+        }
+      }
+    }
+
+    function uploadAvatar() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = e => {
+        const file = e.target.files[0];
+        if (file) {
+          alert('Avatar atualizado com sucesso!');
+          console.log('Arquivo selecionado:', file.name);
+        }
+      };
+      input.click();
+    }
+
+    function changePassword() {
+      const currentPassword = prompt('Digite sua senha atual:');
+      if (currentPassword) {
+        const newPassword = prompt('Digite a nova senha:');
+        if (newPassword) {
+          const confirmPassword = prompt('Confirme a nova senha:');
+          if (newPassword === confirmPassword) {
+            alert('Senha alterada com sucesso!');
+          } else {
+            alert('As senhas não coincidem!');
+          }
+        }
+      }
+    }
+
+    function setup2FA() {
+      alert('Redirecionando para configuração de autenticação em duas etapas...');
+      console.log('Configurar 2FA');
+    }
+
+    function viewSessions() {
+      alert('Mostrando sessões ativas:\n\n1. Chrome - Windows (Atual)\n2. Safari - iPhone\n3. Firefox - Android');
+      console.log('Ver sessões ativas');
+    }
+
+    function deleteAccount() {
+      const confirmation = confirm('ATENÇÃO: Esta ação é irreversível!\n\nTodos os seus dados serão permanentemente excluídos:\n- Produtos\n- Clientes\n- Histórico de vendas\n- Configurações\n\nDeseja realmente excluir sua conta?');
+      if (confirmation) {
+        const finalConfirmation = prompt('Para confirmar, digite "EXCLUIR CONTA" (em maiúsculas):');
+        if (finalConfirmation === 'EXCLUIR CONTA') {
+          alert('Conta excluída com sucesso. Você será redirecionado para a página de login.');
+          console.log('Conta excluída');
+        } else {
+          alert('Confirmação incorreta. Operação cancelada.');
+        }
+      }
+    }
+
+    document.getElementById('personalForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const saveButton = document.getElementById('personalSave');
+      const originalText = saveButton.innerHTML;
+      saveButton.innerHTML = '<span class="material-icons" style="font-size: 18px;">hourglass_empty</span>Salvando...';
+      saveButton.disabled = true;
+      setTimeout(() => {
+        document.getElementById('personalSuccess').style.display = 'flex';
+        const inputs = document.querySelectorAll('#personalForm input, #personalForm textarea');
+        inputs.forEach(input => input.disabled = true);
+        saveButton.style.display = 'none';
+        saveButton.disabled = false;
+        saveButton.innerHTML = originalText;
+        const editButton = document.querySelector('[onclick="toggleEdit(\'personal\')"]');
+        editButton.innerHTML = '<span class="material-icons" style="font-size: 14px;">edit</span>Editar';
+        editButton.style.background = '#333';
+        setTimeout(() => {
+          document.getElementById('personalSuccess').style.display = 'none';
+        }, 3000);
+      }, 1500);
+    });
+
+    document.getElementById('phone').addEventListener('input', e => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 11) {
+        value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        if (value.length < 14) {
+          value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        }
+      }
+      e.target.value = value;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+
+    <!-- CAMPANHA DE MENSAGENS -->
+    <div id="messages-campaign" class="campaign-content">
+      <div class="form-container">
+        <form id="messageCampaignForm">
+          <!-- Seção 1: Informações Básicas -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">info</span>
+              Informações Básicas
+            </div>
+            <div class="section-description">
+              Configure o nome e o conteúdo da sua campanha de disparo de mensagens.
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">campaign</span>
+                  Nome da Campanha
+                </label>
+                <input type="text" name="messageCampaignName" class="form-input" placeholder="Ex: Promoção Final de Semana" required>
+                <div class="form-help">Escolha um nome descritivo para identificar facilmente sua campanha</div>
+<!-- Seção Modalidade da Campanha -->
+<div class="form-group full-width" style="margin-top: 24px; padding: 16px; border: 1px solid #333; border-radius: 8px; background-color: #1a1a1a;">
+  <label class="form-label required" style="font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+    <span class="material-icons" style="font-size: 20px;">settings</span>Modalidade da Campanha
+  </label>
+  <div style="color:#aaa; font-size:0.9rem; margin: 8px 0 16px 0;">
+    Escolha uma modalidade para a campanha. Apenas uma opção pode ser selecionada:
+    <ul style="margin: 8px 0 0 20px; padding: 0; list-style-type: disc;">
+      <li><strong>Pronta Entrega:</strong> Produtos disponíveis para envio imediato.</li>
+      <li><strong>Produto de Importação:</strong> Produtos que são importados e podem ter prazo maior.</li>
+    </ul>
+  </div>
+  <div style="display:flex; gap: 32px; align-items: center;">
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="prontaEntrega" name="modalidadeCampanha" value="prontaEntrega" onclick="toggleCheckboxExclusive(this)" />
+      Pronta Entrega
+    </label>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="produtoImportacao" name="modalidadeCampanha" value="produtoImportacao" onclick="toggleCheckboxExclusive(this)" />
+      Produto de Importação
+    </label>
+  </div>
+</div>
+
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons" style="font-size: 16px;">label</span>
+                  Categoria da Campanha
+                </label>
+                <select name="messageCampaignCategory" class="form-select">
+                  <option value="">Selecione uma categoria</option>
+                  <option value="promocoes">Promoções</option>
+                  <option value="avisos">Avisos</option>
+                  <option value="novidades">Novidades</option>
+                  <option value="geral">Geral</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 2: Conteúdo da Mensagem -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">message</span>
+              Conteúdo da Mensagem
+            </div>
+            <div class="section-description">
+              Digite o texto da mensagem e adicione imagens se necessário.
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">edit</span>
+                Texto da Mensagem
+              </label>
+              <textarea id="messageContent" name="messageContent" class="form-textarea" placeholder="Digite sua mensagem aqui...
+
+Exemplo:
+🎉 PROMOÇÃO ESPECIAL! 🎉
+
+Aproveite nossos preços especiais neste final de semana!
+
+✨ Descontos de até 30%
+🚚 Frete grátis acima de R$ 100
+⏰ Válido até domingo
+
+Entre em contato para mais informações!" required></textarea>
+              <div class="form-help">Esta mensagem será enviada exatamente como digitada para todos os contatos do grupo.</div>
+            </div>
+
+            <!-- Upload de Imagens -->
+            <div class="form-group full-width">
+              <label class="form-label">
+                <span class="material-icons" style="font-size: 16px;">image</span>
+                Imagens (opcional)
+              </label>
+
+              <div id="imageUploadArea" class="image-upload-area" onclick="document.getElementById('imageInput').click()">
+                <div class="upload-icon material-icons">cloud_upload</div>
+                <div class="upload-text">Clique para selecionar imagens</div>
+                <div class="upload-hint">ou arraste e solte aqui</div>
+                <input type="file" id="imageInput" multiple accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+              </div>
+
+              <div id="uploadedImages" class="uploaded-images">
+                <!-- Imagens carregadas aparecerão aqui -->
+              </div>
+
+              <div class="form-help">Você pode adicionar até 10 imagens. Formatos aceitos: JPG, PNG, GIF (máx. 5MB cada)</div>
+            </div>
+          </div>
+
+          <!-- Seção 3: Agendamento -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">schedule</span>
+              Agendamento da Campanha
+            </div>
+            <div class="section-description">
+              Defina quando e com que frequência sua campanha será executada.
+            </div>
+
+            <div class="schedule-options">
+              <div class="schedule-option" data-schedule="once" onclick="selectScheduleType('once')">
+                <div class="schedule-option-icon material-icons">event</div>
+                <div class="schedule-option-title">Envio Único</div>
+                <div class="schedule-option-desc">Enviar apenas uma vez</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="daily" onclick="selectScheduleType('daily')">
+                <div class="schedule-option-icon material-icons">today</div>
+                <div class="schedule-option-title">Diário</div>
+                <div class="schedule-option-desc">Todos os dias no mesmo horário</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="weekly" onclick="selectScheduleType('weekly')">
+                <div class="schedule-option-icon material-icons">date_range</div>
+                <div class="schedule-option-title">Semanal</div>
+                <div class="schedule-option-desc">Dias específicos da semana</div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Único -->
+            <div id="once-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data do Envio
+                  </label>
+                  <input type="date" name="messageOnceDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário do Envio
+                  </label>
+                  <input type="time" name="messageOnceTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Diário -->
+            <div id="daily-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="messageDailyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="messageDailyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário Diário
+                  </label>
+                  <input type="time" name="messageDailyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Semanal -->
+            <div id="weekly-details" class="schedule-details">
+              <div class="form-group">
+                <label class="form-label required">Dias da Semana</label>
+                <div class="weekdays-selector">
+                  <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(0)">Dom</button>
+                  <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(1)">Seg</button>
+                  <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(2)">Ter</button>
+                  <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(3)">Qua</button>
+                  <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(4)">Qui</button>
+                  <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(5)">Sex</button>
+                  <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(6)">Sáb</button>
+                </div>
+              </div>
+
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="messageWeeklyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="messageWeeklyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário
+                  </label>
+                  <input type="time" name="messageWeeklyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 4: Preview da Mensagem -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">preview</span>
+              Preview da Mensagem
+            </div>
+            <div class="section-description">
+              Veja como sua mensagem aparecerá no WhatsApp.
+            </div>
+
+            <div class="message-preview">
+              <div class="preview-header">
+                <span class="material-icons">phone_android</span>
+                Como aparecerá no WhatsApp
+              </div>
+
+              <div class="whatsapp-preview">
+                <div id="messagePreviewImages" class="preview-images">
+                  <div class="preview-image">Nenhuma imagem</div>
+                </div>
+                <div class="preview-message" id="messagePreviewText">Digite sua mensagem...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="resetForm()">
+              <span class="material-icons" style="font-size: 18px;">refresh</span>
+              Limpar Formulário
+            </button>
+            <button type="button" class="btn-primary" onclick="saveCampaign()">
+              <span class="material-icons" style="font-size: 18px;">send</span>
+              Criar Campanha
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu inferior para dispositivos móveis -->
+  <div class="bottom-nav">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

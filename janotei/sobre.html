@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sobre - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .hero-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 40px;
+      margin-bottom: 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 70%, #00b86b11 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    .hero-logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 24px auto;
+      background: #00b86b22;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-logo img {
+      width: 80px;
+      height: auto;
+    }
+    .hero-title {
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .hero-subtitle {
+      color: #00b86b;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .hero-description {
+      color: #aaa;
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: #181818;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+    .stat-number {
+      color: #00b86b;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .stat-description {
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .values-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    .values-card {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+    }
+    .values-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .values-icon {
+      width: 48px;
+      height: 48px;
+      background: #00b86b22;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00b86b;
+    }
+    .values-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .values-content {
+      color: #aaa;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .values-list {
+      list-style: none;
+      padding: 0;
+      margin: 16px 0 0 0;
+    }
+    .values-list li {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .values-list li::before {
+      content: '✓';
+      color: #00b86b;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .timeline-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .timeline-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .timeline-title {
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .timeline-subtitle {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #333;
+      transform: translateX(-50%);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      width: 50%;
+    }
+    .timeline-item:nth-child(odd) {
+      left: 0;
+      padding-right: 40px;
+      text-align: right;
+    }
+    .timeline-item:nth-child(even) {
+      left: 50%;
+      padding-left: 40px;
+      text-align: left;
+    }
+    .timeline-dot {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #00b86b;
+      border-radius: 50%;
+      top: 8px;
+    }
+    .timeline-item:nth-child(odd) .timeline-dot {
+      right: -8px;
+    }
+    .timeline-item:nth-child(even) .timeline-dot {
+      left: -8px;
+    }
+    .timeline-content {
+      background: #222;
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+    }
+    .timeline-year {
+      color: #00b86b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .timeline-event {
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .timeline-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .team-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .team-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .team-title {
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .team-subtitle {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+    }
+    .team-member {
+      background: #222;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .team-member:hover {
+      transform: translateY(-4px);
+    }
+    .member-avatar {
+      width: 80px;
+      height: 80px;
+      background: #00b86b22;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      color: #00b86b;
+      font-size: 2rem;
+    }
+    .member-name {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .member-role {
+      color: #00b86b;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .member-description {
+      color: #aaa;
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+    .contact-cta {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 32px;
+      text-align: center;
+    }
+    .cta-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .cta-description {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    .cta-button {
+      background: #00b86b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cta-button:hover {
+      background: #00e676;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .hero-section {
+        padding: 24px;
+      }
+      .hero-title {
+        font-size: 1.5rem;
+      }
+      .hero-subtitle {
+        font-size: 1rem;
+      }
+      .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .values-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .timeline::before {
+        left: 20px;
+      }
+      .timeline-item {
+        width: 100%;
+        left: 0 !important;
+        padding-left: 50px !important;
+        padding-right: 0 !important;
+        text-align: left !important;
+      }
+      .timeline-dot {
+        left: 12px !important;
+        right: auto !important;
+      }
+      .team-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html" data-page="mais">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Sobre</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">info</span>
+          Sobre a JANOTEI
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="hero-content">
+        <div class="hero-logo">
+          <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" />
+        </div>
+        <div class="hero-title">JANOTEI</div>
+        <div class="hero-subtitle">Automatização Inteligente para Vendas</div>
+        <div class="hero-description">
+          Desenvolvemos soluções tecnológicas inovadoras para automatizar e otimizar processos de vendas, 
+          especialmente focadas na integração com WhatsApp e gestão de reservas de produtos.
+        </div>
+      </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number">2025</div>
+        <div class="stat-label">Ano de Fundação</div>
+        <div class="stat-description">Empresa jovem e inovadora</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">500+</div>
+        <div class="stat-label">Vendedores Atendidos</div>
+        <div class="stat-description">Em todo o Brasil</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">10k+</div>
+        <div class="stat-label">Produtos Gerenciados</div>
+        <div class="stat-description">Diariamente na plataforma</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">99.9%</div>
+        <div class="stat-label">Uptime</div>
+        <div class="stat-description">Disponibilidade garantida</div>
+      </div>
+    </div>
+
+    <!-- Missão e Visão -->
+    <div class="values-section">
+      <div class="values-card">
+        <div class="values-header">
+          <div class="values-icon">
+            <span class="material-icons">flag</span>
+          </div>
+          <div class="values-title">Nossa Missão</div>
+        </div>
+        <div class="values-content">
+          Democratizar o acesso à tecnologia de automação de vendas, oferecendo ferramentas simples, 
+          eficientes e acessíveis para vendedores de todos os portes, especialmente aqueles que utilizam 
+          grupos do WhatsApp como canal principal de vendas.
+          <ul class="values-list">
+            <li>Simplificar processos de venda</li>
+            <li>Automatizar tarefas repetitivas</li>
+            <li>Aumentar a produtividade dos vendedores</li>
+            <li>Melhorar a experiência do cliente</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="values-card">
+        <div class="values-header">
+          <div class="values-icon">
+            <span class="material-icons">visibility</span>
+          </div>
+          <div class="values-title">Nossa Visão</div>
+        </div>
+        <div class="values-content">
+          Ser a principal plataforma de automação de vendas para pequenos e médios vendedores no Brasil, 
+          reconhecida pela inovação, simplicidade e resultados efetivos na transformação digital de negócios.
+          <ul class="values-list">
+            <li>Liderança em automação de vendas</li>
+            <li>Inovação constante em tecnologia</li>
+            <li>Foco na experiência do usuário</li>
+            <li>Crescimento sustentável</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline-section">
+      <div class="timeline-header">
+        <div class="timeline-title">Nossa Jornada</div>
+        <div class="timeline-subtitle">Principais marcos da nossa história</div>
+      </div>
+      
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">Janeiro 2025</div>
+            <div class="timeline-event">Fundação da JANOTEI</div>
+            <div class="timeline-description">
+              Início do desenvolvimento da plataforma com foco em automação de vendas via WhatsApp
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">Março 2025</div>
+            <div class="timeline-event">Primeiro Protótipo</div>
+            <div class="timeline-description">
+              Lançamento da versão beta com funcionalidades básicas de gestão de produtos e reservas
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">Maio 2025</div>
+            <div class="timeline-event">Integração WhatsApp</div>
+            <div class="timeline-description">
+              Desenvolvimento da integração completa com WhatsApp para automação de reservas
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-year">Julho 2025</div>
+            <div class="timeline-event">Lançamento Oficial</div>
+            <div class="timeline-description">
+              Lançamento da versão 1.0 com todas as funcionalidades principais implementadas
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Equipe -->
+    <div class="team-section">
+      <div class="team-header">
+        <div class="team-title">Nossa Equipe</div>
+        <div class="team-subtitle">Conheça as pessoas por trás da JANOTEI</div>
+      </div>
+      
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="member-avatar">
+            <span class="material-icons">person</span>
+          </div>
+          <div class="member-name">João Silva</div>
+          <div class="member-role">CEO & Fundador</div>
+          <div class="member-description">
+            Especialista em automação de processos com mais de 10 anos de experiência em tecnologia.
+          </div>
+        </div>
+
+        <div class="team-member">
+          <div class="member-avatar">
+            <span class="material-icons">code</span>
+          </div>
+          <div class="member-name">Maria Santos</div>
+          <div class="member-role">CTO</div>
+          <div class="member-description">
+            Desenvolvedora full-stack apaixonada por criar soluções inovadoras e escaláveis.
+          </div>
+        </div>
+
+        <div class="team-member">
+          <div class="member-avatar">
+            <span class="material-icons">design_services</span>
+          </div>
+          <div class="member-name">Pedro Costa</div>
+          <div class="member-role">Head of Design</div>
+          <div class="member-description">
+            Designer UX/UI focado em criar experiências intuitivas e agradáveis para os usuários.
+          </div>
+        </div>
+
+        <div class="team-member">
+          <div class="member-avatar">
+            <span class="material-icons">support_agent</span>
+          </div>
+          <div class="member-name">Ana Oliveira</div>
+          <div class="member-role">Customer Success</div>
+          <div class="member-description">
+            Especialista em atendimento ao cliente, garantindo o sucesso de todos os nossos usuários.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="contact-cta">
+      <div class="cta-title">Quer saber mais sobre a JANOTEI?</div>
+      <div class="cta-description">
+        Entre em contato conosco e descubra como podemos ajudar a automatizar suas vendas
+      </div>
+      <a href="contato.html" class="cta-button" aria-label="Fale Conosco">
+        <span class="material-icons" style="font-size: 18px;">contact_support</span>
+        Fale Conosco
+      </a>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Mais Opções - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .page-header {
+      margin-bottom: 32px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .page-subtitle {
+      color: #aaa;
+      font-size: 1rem;
+      font-weight: 400;
+    }
+    .menu-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .menu-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #222;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .menu-option {
+      background: #222;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .menu-option:hover {
+      background: #333;
+      border-color: #00b86b;
+      transform: translateY(-2px);
+    }
+    .option-icon {
+      width: 40px;
+      height: 40px;
+      background: #00b86b22;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00b86b;
+      flex-shrink: 0;
+    }
+    .option-content {
+      flex: 1;
+    }
+    .option-title {
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .option-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .option-arrow {
+      color: #666;
+      font-size: 20px;
+    }
+    .logout-section {
+      margin-top: 24px;
+    }
+    .logout-option {
+      background: #ff525222;
+      border: 1px solid #ff5252;
+    }
+    .logout-option:hover {
+      background: #ff5252;
+      border-color: #ff5252;
+    }
+    .logout-option .option-icon {
+      background: #ff525222;
+      color: #ff5252;
+    }
+    .logout-option:hover .option-icon {
+      background: #fff;
+      color: #ff5252;
+    }
+    .logout-option:hover .option-title,
+    .logout-option:hover .option-description {
+      color: #fff;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .page-title {
+        font-size: 1.5rem;
+      }
+      .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .menu-section {
+        padding: 20px;
+      }
+      .menu-option {
+        padding: 14px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .nav-item.active {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <div class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">Mais Opções</h1>
+      <p class="page-subtitle">Configurações, relatórios e ferramentas adicionais do sistema</p>
+    </div>
+    
+    <div class="menu-sections">
+      <!-- Configurações do Sistema -->
+      <div class="menu-section">
+        <div class="section-title">
+          <span class="material-icons">settings</span>
+          Configurações do Sistema
+        </div>
+        <div class="menu-grid">
+          <a href="perfil-empresa.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">business</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Perfil da Empresa</div>
+              <div class="option-description">Logo, nome e dados de contato da empresa</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+          
+          <a href="configuracoes-gerais.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">tune</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Configurações Gerais</div>
+              <div class="option-description">Moeda, fuso horário e preferências do sistema</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+          
+          <a href="integracao-whatsapp.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">chat</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Integração WhatsApp</div>
+              <div class="option-description">Configurar bot e palavras-chave de reserva</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+          
+          <a href="notificacoes.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">notifications</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Notificações</div>
+              <div class="option-description">Alertas de estoque baixo e novos pedidos</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Gestão de Usuários -->
+      <div class="menu-section">
+        <div class="section-title">
+          <span class="material-icons">group</span>
+          Gestão de Usuários
+        </div>
+        <div class="menu-grid">
+          <a href="usuarios-sistema.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">admin_panel_settings</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Usuários do Sistema</div>
+              <div class="option-description">Adicionar e gerenciar administradores</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+          
+          <a href="permissoes.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">security</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Permissões</div>
+              <div class="option-description">Controle de acesso às funcionalidades</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Backup e Dados -->
+      <div class="menu-section">
+        <div class="section-title">
+          <span class="material-icons">backup</span>
+          Backup e Dados
+        </div>
+        <div class="menu-grid">
+          <a href="backup-dados.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">cloud_download</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Backup dos Dados</div>
+              <div class="option-description">Exportar e importar dados do sistema</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+          
+          <a href="historico-atividades.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">history</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Histórico de Atividades</div>
+              <div class="option-description">Log de ações realizadas no sistema</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Suporte -->
+      <div class="menu-section">
+        <div class="section-title">
+          <span class="material-icons">help</span>
+          Suporte
+        </div>
+        <div class="menu-grid">
+          <a href="ajuda.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">school</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Ajuda</div>
+              <div class="option-description">Tutorial e guia de uso do sistema</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+          
+          <a href="contato.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">support_agent</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Contato</div>
+              <div class="option-description">Fale com o suporte técnico</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+          
+          <a href="sobre.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">info</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Sobre</div>
+              <div class="option-description">Versão e informações do sistema</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Conta -->
+      <div class="menu-section">
+        <div class="section-title">
+          <span class="material-icons">account_circle</span>
+          Minha Conta
+        </div>
+        <div class="menu-grid">
+          <a href="meu-perfil.html" class="menu-option">
+            <div class="option-icon">
+              <span class="material-icons">person</span>
+            </div>
+            <div class="option-content">
+              <div class="option-title">Meu Perfil</div>
+              <div class="option-description">Dados pessoais e configurações da conta</div>
+            </div>
+            <span class="material-icons option-arrow">chevron_right</span>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Logout -->
+      <div class="logout-section">
+        <a href="#" class="menu-option logout-option" onclick="logout()" aria-label="Sair do sistema">
+          <div class="option-icon">
+            <span class="material-icons">logout</span>
+          </div>
+          <div class="option-content">
+            <div class="option-title">Sair do Sistema</div>
+            <div class="option-description">Fazer logout da sua conta</div>
+          </div>
+          <span class="material-icons option-arrow">chevron_right</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <script>
+    function logout() {
+      if (confirm('Tem certeza que deseja sair do sistema?')) {
+        alert('Logout realizado com sucesso!');
+        // Redirecionar para a página de login
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+</body>
+</html>

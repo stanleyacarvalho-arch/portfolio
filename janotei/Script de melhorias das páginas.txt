@@ -1,0 +1,147 @@
+Preciso que faça essas melhorias que ja estávamso fazendo anteriormente no código da página de visualizar produto:
+1. Logo
+Como deve ficar:
+
+html
+Copy Code
+<img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+A pasta images deve estar na raiz do projeto.
+O arquivo da logo deve estar dentro dessa pasta.
+2. Sidebar (Menu Lateral)
+Exemplo de sidebar padronizada:
+
+html
+Copy Code
+<div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+Adicione a classe active no link referente à página atual.
+3. Bottom Nav (Menu Inferior para Mobile)
+Exemplo de bottom-nav padronizado:
+
+html
+Copy Code
+<div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+Adicione a classe active no link referente à página atual.
+4. Script do app.js
+Inclua apenas uma vez no <head>, após o <style>:
+
+html
+Copy Code
+<head>
+  ...
+  <style>
+    /* Seu CSS */
+  </style>
+  <script src="js/app.js"></script>
+</head>
+Não repita o script.
+5. Estrutura HTML
+Ordem recomendada:
+
+html
+Copy Code
+<body>
+  <div class="sidebar"> ... </div>
+  <div class="main-content"> ... </div>
+  <div class="bottom-nav"> ... </div>
+  <!-- Seu <script> JS da página, se houver, pode ficar antes do </body> -->
+</body>
+6. Responsividade
+Mantenha o mesmo CSS responsivo das páginas principais.
+Sidebar some e bottom-nav aparece em telas menores (já está no seu CSS).
+7. Acessibilidade e Semântica
+Imagens sempre com alt.
+Botões de ação com <button> e, se possível, aria-label para acessibilidade.
+8. Menus com data-page e active
+Todos os links do menu lateral e inferior devem ter:
+class="nav-item"
+data-page="nome-da-pagina"
+active na página atual
+9. Exemplo de início de subpágina padronizada
+html
+Copy Code
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>NOME DA PÁGINA - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Seu CSS aqui */
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+    <!-- ...links do menu, com active no atual... -->
+  </div>
+  <div class="main-content">
+    <!-- Conteúdo da subpágina -->
+  </div>
+  <div class="bottom-nav">
+    <!-- ...links do menu, com active no atual... -->
+  </div>
+</body>
+</html>
+Se quiser, me envie a próxima subpágina para revisar nesse mesmo formato!
+Se precisar de um template base pronto para copiar e colar, só pedir! 🚀

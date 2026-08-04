@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* Seu CSS permanece igual */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover, .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .welcome-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .welcome-content h2 {
+      color: #fff;
+      font-size: 1.3rem;
+      margin: 0 0 8px 0;
+    }
+    .welcome-content p {
+      color: #aaa;
+      margin: 0;
+      font-size: 0.95rem;
+    }
+    .quick-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .quick-btn {
+      background: #00b86b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quick-btn:hover {
+      background: #00e676;
+      transform: translateY(-2px);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #181818;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 20px;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .stat-title {
+      color: #aaa;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .stat-icon {
+      color: #00b86b;
+      font-size: 20px;
+    }
+    .stat-value {
+      color: #fff;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .stat-change {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-change.positive {
+      color: #4caf50;
+    }
+    .stat-change.negative {
+      color: #ff5252;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    .chart-container, .recent-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chart-placeholder {
+      height: 300px;
+      background: #222;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .recent-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #222;
+    }
+    .recent-item:last-child {
+      border-bottom: none;
+    }
+    .recent-avatar {
+      width: 40px;
+      height: 40px;
+      background: #00b86b22;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00b86b;
+      margin-right: 12px;
+    }
+    .recent-info {
+      flex: 1;
+    }
+    .recent-name {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .recent-details {
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .recent-value {
+      color: #00b86b;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .welcome-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .quick-actions {
+        width: 100%;
+        justify-content: center;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover, .bottom-nav .nav-item.active {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+ <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+  <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+  <a href="dashboard.html" class="nav-item active" data-page="dashboard">
+    <span class="material-icons">home</span>
+    Início
+  </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">dashboard</span>
+          Dashboard
+        </div>
+      </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <div class="welcome-content">
+        <h2>Bem-vindo de volta, <span class="user-name">João Silva</span>! 👋</h2>
+        <p>Aqui está um resumo das suas atividades hoje</p>
+      </div>
+      <div class="quick-actions">
+        <button class="quick-btn" onclick="Navigation.goTo('novo-produto')">
+          <span class="material-icons" style="font-size: 16px;">add</span>
+          Novo Produto
+        </button>
+        <button class="quick-btn" onclick="Navigation.goTo('produtos')">
+          <span class="material-icons" style="font-size: 16px;">inventory</span>
+          Ver Produtos
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid" id="statsGrid">
+      <!-- Stats serão carregados dinamicamente -->
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Chart Container -->
+      <div class="chart-container">
+        <div class="section-title">
+          <span class="material-icons">trending_up</span>
+          Vendas dos Últimos 7 Dias
+        </div>
+        <div class="chart-placeholder">
+          📊 Gráfico de vendas será implementado aqui
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="recent-container">
+        <div class="section-title">
+          <span class="material-icons">history</span>
+          Últimas Reservas
+        </div>
+        <div id="recentReservations">
+          <!-- Reservas serão carregadas dinamicamente -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu inferior para dispositivos móveis -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item active" data-page="dashboard">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos-whatsapp.html" class="nav-item" data-page="disparos">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <script>
+    // Carregar dados do dashboard
+    function loadDashboardData() {
+      LoadingManager.show('Carregando dashboard...');
+      
+      // Simular carregamento
+      setTimeout(() => {
+        loadStats();
+        loadRecentReservations();
+        LoadingManager.hide();
+        Toast.show('Dashboard carregado com sucesso!', 'success');
+      }, 1500);
+    }
+
+    // Carregar estatísticas
+    function loadStats() {
+      const stats = [
+        {
+          title: 'Total de Produtos',
+          value: AppState.products.length,
+          icon: 'inventory',
+          change: '+12%',
+          positive: true
+        },
+        {
+          title: 'Vendas Hoje',
+          value: '47',
+          icon: 'trending_up',
+          change: '+8%',
+          positive: true
+        },
+        {
+          title: 'Receita Mensal',
+          value: Utils.formatCurrency(12450.80),
+          icon: 'attach_money',
+          change: '+15%',
+          positive: true
+        },
+        {
+          title: 'Clientes Ativos',
+          value: '89',
+          icon: 'people',
+          change: '-2%',
+          positive: false
+        }
+      ];
+
+      const statsGrid = document.getElementById('statsGrid');
+      statsGrid.innerHTML = stats.map(stat => `
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-title">${stat.title}</div>
+            <span class="material-icons stat-icon">${stat.icon}</span>
+          </div>
+          <div class="stat-value">${stat.value}</div>
+          <div class="stat-change ${stat.positive ? 'positive' : 'negative'}">
+            <span class="material-icons" style="font-size: 14px;">
+              ${stat.positive ? 'trending_up' : 'trending_down'}
+            </span>
+            ${stat.change} vs mês anterior
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Carregar reservas recentes
+    function loadRecentReservations() {
+      const reservations = [
+        {
+          name: 'Hot Wheels Ferrari F40',
+          customer: 'Maria Silva',
+          value: 15.99,
+          time: '2 min atrás'
+        },
+        {
+          name: 'Hot Wheels Lamborghini',
+          customer: 'João Santos',
+          value: 18.50,
+          time: '15 min atrás'
+        },
+        {
+          name: 'Hot Wheels Porsche 911',
+          customer: 'Ana Costa',
+          value: 22.00,
+          time: '1h atrás'
+        },
+        {
+          name: 'Hot Wheels BMW M3',
+          customer: 'Pedro Lima',
+          value: 16.75,
+          time: '2h atrás'
+        },
+        {
+          name: 'Hot Wheels Mustang GT',
+          customer: 'Carlos Oliveira',
+          value: 19.99,
+          time: '3h atrás'
+        }
+      ];
+
+      const container = document.getElementById('recentReservations');
+      container.innerHTML = reservations.map(reservation => `
+        <div class="recent-item">
+          <div class="recent-avatar">
+            <span class="material-icons" style="font-size: 20px;">local_offer</span>
+          </div>
+          <div class="recent-info">
+            <div class="recent-name">${reservation.name}</div>
+            <div class="recent-details">${reservation.customer} • ${reservation.time}</div>
+          </div>
+          <div class="recent-value">${Utils.formatCurrency(reservation.value)}</div>
+        </div>
+      `).join('');
+    }
+
+    // Inicializar dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      loadDashboardData();
+    });
+  </script>
+</body>
+</html>

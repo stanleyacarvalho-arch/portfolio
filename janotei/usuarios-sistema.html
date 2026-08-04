@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestão de Usuários - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .users-actions-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .users-filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-input, .filter-select {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .search-input:focus, .filter-select:focus {
+      border-color: #00b86b;
+      box-shadow: 0 0 0 2px #00b86b22;
+    }
+    .users-table-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 0;
+      color: #fff;
+      max-width: 100%;
+      margin: 0 auto;
+      width: 100%;
+      overflow-x: auto;
+    }
+    table.users-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 800px;
+    }
+    table.users-table th, table.users-table td {
+      padding: 16px 12px;
+      text-align: left;
+    }
+    table.users-table th {
+      background: #222;
+      color: #00b86b;
+      font-size: 1rem;
+      font-weight: 700;
+      border-bottom: 2px solid #00b86b33;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    table.users-table tr {
+      transition: background 0.2s;
+    }
+    table.users-table tr:hover {
+      background: #222;
+    }
+    table.users-table td {
+      background: #181818;
+      color: #fff;
+      font-size: 0.98rem;
+      border-bottom: 1px solid #222;
+      vertical-align: middle;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .status-ativo {
+      background: #00b86b;
+    }
+    .status-inativo {
+      background: #ff5252;
+    }
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .action-btn {
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .action-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .users-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .users-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .users-table-container {
+        padding: 0;
+      }
+      table.users-table {
+        min-width: 600px;
+      }
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .nav-item.active {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início"> 
+      <span class="material-icons" aria-hidden="true">home</span> Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos"> 
+      <span class="material-icons" aria-hidden="true">local_offer</span> Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias"> 
+      <span class="material-icons" aria-hidden="true">category</span> Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes"> 
+      <span class="material-icons" aria-hidden="true">people</span> Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios"> 
+      <span class="material-icons" aria-hidden="true">bar_chart</span> Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos"> 
+      <span class="material-icons" aria-hidden="true">campaign</span> Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais"> 
+      <span class="material-icons" aria-hidden="true">menu</span> Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Gestão de Usuários</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">manage_accounts</span>
+          Gestão de Usuários
+        </div>
+      </div>
+    </div>
+
+    <div class="users-actions-row">
+      <button class="btn-primary" id="btnNovoUsuario" aria-label="Adicionar novo usuário">
+        <span class="material-icons" style="font-size: 20px;">person_add</span>
+        Novo Usuário
+      </button>
+      <div class="users-filters">
+        <input type="text" class="search-input" placeholder="Buscar usuário..." aria-label="Buscar usuário">
+        <select class="filter-select" aria-label="Filtrar por perfil">
+          <option value="">Perfil</option>
+          <option value="admin">Admin</option>
+          <option value="operador">Operador</option>
+        </select>
+        <select class="filter-select" aria-label="Filtrar por status">
+          <option value="">Status</option>
+          <option value="ativo">Ativo</option>
+          <option value="inativo">Inativo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="users-table-container">
+      <table class="users-table" aria-label="Tabela de usuários">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+            <th>Perfil</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ana Souza</td>
+            <td>ana@email.com</td>
+            <td>Admin</td>
+            <td><span class="status-badge status-ativo">Ativo</span></td>
+            <td class="actions-cell">
+              <button class="action-btn btn-edit" title="Editar" aria-label="Editar Ana Souza">
+                <span class="material-icons" style="font-size:18px;">edit</span>
+              </button>
+              <button class="action-btn btn-toggle-status" title="Inativar" aria-label="Inativar Ana Souza">
+                <span class="material-icons" style="font-size:18px;">block</span>
+              </button>
+              <button class="action-btn btn-reset-password" title="Resetar Senha" aria-label="Resetar senha de Ana Souza">
+                <span class="material-icons" style="font-size:18px;">vpn_key</span>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>Carlos Lima</td>
+            <td>carlos@email.com</td>
+            <td>Operador</td>
+            <td><span class="status-badge status-inativo">Inativo</span></td>
+            <td class="actions-cell">
+              <button class="action-btn btn-edit" title="Editar" aria-label="Editar Carlos Lima">
+                <span class="material-icons" style="font-size:18px;">edit</span>
+              </button>
+              <button class="action-btn btn-toggle-status" title="Ativar" aria-label="Ativar Carlos Lima">
+                <span class="material-icons" style="font-size:18px;">check_circle</span>
+              </button>
+              <button class="action-btn btn-reset-password" title="Resetar Senha" aria-label="Resetar senha de Carlos Lima">
+                <span class="material-icons" style="font-size:18px;">vpn_key</span>
+              </button>
+            </td>
+          </tr>
+          <!-- Adicione mais linhas conforme necessário -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Menu inferior para dispositivos móveis -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <script>
+    // Navegar para página de edição ao clicar em editar
+    document.querySelectorAll('.btn-edit').forEach(button => {
+      button.addEventListener('click', () => {
+        // Aqui poderia passar o id do usuário para edição, por enquanto só redireciona
+        window.location.href = 'editar-usuario.html';
+      });
+    });
+
+    // Alternar status ativo/inativo sem redirecionar
+    document.querySelectorAll('.btn-toggle-status').forEach(button => {
+      button.addEventListener('click', () => {
+        const row = button.closest('tr');
+        const statusBadge = row.querySelector('.status-badge');
+        const isAtivo = statusBadge.classList.contains('status-ativo');
+
+        if (isAtivo) {
+          statusBadge.classList.remove('status-ativo');
+          statusBadge.classList.add('status-inativo');
+          statusBadge.textContent = 'Inativo';
+          button.title = 'Ativar';
+          button.setAttribute('aria-label', button.getAttribute('aria-label').replace('Inativar', 'Ativar'));
+          button.querySelector('.material-icons').textContent = 'check_circle';
+        } else {
+          statusBadge.classList.remove('status-inativo');
+          statusBadge.classList.add('status-ativo');
+          statusBadge.textContent = 'Ativo';
+          button.title = 'Inativar';
+          button.setAttribute('aria-label', button.getAttribute('aria-label').replace('Ativar', 'Inativar'));
+          button.querySelector('.material-icons').textContent = 'block';
+        }
+      });
+    });
+
+    // Resetar senha sem redirecionar
+    document.querySelectorAll('.btn-reset-password').forEach(button => {
+      button.addEventListener('click', () => {
+        const row = button.closest('tr');
+        const userName = row.querySelector('td').textContent;
+        if (confirm(`Deseja resetar a senha do usuário ${userName}?`)) {
+          // Aqui você pode adicionar a lógica para resetar a senha via API ou backend
+          alert(`Senha do usuário ${userName} foi resetada com sucesso!`);
+        }
+      });
+    });
+
+    // Exemplo: botão Novo Usuário (pode ser ajustado conforme necessidade)
+    document.getElementById('btnNovoUsuario').addEventListener('click', () => {
+      // Redirecionar para página de criação de usuário (ainda não criada)
+      window.location.href = 'novo-usuario.html';
+    });
+  </script>
+</body>
+</html>

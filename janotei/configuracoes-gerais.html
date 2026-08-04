@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Configurações Gerais - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .back-btn {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 700;
+      flex: 1;
+      text-align: center;
+    }
+    .save-btn {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .save-btn:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .settings-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .settings-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #222;
+    }
+    .setting-item {
+      margin-bottom: 20px;
+    }
+    .setting-label {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .setting-description {
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+    .form-select:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #666;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #00b86b;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+      background-color: #fff;
+    }
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .toggle-content {
+      flex: 1;
+      margin-right: 16px;
+    }
+    .color-picker-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .color-preview {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 2px solid #333;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .color-preview:hover {
+      border-color: #00b86b;
+    }
+    .color-input {
+      opacity: 0;
+      position: absolute;
+      width: 0;
+      height: 0;
+    }
+    .number-input {
+      width: 80px;
+      padding: 8px 12px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .number-input:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .success-message {
+      background: #00b86b22;
+      border: 1px solid #00b86b;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #00e676;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        text-align: left;
+        font-size: 1.3rem;
+      }
+      .save-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .settings-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .settings-section {
+        padding: 20px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .nav-item.active {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <div class="main-content">
+    <div class="header-row">
+      <a href="mais.html" class="back-btn" aria-label="Voltar para Mais">
+        <span class="material-icons">arrow_back</span>
+        Voltar
+      </a>
+      <div class="page-title">Configurações Gerais</div>
+      <button class="save-btn" onclick="saveSettings()" aria-label="Salvar configurações gerais">
+        <span class="material-icons">save</span>
+        Salvar Configurações
+      </button>
+    </div>
+    
+    <div class="success-message" id="successMessage" role="alert" aria-live="polite">
+      <span class="material-icons">check_circle</span>
+      Configurações salvas com sucesso!
+    </div>
+    
+    <div class="settings-container">
+      <!-- Configurações Regionais -->
+      <div class="settings-section">
+        <div class="section-title">
+          <span class="material-icons">language</span>
+          Configurações Regionais
+        </div>
+        
+        <div class="setting-item">
+          <label for="language" class="setting-label">Idioma do Sistema</label>
+          <div class="setting-description">Idioma da interface do sistema</div>
+          <select class="form-select" id="language">
+            <option value="pt-br" selected>Português (Brasil)</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+        
+        <div class="setting-item">
+          <label for="currency" class="setting-label">Moeda Padrão</label>
+          <div class="setting-description">Moeda utilizada nos preços e relatórios</div>
+          <select class="form-select" id="currency">
+            <option value="BRL" selected>Real (R$)</option>
+            <option value="USD">Dólar ($)</option>
+            <option value="EUR">Euro (€)</option>
+          </select>
+        </div>
+        
+        <div class="setting-item">
+          <label for="timezone" class="setting-label">Fuso Horário</label>
+          <div class="setting-description">Fuso horário para datas e horários</div>
+          <select class="form-select" id="timezone">
+            <option value="America/Sao_Paulo" selected>Brasília (GMT-3)</option>
+            <option value="America/New_York">Nova York (GMT-5)</option>
+            <option value="Europe/London">Londres (GMT+0)</option>
+            <option value="Asia/Tokyo">Tóquio (GMT+9)</option>
+          </select>
+        </div>
+        
+        <div class="setting-item">
+          <label for="dateFormat" class="setting-label">Formato de Data</label>
+          <div class="setting-description">Como as datas serão exibidas</div>
+          <select class="form-select" id="dateFormat">
+            <option value="dd/mm/yyyy" selected>DD/MM/AAAA</option>
+            <option value="mm/dd/yyyy">MM/DD/AAAA</option>
+            <option value="yyyy-mm-dd">AAAA-MM-DD</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Aparência -->
+      <div class="settings-section">
+        <div class="section-title">
+          <span class="material-icons">palette</span>
+          Aparência
+        </div>
+        
+        <div class="setting-item">
+          <label for="theme" class="setting-label">Tema do Sistema</label>
+          <div class="setting-description">Escolha entre tema claro ou escuro</div>
+          <select class="form-select" id="theme">
+            <option value="dark" selected>Escuro</option>
+            <option value="light">Claro</option>
+            <option value="auto">Automático</option>
+          </select>
+        </div>
+        
+        <div class="setting-item">
+          <label class="setting-label">Cor Principal</label>
+          <div class="setting-description">Cor de destaque do sistema</div>
+          <div class="color-picker-container">
+            <div class="color-preview" style="background-color: #00b86b;" onclick="document.getElementById('primaryColor').click()" role="button" tabindex="0" aria-label="Selecionar cor principal"></div>
+            <input type="color" id="primaryColor" class="color-input" value="#00b86b" onchange="updateColorPreview(this)" aria-label="Cor principal do sistema">
+            <span id="colorValue">#00b86b</span>
+          </div>
+        </div>
+        
+        <div class="setting-item">
+          <label for="fontSize" class="setting-label">Tamanho da Fonte</label>
+          <div class="setting-description">Tamanho padrão do texto</div>
+          <select class="form-select" id="fontSize">
+            <option value="small">Pequeno</option>
+            <option value="medium" selected>Médio</option>
+            <option value="large">Grande</option>
+          </select>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label for="animations" class="setting-label">Animações</label>
+            <div class="setting-description">Ativar animações na interface</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="animations" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Notificações -->
+      <div class="settings-section">
+        <div class="section-title">
+          <span class="material-icons">notifications</span>
+          Notificações
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label for="pushNotifications" class="setting-label">Notificações Push</label>
+            <div class="setting-description">Receber notificações no navegador</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pushNotifications" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label for="emailNotifications" class="setting-label">Notificações por Email</label>
+            <div class="setting-description">Receber alertas por email</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="emailNotifications" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label for="soundNotifications" class="setting-label">Sons de Notificação</label>
+            <div class="setting-description">Reproduzir sons para alertas</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="soundNotifications">
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="setting-item">
+          <label for="notificationStart" class="setting-label">Horário de Notificações</label>
+          <div class="setting-description">Período para receber notificações</div>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <input type="time" class="form-input" id="notificationStart" value="08:00" style="width: auto;">
+            <span style="color: #aaa;">até</span>
+            <input type="time" class="form-input" id="notificationEnd" value="18:00" style="width: auto;">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Sistema -->
+      <div class="settings-section">
+        <div class="section-title">
+          <span class="material-icons">settings</span>
+          Sistema
+        </div>
+        
+        <div class="setting-item">
+          <label for="itemsPerPage" class="setting-label">Itens por Página</label>
+          <div class="setting-description">Quantidade de itens exibidos nas listas</div>
+          <select class="form-select" id="itemsPerPage">
+            <option value="10">10 itens</option>
+            <option value="25" selected>25 itens</option>
+            <option value="50">50 itens</option>
+            <option value="100">100 itens</option>
+          </select>
+        </div>
+        
+        <div class="setting-item">
+          <label for="sessionTimeout" class="setting-label">Tempo de Sessão</label>
+          <div class="setting-description">Tempo limite para logout automático</div>
+          <select class="form-select" id="sessionTimeout">
+            <option value="30">30 minutos</option>
+            <option value="60" selected>1 hora</option>
+            <option value="120">2 horas</option>
+            <option value="480">8 horas</option>
+            <option value="0">Nunca</option>
+          </select>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label for="autoBackup" class="setting-label">Backup Automático</label>
+            <div class="setting-description">Fazer backup dos dados automaticamente</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="autoBackup" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="setting-item">
+          <label for="backupFrequency" class="setting-label">Frequência do Backup</label>
+          <div class="setting-description">Com que frequência fazer backup</div>
+          <select class="form-select" id="backupFrequency">
+            <option value="daily" selected>Diário</option>
+            <option value="weekly">Semanal</option>
+            <option value="monthly">Mensal</option>
+          </select>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label for="devMode" class="setting-label">Modo de Desenvolvimento</label>
+            <div class="setting-description">Ativar logs detalhados (apenas para desenvolvedores)</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="devMode">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Segurança -->
+      <div class="settings-section full-width">
+        <div class="section-title">
+          <span class="material-icons">security</span>
+          Segurança
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="toggle-item">
+            <div class="toggle-content">
+              <label for="twoFactor" class="setting-label">Autenticação de Dois Fatores</label>
+              <div class="setting-description">Adicionar camada extra de segurança</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="twoFactor">
+              <span class="slider"></span>
+            </label>
+          </div>
+          
+          <div class="toggle-item">
+            <div class="toggle-content">
+              <label for="forceLogin" class="setting-label">Login Obrigatório</label>
+              <div class="setting-description">Exigir login para acessar o sistema</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="forceLogin" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          
+          <div class="setting-item">
+            <label for="maxLoginAttempts" class="setting-label">Tentativas de Login</label>
+            <div class="setting-description">Máximo de tentativas antes de bloquear</div>
+            <input type="number" class="number-input" id="maxLoginAttempts" value="5" min="1" max="10">
+          </div>
+          
+          <div class="setting-item">
+            <label for="lockoutTime" class="setting-label">Tempo de Bloqueio</label>
+            <div class="setting-description">Tempo de bloqueio após tentativas falhadas</div>
+            <select class="form-select" id="lockoutTime">
+              <option value="5">5 minutos</option>
+              <option value="15" selected>15 minutos</option>
+              <option value="30">30 minutos</option>
+              <option value="60">1 hora</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <script>
+    function updateColorPreview(input) {
+      const preview = document.querySelector('.color-preview');
+      const valueSpan = document.getElementById('colorValue');
+      preview.style.backgroundColor = input.value;
+      valueSpan.textContent = input.value;
+    }
+    
+    function saveSettings() {
+      const settings = {
+        language: document.getElementById('language').value,
+        currency: document.getElementById('currency').value,
+        timezone: document.getElementById('timezone').value,
+        dateFormat: document.getElementById('dateFormat').value,
+        theme: document.getElementById('theme').value,
+        primaryColor: document.getElementById('primaryColor').value,
+        fontSize: document.getElementById('fontSize').value,
+        animations: document.getElementById('animations').checked,
+        pushNotifications: document.getElementById('pushNotifications').checked,
+        emailNotifications: document.getElementById('emailNotifications').checked,
+        soundNotifications: document.getElementById('soundNotifications').checked,
+        notificationStart: document.getElementById('notificationStart').value,
+        notificationEnd: document.getElementById('notificationEnd').value,
+        itemsPerPage: document.getElementById('itemsPerPage').value,
+        sessionTimeout: document.getElementById('sessionTimeout').value,
+        autoBackup: document.getElementById('autoBackup').checked,
+        backupFrequency: document.getElementById('backupFrequency').value,
+        devMode: document.getElementById('devMode').checked,
+        twoFactor: document.getElementById('twoFactor').checked,
+        forceLogin: document.getElementById('forceLogin').checked,
+        maxLoginAttempts: document.getElementById('maxLoginAttempts').value,
+        lockoutTime: document.getElementById('lockoutTime').value
+      };
+      
+      console.log('Configurações salvas:', settings);
+      
+      const successMessage = document.getElementById('successMessage');
+      successMessage.style.display = 'flex';
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

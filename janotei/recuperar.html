@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Recuperar Senha - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      z-index: 0;
+      pointer-events: none;
+    }
+    body::before {
+      width: 420px;
+      height: 420px;
+      left: -120px;
+      top: -120px;
+      background: radial-gradient(circle, #00e676 0%, transparent 80%);
+    }
+    body::after {
+      width: 320px;
+      height: 320px;
+      right: -100px;
+      bottom: -100px;
+      background: radial-gradient(circle, #fff 0%, transparent 80%);
+    }
+    .recovery-container {
+      background: #181818ee;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+      padding: 40px 32px 32px 32px;
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .logo {
+      width: 120px;
+      margin-bottom: 32px;
+    }
+    .recovery-title {
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 18px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .recovery-desc {
+      color: #00b86b;
+      font-size: 1rem;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .input-group {
+      width: 100%;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .input-group label {
+      font-size: 0.95rem;
+      color: #fff;
+      margin-bottom: 6px;
+      text-align: left;
+      width: 260px;
+      padding-left: 2px;
+    }
+    .input-group input {
+      width: 260px;
+      padding: 10px 12px;
+      border: 1.5px solid #00b86b;
+      border-radius: 8px;
+      font-size: 1rem;
+      background: #222;
+      color: #fff;
+      outline: none;
+      transition: border 0.2s;
+      box-sizing: border-box;
+      display: block;
+    }
+    .input-group input:focus {
+      border-color: #00e676;
+    }
+    .recovery-btn {
+      width: 260px;
+      max-width: 180px;
+      padding: 8px 0;
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.98rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px #00b86b33;
+      display: block;
+    }
+    .recovery-btn:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .back-link {
+      margin-top: 40px;
+      font-size: 0.92rem;
+      color: #00b86b;
+      text-decoration: none;
+      transition: color 0.2s;
+      align-self: center; /* Centralizado */
+    }
+    .back-link:hover {
+      color: #00e676;
+    }
+    .feedback {
+      margin-top: 18px;
+      color: #00e676;
+      font-size: 1rem;
+      text-align: center;
+      display: none; /* Altere para block para simular feedback */
+    }
+  </style>
+</head>
+<body>
+  <div class="recovery-container">
+    <img src="JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+    <div class="recovery-title">Recuperar senha</div>
+    <div class="recovery-desc">Informe o e-mail cadastrado <br>para redefinir sua senha.</div>
+    <form autocomplete="off">
+      <div class="input-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="Digite seu e-mail" required autocomplete="email" autofocus>
+      </div>
+      <button class="recovery-btn" type="submit">Enviar link</button>
+      <div class="feedback" id="recovery-feedback">
+        <!-- Mensagem de feedback aparece aqui -->
+      </div>
+    </form>
+    <a href="#" class="back-link">Lembrou a senha? Entrar</a>
+  </div>
+  <script>
+    // Exemplo de exibição de feedback (remova se não for usar JS)
+    // document.getElementById('recovery-feedback').style.display = 'block';
+    // document.getElementById('recovery-feedback').textContent = 'Enviamos um link de recuperação para seu e-mail!';
+  </script>
+</body>
+</html>

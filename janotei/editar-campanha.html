@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Campanha - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .campaign-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .campaign-status.active {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+    }
+    .form-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 32px;
+      color: #fff;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .campaign-info-bar {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .info-item {
+      text-align: center;
+    }
+    .info-label {
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+    .info-value {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .info-value.success {
+      color: #00e676;
+    }
+    .info-value.warning {
+      color: #ffb74d;
+    }
+    .form-section {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #222;
+    }
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .form-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .form-label.required::after {
+      content: "*";
+      color: #ff5252;
+      margin-left: 4px;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: #00b86b;
+      box-shadow: 0 0 0 2px #00b86b22;
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+    .form-help {
+      color: #666;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .schedule-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .schedule-option {
+      background: #222;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .schedule-option:hover {
+      border-color: #00b86b;
+    }
+    .schedule-option.selected {
+      border-color: #00b86b;
+      background: #00b86b11;
+    }
+    .schedule-option-icon {
+      font-size: 2rem;
+      color: #00b86b;
+      margin-bottom: 8px;
+    }
+    .schedule-option-title {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .schedule-option-desc {
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .schedule-details {
+      display: none;
+      background: #222;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .schedule-details.show {
+      display: block;
+    }
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .weekdays-selector {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .weekday-btn {
+      background: #333;
+      color: #aaa;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .weekday-btn:hover {
+      border-color: #00b86b;
+      color: #00b86b;
+    }
+    .weekday-btn.selected {
+      background: #00b86b;
+      color: #fff;
+      border-color: #00b86b;
+    }
+    .products-section {
+      background: #222;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 16px;
+    }
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .products-search-bar {
+      display: flex;
+      gap: 12px;
+      flex: 1;
+      max-width: 400px;
+    }
+    .search-input {
+      flex: 1;
+      background: #333;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: #00b86b;
+    }
+    .filter-select {
+      background: #333;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+    .product-card {
+      background: #333;
+      border-radius: 8px;
+      padding: 16px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .product-card:hover {
+      border-color: #00b86b;
+    }
+    .product-card.selected {
+      border-color: #00b86b;
+      background: #00b86b11;
+    }
+    .product-checkbox {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 18px;
+      height: 18px;
+      accent-color: #00b86b;
+    }
+    .product-info {
+      margin-right: 30px;
+    }
+    .product-name {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+    .product-category {
+      color: #aaa;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+    .product-price {
+      color: #00e676;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .product-stock {
+      color: #aaa;
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+    .selected-products-summary {
+      background: #333;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .summary-header {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .selected-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .selected-item {
+      background: #444;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .remove-item {
+      background: none;
+      border: none;
+      color: #ff5252;
+      cursor: pointer;
+      padding: 0;
+      font-size: 0.7rem;
+    }
+    .delivery-forecast {
+      background: #333;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid #444;
+    }
+    .delivery-forecast.required {
+      border-color: #ff5252;
+    }
+    .delivery-forecast-header {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .delivery-forecast-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .message-preview {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .preview-header {
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .whatsapp-preview {
+      background: #075e54;
+      border-radius: 12px;
+      padding: 16px;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      line-height: 1.4;
+      max-width: 300px;
+    }
+    .preview-message {
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+    }
+    .preview-products {
+      border-top: 1px solid #ffffff33;
+      padding-top: 8px;
+      font-size: 0.85rem;
+    }
+    .product-preview-item {
+      background: #ffffff11;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      border-left: 3px solid #00e676;
+    }
+    .product-preview-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .product-preview-price {
+      color: #00e676;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .product-preview-delivery {
+      color: #ccc;
+      font-size: 0.8rem;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+      padding-top: 32px;
+      border-top: 1px solid #222;
+      margin-top: 32px;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #aaa;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      color: #fff;
+      border-color: #666;
+    }
+    .btn-danger {
+      background: transparent;
+      color: #ff5252;
+      border: 1px solid #ff5252;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-danger:hover {
+      background: #ff5252;
+      color: #fff;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .success-message {
+      background: #00b86b22;
+      border: 1px solid #00b86b;
+      border-radius: 8px;
+      padding: 16px;
+      color: #00e676;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .success-message.show {
+      display: flex;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .form-container {
+        padding: 24px;
+      }
+      .campaign-info-bar {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .schedule-options {
+        grid-template-columns: 1fr;
+      }
+      .time-grid {
+        grid-template-columns: 1fr;
+      }
+      .weekdays-selector {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
+      .products-grid {
+        grid-template-columns: 1fr;
+        max-height: 300px;
+      }
+      .products-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .products-search-bar {
+        max-width: none;
+      }
+      .form-actions {
+        flex-direction: column;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script>
+    let selectedProducts = [
+      { id: 1, name: 'Hot Wheels Ferrari F40', price: 25.00, category: 'Hot Wheels', stock: 15 },
+      { id: 3, name: 'Pop Race Toyota Supra', price: 38.00, category: 'Pop Race', stock: 12 },
+      { id: 5, name: 'MiniGT Nissan GT-R', price: 42.00, category: 'MiniGT', stock: 6 }
+    ];
+    let selectedScheduleType = 'weekly';
+    let selectedWeekdays = [1, 3, 5]; // Segunda, Quarta, Sexta
+    
+    // Dados da campanha atual
+    const campaignData = {
+      id: 1,
+      name: 'Lançamentos Hot Wheels Julho',
+      category: 'lancamentos',
+      message: '🔥 NOVIDADES CHEGARAM! 🔥\n\nConfira os lançamentos mais esperados que acabaram de chegar:\n\n💬 Responda com \'QUERO\' + nome do produto para reservar!\n⏰ Vagas limitadas!',
+      deliveryForecast: '15 a 20 dias úteis',
+      status: 'active',
+      totalSent: 156,
+      totalClicks: 89,
+      totalReservations: 23,
+      createdAt: '2024-07-20',
+      nextSend: '2024-07-26 10:00'
+    };
+    
+    function selectScheduleType(type) {
+      selectedScheduleType = type;
+      
+      document.querySelectorAll('.schedule-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      document.querySelector(`[data-schedule="${type}"]`).classList.add('selected');
+      
+      document.querySelectorAll('.schedule-details').forEach(detail => {
+        detail.classList.remove('show');
+      });
+      
+      const detailElement = document.getElementById(`${type}-details`);
+      if (detailElement) {
+        detailElement.classList.add('show');
+      }
+    }
+    
+    function toggleWeekday(day) {
+      const btn = document.querySelector(`[data-day="${day}"]`);
+      const index = selectedWeekdays.indexOf(day);
+      
+      if (index === -1) {
+        selectedWeekdays.push(day);
+        btn.classList.add('selected');
+      } else {
+        selectedWeekdays.splice(index, 1);
+        btn.classList.remove('selected');
+      }
+    }
+    
+    function toggleProduct(id, name, price, category, stock) {
+      const card = document.querySelector(`[data-product="${id}"]`);
+      const checkbox = card.querySelector('.product-checkbox');
+      const productIndex = selectedProducts.findIndex(p => p.id === id);
+      
+      if (productIndex === -1) {
+        selectedProducts.push({ id, name, price, category, stock });
+        card.classList.add('selected');
+        checkbox.checked = true;
+      } else {
+        selectedProducts.splice(productIndex, 1);
+        card.classList.remove('selected');
+        checkbox.checked = false;
+      }
+      
+      updateSelectedProductsSummary();
+      updatePreview();
+    }
+    
+    function removeProduct(id) {
+      selectedProducts = selectedProducts.filter(p => p.id !== id);
+      const card = document.querySelector(`[data-product="${id}"]`);
+      const checkbox = card.querySelector('.product-checkbox');
+      
+      card.classList.remove('selected');
+      checkbox.checked = false;
+      
+      updateSelectedProductsSummary();
+      updatePreview();
+    }
+    
+    function updateSelectedProductsSummary() {
+      const container = document.getElementById('selectedProductsSummary');
+      const countElement = document.getElementById('selectedCount');
+      
+      countElement.textContent = selectedProducts.length;
+      
+      if (selectedProducts.length === 0) {
+        container.innerHTML = '<div style="color: #666; font-size: 0.85rem;">Nenhum produto selecionado</div>';
+        return;
+      }
+      
+      container.innerHTML = selectedProducts.map(product => `
+        <div class="selected-item">
+          ${product.name}
+          <button class="remove-item" onclick="removeProduct(${product.id})">
+            <span class="material-icons" style="font-size: 14px;">close</span>
+          </button>
+        </div>
+      `).join('');
+    }
+    
+    function searchProducts() {
+      const searchTerm = document.getElementById('productsSearch').value.toLowerCase();
+      const categoryFilter = document.getElementById('categoryFilter').value;
+      const productCards = document.querySelectorAll('.product-card');
+      
+      productCards.forEach(card => {
+        const productName = card.querySelector('.product-name').textContent.toLowerCase();
+        const productCategory = card.querySelector('.product-category').textContent;
+        
+        const matchesSearch = productName.includes(searchTerm);
+        const matchesCategory = !categoryFilter || productCategory === categoryFilter;
+        
+        if (matchesSearch && matchesCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+    
+    function updatePreview() {
+      const message = document.getElementById('campaignMessage').value;
+      const deliveryForecast = document.getElementById('deliveryForecast').value;
+      const previewMessage = document.getElementById('previewMessage');
+      const previewProducts = document.getElementById('previewProducts');
+      
+      previewMessage.textContent = message || 'Digite sua mensagem...';
+      
+      if (selectedProducts.length > 0) {
+        previewProducts.innerHTML = `
+          <strong>🛒 Produtos disponíveis:</strong><br><br>
+          ${selectedProducts.map(p => `
+            <div class="product-preview-item">
+              <div class="product-preview-name">${p.name}</div>
+              <div class="product-preview-price">R$ ${p.price.toFixed(2)}</div>
+              <div class="product-preview-delivery">📅 ${deliveryForecast || 'Previsão não informada'}</div>
+            </div>
+          `).join('')}
+        `;
+      } else {
+        previewProducts.innerHTML = '<em>Nenhum produto selecionado</em>';
+      }
+    }
+    
+    function cancelEdit() {
+      if (confirm('Tem certeza que deseja cancelar? Todas as alterações não salvas serão perdidas.')) {
+        showTempMessage('Edição cancelada', 'warning');
+        // window.location.href = 'campanhas.html';
+      }
+    }
+    
+    function deleteCampaign() {
+      if (confirm('⚠️ ATENÇÃO: Esta ação não pode ser desfeita!\n\nTem certeza que deseja excluir permanentemente esta campanha?\n\nTodos os dados e histórico serão perdidos.')) {
+        showTempMessage('Campanha excluída com sucesso!', 'success');
+        setTimeout(() => {
+          // window.location.href = 'campanhas.html';
+        }, 2000);
+      }
+    }
+    
+    function saveCampaign() {
+      const form = document.getElementById('campaignForm');
+      const formData = new FormData(form);
+      
+      // Validações
+      if (!formData.get('campaignName')) {
+        alert('Por favor, digite o nome da campanha.');
+        return;
+      }
+      
+      if (!formData.get('campaignMessage')) {
+        alert('Por favor, digite a mensagem da campanha.');
+        return;
+      }
+      
+      if (!selectedScheduleType) {
+        alert('Por favor, selecione o tipo de agendamento.');
+        return;
+      }
+      
+      if (selectedProducts.length === 0) {
+        alert('Por favor, selecione pelo menos um produto.');
+        return;
+      }
+      
+      if (!document.getElementById('deliveryForecast').value) {
+        alert('Por favor, informe a previsão de entrega.');
+        document.getElementById('deliveryForecast').focus();
+        return;
+      }
+      
+      if (selectedScheduleType === 'weekly' && selectedWeekdays.length === 0) {
+        alert('Por favor, selecione pelo menos um dia da semana.');
+        return;
+      }
+      
+      const successMessage = document.getElementById('successMessage');
+      successMessage.classList.add('show');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      setTimeout(() => {
+        successMessage.classList.remove('show');
+      }, 5000);
+    }
+    
+    function showTempMessage(message, type = 'success') {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `temp-message ${type}`;
+      messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#00b86b' : type === 'warning' ? '#ffb74d' : '#ff5252'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        z-index: 1001;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+      `;
+      messageDiv.textContent = message;
+      
+      document.body.appendChild(messageDiv);
+      
+      setTimeout(() => {
+        messageDiv.style.transform = 'translateX(0)';
+      }, 100);
+      
+      setTimeout(() => {
+        messageDiv.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          document.body.removeChild(messageDiv);
+        }, 300);
+      }, 3000);
+    }
+    
+    // Inicializar página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Preencher dados da campanha
+      document.getElementById('campaignName').value = campaignData.name;
+      document.getElementById('campaignCategory').value = campaignData.category;
+      document.getElementById('campaignMessage').value = campaignData.message;
+      document.getElementById('deliveryForecast').value = campaignData.deliveryForecast;
+      
+      // Configurar agendamento
+      selectScheduleType(selectedScheduleType);
+      
+      // Marcar dias da semana selecionados
+      selectedWeekdays.forEach(day => {
+        document.querySelector(`[data-day="${day}"]`).classList.add('selected');
+      });
+      
+      // Marcar produtos selecionados
+      selectedProducts.forEach(product => {
+        const card = document.querySelector(`[data-product="${product.id}"]`);
+        const checkbox = card.querySelector('.product-checkbox');
+        card.classList.add('selected');
+        checkbox.checked = true;
+      });
+      
+      updateSelectedProductsSummary();
+      updatePreview();
+      
+      // Listeners para atualizar preview
+      document.getElementById('campaignMessage').addEventListener('input', updatePreview);
+      document.getElementById('deliveryForecast').addEventListener('input', updatePreview);
+    });
+  </script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="#">Disparos WhatsApp</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Editar Campanha</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">edit</span>
+          Editar Campanha
+        </div>
+      </div>
+      <div class="campaign-status active">
+        <span class="material-icons" style="font-size: 16px;">play_circle</span>
+        Ativa
+      </div>
+    </div>
+    
+    <div class="form-container">
+      <!-- Mensagem de Sucesso -->
+      <div id="successMessage" class="success-message">
+        <span class="material-icons">check_circle</span>
+        Campanha atualizada com sucesso! As alterações serão aplicadas nos próximos disparos.
+      </div>
+      
+      <!-- Barra de Informações da Campanha -->
+      <div class="campaign-info-bar">
+        <div class="info-item">
+          <div class="info-label">Total Enviado</div>
+          <div class="info-value success">156</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Cliques</div>
+          <div class="info-value">89</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Reservas</div>
+          <div class="info-value success">23</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Próximo Envio</div>
+          <div class="info-value warning">26/07 10:00</div>
+        </div>
+      </div>
+      
+      <form id="campaignForm">
+        <!-- Seção 1: Informações Básicas -->
+        <div class="form-section">
+          <div class="section-title">
+            <span class="material-icons">info</span>
+            Informações Básicas
+          </div>
+          <div class="section-description">
+            Configure o nome e a mensagem principal da sua campanha de disparo.
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">campaign</span>
+                Nome da Campanha
+              </label>
+              <input type="text" id="campaignName" name="campaignName" class="form-input" placeholder="Ex: Lançamentos Hot Wheels Julho" required>
+              <div class="form-help">Escolha um nome descritivo para identificar facilmente sua campanha</div>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons" style="font-size: 16px;">label</span>
+                Categoria da Campanha
+              </label>
+              <select id="campaignCategory" name="campaignCategory" class="form-select">
+                <option value="">Selecione uma categoria</option>
+                <option value="lancamentos">Lançamentos</option>
+                <option value="promocoes">Promoções</option>
+                <option value="estoque">Controle de Estoque</option>
+                <option value="geral">Geral</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group full-width">
+            <label class="form-label required">
+              <span class="material-icons" style="font-size: 16px;">message</span>
+              Mensagem Introdutória
+            </label>
+            <textarea id="campaignMessage" name="campaignMessage" class="form-textarea" required></textarea>
+            <div class="form-help">Esta mensagem será enviada primeiro, seguida de cada produto individualmente com foto e detalhes.</div>
+          </div>
+        </div>
+        
+        <!-- Seção 2: Agendamento -->
+        <div class="form-section">
+          <div class="section-title">
+            <span class="material-icons">schedule</span>
+            Agendamento da Campanha
+          </div>
+          <div class="section-description">
+            Defina quando e com que frequência sua campanha será executada.
+          </div>
+          
+          <div class="schedule-options">
+            <div class="schedule-option" data-schedule="once" onclick="selectScheduleType('once')">
+              <div class="schedule-option-icon material-icons">event</div>
+              <div class="schedule-option-title">Envio Único</div>
+              <div class="schedule-option-desc">Enviar apenas uma vez</div>
+            </div>
+            
+            <div class="schedule-option" data-schedule="daily" onclick="selectScheduleType('daily')">
+              <div class="schedule-option-icon material-icons">today</div>
+              <div class="schedule-option-title">Diário</div>
+              <div class="schedule-option-desc">Todos os dias no mesmo horário</div>
+            </div>
+            
+            <div class="schedule-option selected" data-schedule="weekly" onclick="selectScheduleType('weekly')">
+              <div class="schedule-option-icon material-icons">date_range</div>
+              <div class="schedule-option-title">Semanal</div>
+              <div class="schedule-option-desc">Dias específicos da semana</div>
+            </div>
+          </div>
+          
+          <!-- Detalhes do Envio Único -->
+          <div id="once-details" class="schedule-details">
+            <div class="time-grid">
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">event</span>
+                  Data do Envio
+                </label>
+                <input type="date" name="onceDate" class="form-input" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">access_time</span>
+                  Horário do Envio
+                </label>
+                <input type="time" name="onceTime" class="form-input" required>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Detalhes do Envio Diário -->
+          <div id="daily-details" class="schedule-details">
+            <div class="time-grid">
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">event</span>
+                  Data de Início
+                </label>
+                <input type="date" name="dailyStartDate" class="form-input" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons" style="font-size: 16px;">event</span>
+                  Data de Fim (opcional)
+                </label>
+                <input type="date" name="dailyEndDate" class="form-input">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">access_time</span>
+                  Horário Diário
+                </label>
+                <input type="time" name="dailyTime" class="form-input" required>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Detalhes do Envio Semanal -->
+          <div id="weekly-details" class="schedule-details show">
+            <div class="form-group">
+              <label class="form-label required">Dias da Semana</label>
+              <div class="weekdays-selector">
+                <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(0)">Dom</button>
+                <button type="button" class="weekday-btn selected" data-day="1" onclick="toggleWeekday(1)">Seg</button>
+                <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(2)">Ter</button>
+                <button type="button" class="weekday-btn selected" data-day="3" onclick="toggleWeekday(3)">Qua</button>
+                <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(4)">Qui</button>
+                <button type="button" class="weekday-btn selected" data-day="5" onclick="toggleWeekday(5)">Sex</button>
+                <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(6)">Sáb</button>
+              </div>
+            </div>
+            
+            <div class="time-grid">
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">event</span>
+                  Data de Início
+                </label>
+                <input type="date" name="weeklyStartDate" class="form-input" value="2024-07-20" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons" style="font-size: 16px;">event</span>
+                  Data de Fim (opcional)
+                </label>
+                <input type="date" name="weeklyEndDate" class="form-input">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">access_time</span>
+                  Horário
+                </label>
+                <input type="time" name="weeklyTime" class="form-input" value="10:00" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Seção 3: Seleção de Produtos -->
+        <div class="form-section">
+          <div class="section-title">
+            <span class="material-icons">inventory</span>
+            Produtos para Disparo (<span id="selectedCount">3</span> selecionados)
+          </div>
+          <div class="section-description">
+            Selecione os produtos que serão incluídos nesta campanha. Cada produto será enviado individualmente com foto e informações específicas.
+          </div>
+          
+          <div class="products-section">
+            <div class="products-header">
+              <div class="products-search-bar">
+                <input type="text" id="productsSearch" class="search-input" placeholder="Buscar produtos..." onkeyup="searchProducts()">
+                <select id="categoryFilter" class="filter-select" onchange="searchProducts()">
+                  <option value="">Todas as categorias</option>
+                  <option value="Hot Wheels">Hot Wheels</option>
+                  <option value="MiniGT">MiniGT</option>
+                  <option value="Pop Race">Pop Race</option>
+                  <option value="Tomica">Tomica</option>
+                  <option value="Majorette">Majorette</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="products-grid">
+              <!-- Produto 1 - Selecionado -->
+              <div class="product-card selected" data-product="1" onclick="toggleProduct(1, 'Hot Wheels Ferrari F40', 25.00, 'Hot Wheels', 15)">
+                <input type="checkbox" class="product-checkbox" checked>
+                <div class="product-info">
+                  <div class="product-name">Hot Wheels Ferrari F40</div>
+                  <div class="product-category">Hot Wheels</div>
+                  <div class="product-price">R$ 25,00</div>
+                  <div class="product-stock">15 em estoque</div>
+                </div>
+              </div>
+              
+              <!-- Produto 2 -->
+              <div class="product-card" data-product="2" onclick="toggleProduct(2, 'MiniGT Lamborghini Huracán', 45.00, 'MiniGT', 8)">
+                <input type="checkbox" class="product-checkbox">
+                <div class="product-info">
+                  <div class="product-name">MiniGT Lamborghini Huracán</div>
+                  <div class="product-category">MiniGT</div>
+                  <div class="product-price">R$ 45,00</div>
+                  <div class="product-stock">8 em estoque</div>
+                </div>
+              </div>
+              
+              <!-- Produto 3 - Selecionado -->
+              <div class="product-card selected" data-product="3" onclick="toggleProduct(3, 'Pop Race Toyota Supra', 38.00, 'Pop Race', 12)">
+                <input type="checkbox" class="product-checkbox" checked>
+                <div class="product-info">
+                  <div class="product-name">Pop Race Toyota Supra</div>
+                  <div class="product-category">Pop Race</div>
+                  <div class="product-price">R$ 38,00</div>
+                  <div class="product-stock">12 em estoque</div>
+                </div>
+              </div>
+              
+              <!-- Produto 4 -->
+              <div class="product-card" data-product="4" onclick="toggleProduct(4, 'Hot Wheels Porsche 911', 22.00, 'Hot Wheels', 20)">
+                <input type="checkbox" class="product-checkbox">
+                <div class="product-info">
+                  <div class="product-name">Hot Wheels Porsche 911</div>
+                  <div class="product-category">Hot Wheels</div>
+                  <div class="product-price">R$ 22,00</div>
+                  <div class="product-stock">20 em estoque</div>
+                </div>
+              </div>
+              
+              <!-- Produto 5 - Selecionado -->
+              <div class="product-card selected" data-product="5" onclick="toggleProduct(5, 'MiniGT Nissan GT-R', 42.00, 'MiniGT', 6)">
+                <input type="checkbox" class="product-checkbox" checked>
+                <div class="product-info">
+                  <div class="product-name">MiniGT Nissan GT-R</div>
+                  <div class="product-category">MiniGT</div>
+                  <div class="product-price">R$ 42,00</div>
+                  <div class="product-stock">6 em estoque</div>
+                </div>
+              </div>
+              
+              <!-- Produto 6 -->
+              <div class="product-card" data-product="6" onclick="toggleProduct(6, 'Tomica Honda Civic', 28.00, 'Tomica', 20)">
+                <input type="checkbox" class="product-checkbox">
+                <div class="product-info">
+                  <div class="product-name">Tomica Honda Civic</div>
+                  <div class="product-category">Tomica</div>
+                  <div class="product-price">R$ 28,00</div>
+                  <div class="product-stock">20 em estoque</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Resumo dos Produtos Selecionados -->
+            <div class="selected-products-summary">
+              <div class="summary-header">
+                <span class="material-icons" style="font-size: 18px;">check_circle</span>
+                Produtos Selecionados
+              </div>
+              <div class="selected-items" id="selectedProductsSummary">
+                <!-- Preenchido via JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <!-- Campo de Previsão de Entrega -->
+          <div class="delivery-forecast">
+            <div class="delivery-forecast-header">
+              <span class="material-icons">local_shipping</span>
+              Previsão de Entrega
+            </div>
+            <div class="delivery-forecast-description">
+              Esta informação será incluída em cada produto enviado no grupo. Seja específico para que os clientes saibam quando esperar a chegada.
+            </div>
+            <div class="form-group">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">schedule</span>
+                Data Prevista de Chegada
+              </label>
+              <input type="text" id="deliveryForecast" name="deliveryForecast" class="form-input" placeholder="Ex: 15 a 20 dias úteis, Primeira semana de agosto, 25/08/2024" required>
+              <div class="form-help">Exemplos: "15 a 20 dias úteis", "Primeira semana de agosto", "25/08/2024", "Final do mês"</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Seção 4: Preview da Mensagem -->
+        <div class="form-section">
+          <div class="section-title">
+            <span class="material-icons">preview</span>
+            Preview dos Disparos
+          </div>
+          <div class="section-description">
+            Veja como suas mensagens aparecerão no WhatsApp. Primeiro será enviada a mensagem introdutória, depois cada produto individualmente.
+          </div>
+          
+          <div class="message-preview">
+            <div class="preview-header">
+              <span class="material-icons">smartphone</span>
+              Como aparecerá no WhatsApp
+            </div>
+            <div class="whatsapp-preview">
+              <div id="previewMessage" class="preview-message">Digite sua mensagem...</div>
+              <div id="previewProducts" class="preview-products">
+                <em>Nenhum produto selecionado</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      
+      <!-- Botões de Ação -->
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" onclick="cancelEdit()">
+          <span class="material-icons" style="font-size: 18px;">close</span>
+          Cancelar
+        </button>
+        <button type="button" class="btn-danger" onclick="deleteCampaign()">
+          <span class="material-icons" style="font-size: 18px;">delete</span>
+          Excluir Campanha
+        </button>
+        <button type="button" class="btn-primary" onclick="saveCampaign()">
+          <span class="material-icons" style="font-size: 18px;">save</span>
+          Salvar Alterações
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="#" class="nav-item active">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

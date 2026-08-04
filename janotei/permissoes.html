@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Permissões - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Seu CSS original mantido */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 32px 24px 32px;
+      background: radial-gradient(circle at 70% 20%, #00e67622 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b33 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #181818 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 18px;
+      width: 100%;
+      gap: 0;
+    }
+    .header-titles {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px #00b86b33;
+      margin-left: 16px;
+      margin-top: 8px;
+      height: 44px;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .permissions-actions-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 12px;
+      width: 100%;
+    }
+    .profile-select {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      box-sizing: border-box;
+      min-width: 200px;
+    }
+    .profile-select:focus {
+      border-color: #00b86b;
+      box-shadow: 0 0 0 2px #00b86b22;
+    }
+    .modules-container {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      width: 100%;
+    }
+    .module-card {
+      background: #181818;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px #00b86b18;
+      margin: 0;
+      padding: 0 0 18px 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      border-left: 5px solid #00b86b;
+      transition: box-shadow 0.2s;
+    }
+    .module-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: #00b86b;
+      padding: 22px 0 10px 24px;
+      border-radius: 18px 18px 0 0;
+      background: transparent;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+    .module-title .material-icons, .module-title .module-emoji {
+      font-size: 1.4em;
+      vertical-align: middle;
+    }
+    .permissions-table-container {
+      width: 100%;
+      overflow-x: auto;
+      padding: 0 18px 0 18px;
+      box-sizing: border-box;
+    }
+    .permissions-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 600px;
+      margin: 0;
+      background: transparent;
+    }
+    .permissions-table th, .permissions-table td {
+      padding: 12px 10px;
+      text-align: left;
+    }
+    .permissions-table th {
+      background: #232323;
+      color: #00b86b;
+      font-size: 1rem;
+      font-weight: 700;
+      border-bottom: 2px solid #00b86b33;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      text-align: left;
+    }
+    .permissions-table td {
+      background: transparent;
+      color: #fff;
+      font-size: 0.98rem;
+      border-bottom: 1px solid #222;
+      vertical-align: middle;
+      text-align: left;
+    }
+    .perm-name {
+      font-weight: 500;
+      font-size: 1em;
+    }
+    .perm-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: #00b86b;
+      cursor: pointer;
+      border-radius: 4px;
+      border: 1.5px solid #00b86b;
+      background: #222;
+      transition: box-shadow 0.2s;
+      margin-right: 8px;
+    }
+    .perm-checkbox:focus {
+      box-shadow: 0 0 0 2px #00b86b55;
+    }
+    .legend {
+      color: #666;
+      font-size: 0.92rem;
+      margin-top: 18px;
+      margin-bottom: 0;
+      padding-left: 8px;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 16px 70px 16px;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .permissions-actions-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+      .modules-container {
+        gap: 18px;
+      }
+      .module-title {
+        font-size: 1.05rem;
+        padding: 16px 0 8px 16px;
+      }
+      .permissions-table-container {
+        padding: 0 4px;
+      }
+      .permissions-table {
+        min-width: 400px;
+      }
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div class="header-titles">
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html" data-page="mais">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Permissões</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">lock</span>
+          Permissões do Sistema
+        </div>
+      </div>
+      <button class="btn-primary" aria-label="Salvar alterações">
+        <span class="material-icons" style="font-size: 20px;">save</span>
+        Salvar Alterações
+      </button>
+    </div>
+
+    <div class="permissions-actions-row">
+      <select class="profile-select" aria-label="Selecionar perfil de acesso">
+        <option value="admin">Administrador</option>
+        <option value="operador">Operador</option>
+      </select>
+    </div>
+
+    <div class="modules-container">
+      <!-- Produtos -->
+      <div class="module-card">
+        <div class="module-title">
+          <span class="module-emoji" aria-hidden="true">📦</span> PRODUTOS
+        </div>
+        <div class="permissions-table-container">
+          <table class="permissions-table" role="grid" aria-label="Permissões do módulo Produtos">
+            <thead>
+              <tr>
+                <th scope="col">Módulo / Funcionalidade</th>
+                <th scope="col">Visualizar</th>
+                <th scope="col">Criar</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Excluir</th>
+                <th scope="col">Relatórios</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="perm-name">Gerenciar Produtos</td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão visualizar gerenciar produtos"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão criar gerenciar produtos"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão editar gerenciar produtos"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão excluir gerenciar produtos"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão relatórios gerenciar produtos"></td>
+              </tr>
+              <tr>
+                <td class="perm-name">Categorias</td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão visualizar categorias"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão criar categorias"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão editar categorias"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão excluir categorias"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão relatórios categorias"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Usuários -->
+      <div class="module-card">
+        <div class="module-title">
+          <span class="module-emoji" aria-hidden="true">👥</span> USUÁRIOS
+        </div>
+        <div class="permissions-table-container">
+          <table class="permissions-table" role="grid" aria-label="Permissões do módulo Usuários">
+            <thead>
+              <tr>
+                <th scope="col">Módulo / Funcionalidade</th>
+                <th scope="col">Visualizar</th>
+                <th scope="col">Criar</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Excluir</th>
+                <th scope="col">Relatórios</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="perm-name">Gerenciar Usuários</td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão visualizar gerenciar usuários"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão criar gerenciar usuários"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão editar gerenciar usuários"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão excluir gerenciar usuários"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão relatórios gerenciar usuários"></td>
+              </tr>
+              <tr>
+                <td class="perm-name">Permissões</td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão visualizar permissões"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão criar permissões"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão editar permissões"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão excluir permissões"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão relatórios permissões"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Disparos -->
+      <div class="module-card">
+        <div class="module-title">
+          <span class="module-emoji" aria-hidden="true">📢</span> DISPAROS
+        </div>
+        <div class="permissions-table-container">
+          <table class="permissions-table" role="grid" aria-label="Permissões do módulo Disparos">
+            <thead>
+              <tr>
+                <th scope="col">Módulo / Funcionalidade</th>
+                <th scope="col">Visualizar</th>
+                <th scope="col">Criar</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Excluir</th>
+                <th scope="col">Relatórios</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="perm-name">Campanhas de Marketing</td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão visualizar campanhas de marketing"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão criar campanhas de marketing"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão editar campanhas de marketing"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão excluir campanhas de marketing"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão relatórios campanhas de marketing"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Relatórios -->
+      <div class="module-card">
+        <div class="module-title">
+          <span class="module-emoji" aria-hidden="true">📊</span> RELATÓRIOS
+        </div>
+        <div class="permissions-table-container">
+          <table class="permissions-table" role="grid" aria-label="Permissões do módulo Relatórios">
+            <thead>
+              <tr>
+                <th scope="col">Módulo / Funcionalidade</th>
+                <th scope="col">Visualizar</th>
+                <th scope="col">Criar</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Excluir</th>
+                <th scope="col">Relatórios</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="perm-name">Relatórios Gerais</td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão visualizar relatórios gerais"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão criar relatórios gerais"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão editar relatórios gerais"></td>
+                <td><input type="checkbox" class="perm-checkbox" aria-label="Permissão excluir relatórios gerais"></td>
+                <td><input type="checkbox" class="perm-checkbox" checked aria-label="Permissão relatórios relatórios gerais"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="legend" aria-live="polite" aria-atomic="true">
+      ✓ = Permissão concedida &nbsp;|&nbsp; ☐ = Permissão negada
+    </div>
+  </div>
+
+  <!-- Menu inferior para dispositivos móveis -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+</body>
+</html>

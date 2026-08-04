@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Editar Usuário - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Mesmos estilos do novo-usuario.html para consistência */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .form-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 32px;
+      color: #fff;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .form-section {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #222;
+    }
+    .form-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-description {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    .form-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .form-label.required::after {
+      content: "*";
+      color: #ff5252;
+      margin-left: 4px;
+    }
+    .form-input,
+    .form-select {
+      width: 100%;
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .form-input:focus,
+    .form-select:focus {
+      border-color: #00b86b;
+      box-shadow: 0 0 0 2px #00b86b22;
+    }
+    .form-help {
+      color: #666;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      background: #333;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-switch.active {
+      background: #00b86b;
+    }
+    .toggle-slider {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch.active .toggle-slider {
+      transform: translateX(26px);
+    }
+    .toggle-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: flex-end;
+      padding-top: 32px;
+      border-top: 1px solid #222;
+      margin-top: 32px;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #aaa;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      color: #fff;
+      border-color: #666;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .success-message {
+      background: #00b86b22;
+      border: 1px solid #00b86b;
+      border-radius: 8px;
+      padding: 16px;
+      color: #00e676;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .success-message.show {
+      display: flex;
+    }
+    .error-message {
+      background: #ff525222;
+      border: 1px solid #ff5252;
+      border-radius: 8px;
+      padding: 16px;
+      color: #ff5252;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .error-message.show {
+      display: flex;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .form-container {
+        padding: 24px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-actions {
+        flex-direction: column;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html" data-page="mais">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Editar Usuário</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">edit</span>
+          Editar Usuário
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensagem de Sucesso -->
+    <div id="successMessage" class="success-message">
+      <span class="material-icons">check_circle</span>
+      <span>Usuário atualizado com sucesso!</span>
+    </div>
+
+    <!-- Mensagem de Erro -->
+    <div id="errorMessage" class="error-message">
+      <span class="material-icons">error</span>
+      <span>Erro ao atualizar usuário. Verifique os dados e tente novamente.</span>
+    </div>
+
+    <div class="form-container">
+      <form id="editUserForm">
+        <!-- Seção 1: Informações Pessoais -->
+        <div class="form-section">
+          <div class="section-title">
+            <span class="material-icons">person</span>
+            Informações Pessoais
+          </div>
+          <div class="section-description">
+            Edite os dados básicos do usuário.
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">badge</span>
+                Nome Completo
+              </label>
+              <input type="text" name="fullName" class="form-input" placeholder="Digite o nome completo" required>
+              <div class="form-help">Nome que aparecerá no sistema e relatórios</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">email</span>
+                E-mail
+              </label>
+              <input type="email" name="email" class="form-input" placeholder="usuario@email.com" required>
+              <div class="form-help">Será usado para login e recuperação de senha</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 2: Configurações de Acesso -->
+        <div class="form-section">
+          <div class="section-title">
+            <span class="material-icons">security</span>
+            Configurações de Acesso
+          </div>
+          <div class="section-description">
+            Defina o perfil de acesso e permissões do usuário no sistema.
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">admin_panel_settings</span>
+                Perfil de Acesso
+              </label>
+              <select name="userRole" class="form-select" required>
+                <option value="">Selecione o perfil</option>
+                <option value="admin">Administrador</option>
+                <option value="operador">Operador</option>
+              </select>
+              <div class="form-help">
+                <strong>Admin:</strong> Acesso total ao sistema<br />
+                <strong>Operador:</strong> Acesso limitado às funcionalidades básicas
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons" style="font-size: 16px;">toggle_on</span>
+                Status do Usuário
+              </label>
+              <div class="toggle-container">
+                <div class="toggle-switch" id="statusToggle" onclick="toggleStatus()">
+                  <div class="toggle-slider"></div>
+                </div>
+                <span class="toggle-label" id="statusLabel">Inativo</span>
+              </div>
+              <div class="form-help">Usuários inativos não conseguem fazer login no sistema</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção 3: Senha -->
+        <div class="form-section">
+          <div class="section-title">
+            <span class="material-icons">vpn_key</span>
+            Alterar Senha (opcional)
+          </div>
+          <div class="section-description">
+            Se desejar, crie uma nova senha para o usuário. Caso contrário, deixe em branco.
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons" style="font-size: 16px;">lock</span>
+                Nova Senha
+              </label>
+              <input type="password" name="password" class="form-input" placeholder="Digite a nova senha" />
+              <div class="form-help">Mínimo 6 caracteres, recomendado usar letras, números e símbolos</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons" style="font-size: 16px;">lock_outline</span>
+                Confirmar Nova Senha
+              </label>
+              <input type="password" name="confirmPassword" class="form-input" placeholder="Digite a nova senha novamente" />
+              <div class="form-help">Repita a senha para confirmar</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="form-actions">
+          <a href="usuarios-sistema.html" class="btn-secondary" aria-label="Cancelar edição de usuário">
+            <span class="material-icons" style="font-size: 18px;">arrow_back</span>
+            Voltar
+          </a>
+          <button type="submit" class="btn-primary" aria-label="Salvar alterações">
+            <span class="material-icons" style="font-size: 18px;">save</span>
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Menu inferior para dispositivos móveis -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <script>
+    let userStatus = false; // false = inativo, true = ativo
+
+    function toggleStatus() {
+      const toggle = document.getElementById('statusToggle');
+      const label = document.getElementById('statusLabel');
+
+      userStatus = !userStatus;
+
+      if (userStatus) {
+        toggle.classList.add('active');
+        label.textContent = 'Ativo';
+      } else {
+        toggle.classList.remove('active');
+        label.textContent = 'Inativo';
+      }
+    }
+
+    function showSuccessMessage() {
+      const successDiv = document.getElementById('successMessage');
+      const errorDiv = document.getElementById('errorMessage');
+
+      errorDiv.classList.remove('show');
+      successDiv.classList.add('show');
+
+      // Scroll para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Esconder mensagem após 5 segundos
+      setTimeout(() => {
+        successDiv.classList.remove('show');
+      }, 5000);
+    }
+
+    function showErrorMessage(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      const successDiv = document.getElementById('successMessage');
+
+      successDiv.classList.remove('show');
+      errorDiv.querySelector('span:last-child').textContent = message;
+      errorDiv.classList.add('show');
+
+      // Scroll para o topo
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Esconder mensagem após 5 segundos
+      setTimeout(() => {
+        errorDiv.classList.remove('show');
+      }, 5000);
+    }
+
+    // Função para obter usuários do localStorage
+    function getUsers() {
+      const users = localStorage.getItem('janotei_users');
+      return users ? JSON.parse(users) : [];
+    }
+
+    // Função para salvar usuários no localStorage
+    function saveUsers(users) {
+      localStorage.setItem('janotei_users', JSON.stringify(users));
+    }
+
+    // Função para obter parâmetro da URL
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Carregar dados do usuário no formulário
+    function loadUserData(userId) {
+      const users = getUsers();
+      const user = users.find(u => u.id == userId);
+
+      if (!user) {
+        showErrorMessage('Usuário não encontrado.');
+        return null;
+      }
+
+      // Preencher campos
+      document.querySelector('input[name="fullName"]').value = user.name;
+      document.querySelector('input[name="email"]').value = user.email;
+      document.querySelector('select[name="userRole"]').value = user.role;
+
+      userStatus = user.status === 'ativo';
+      const toggle = document.getElementById('statusToggle');
+      const label = document.getElementById('statusLabel');
+      if (userStatus) {
+        toggle.classList.add('active');
+        label.textContent = 'Ativo';
+      } else {
+        toggle.classList.remove('active');
+        label.textContent = 'Inativo';
+      }
+
+      return user;
+    }
+
+    // Validação e salvar alterações
+    document.getElementById('editUserForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const password = formData.get('password');
+      const confirmPassword = formData.get('confirmPassword');
+
+      // Validações
+      if (!formData.get('fullName')) {
+        showErrorMessage('Por favor, digite o nome completo.');
+        return;
+      }
+
+      if (!formData.get('email')) {
+        showErrorMessage('Por favor, digite o e-mail.');
+        return;
+      }
+
+      if (!formData.get('userRole')) {
+        showErrorMessage('Por favor, selecione o perfil de acesso.');
+        return;
+      }
+
+      if (password || confirmPassword) {
+        if (password.length < 6) {
+          showErrorMessage('A senha deve ter pelo menos 6 caracteres.');
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showErrorMessage('As senhas não coincidem.');
+          return;
+        }
+      }
+
+      // Atualizar usuário
+      const userId = getQueryParam('id');
+      const users = getUsers();
+      const index = users.findIndex(u => u.id == userId);
+
+      if (index === -1) {
+        showErrorMessage('Usuário não encontrado.');
+        return;
+      }
+
+      users[index].name = formData.get('fullName');
+      users[index].email = formData.get('email');
+      users[index].role = formData.get('userRole');
+      users[index].status = userStatus ? 'ativo' : 'inativo';
+
+      if (password) {
+        users[index].password = password; // Atenção: senha em texto puro
+      }
+
+      saveUsers(users);
+      showSuccessMessage();
+
+      // Opcional: redirecionar após salvar
+      // setTimeout(() => {
+      //   window.location.href = 'gestao-usuarios.html';
+      // }, 1500);
+    });
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+      const userId = getQueryParam('id');
+      if (userId) {
+        loadUserData(userId);
+      } else {
+        showErrorMessage('ID do usuário não fornecido.');
+      }
+    });
+  </script>
+</body>
+</html>

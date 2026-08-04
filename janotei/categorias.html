@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Categorias - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Seu CSS original mantido */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .btn-new {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-new:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .search-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .search-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .search-input {
+      flex: 1;
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+      min-width: 200px;
+    }
+    .search-input:focus {
+      border-color: #00b86b;
+    }
+    .search-btn {
+      background: #00b86b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .search-btn:hover {
+      background: #00e676;
+    }
+    .categories-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .categories-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+    .categories-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .categories-count {
+      color: #00b86b;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .category-card {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.2s;
+      border: 1px solid #333;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+    }
+    .category-card:hover {
+      border-color: #00b86b;
+      box-shadow: 0 4px 12px #00b86b22;
+    }
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .category-name {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .category-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action {
+      background: transparent;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-action:hover {
+      background: #333;
+    }
+    .btn-action.edit:hover {
+      color: #00b86b;
+    }
+    .btn-action.delete:hover {
+      color: #ff5252;
+    }
+    .category-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .category-products {
+      color: #00b86b;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .category-date {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    .category-status {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-top: auto;
+    }
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .status-badge.active {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+    }
+    .status-badge.inactive {
+      background: #ff525222;
+      color: #ff7979;
+      border: 1px solid #ff5252;
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+    }
+    .modal-content {
+      background: #181818;
+      margin: 5% auto;
+      padding: 32px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      color: #fff;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .close {
+      color: #666;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.2s;
+      background: none;
+      border: none;
+      padding: 0;
+      line-height: 1;
+    }
+    .close:hover {
+      color: #fff;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      display: block;
+      color: #ccc;
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .form-label.required::after {
+      content: " *";
+      color: #ff5252;
+    }
+    .form-input {
+      width: 100%;
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #333;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s;
+      box-sizing: border-box;
+    }
+    .form-input:focus {
+      border-color: #00b86b;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #222;
+    }
+    .btn-cancel {
+      background: #222;
+      color: #ccc;
+      border: 1.2px solid #444;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-cancel:hover {
+      background: #333;
+      color: #fff;
+      border-color: #555;
+    }
+    .btn-save {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-save:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .btn-delete-confirm {
+      background: #ff5252;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-delete-confirm:hover {
+      background: #ff7979;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .search-container {
+        padding: 20px;
+      }
+      .search-row {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+      }
+      .search-input {
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
+      }
+      .search-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+      .categories-container {
+        padding: 20px;
+      }
+      .categories-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .category-card {
+        padding: 16px;
+        min-height: 120px;
+      }
+      .modal-content {
+        margin: 10% auto;
+        padding: 24px;
+        width: 95%;
+      }
+      .modal-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .btn-cancel, .btn-save, .btn-delete-confirm {
+        width: 100%;
+        justify-content: center;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item active" data-page="categorias" tabindex="0" aria-current="page" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <main class="main-content">
+    <div class="header-row">
+      <h1 class="page-title">Categorias</h1>
+      <button class="btn-new" onclick="openNewCategoryModal()" aria-label="Adicionar nova categoria" type="button">
+        <span class="material-icons" aria-hidden="true">add</span>
+        Nova Categoria
+      </button>
+    </div>
+    
+    <section class="search-container" aria-label="Busca de categorias">
+      <div class="search-row">
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar categorias..." onkeyup="searchCategories()" aria-label="Campo de busca de categorias" />
+        <button class="search-btn" onclick="searchCategories()" aria-label="Buscar categorias" type="button">
+          <span class="material-icons" aria-hidden="true">search</span>
+          Buscar
+        </button>
+      </div>
+    </section>
+    
+    <section class="categories-container" aria-label="Lista de categorias">
+      <div class="categories-header">
+        <div class="categories-title">
+          <span class="material-icons" aria-hidden="true">category</span>
+          Lista de Categorias
+        </div>
+        <div class="categories-count" aria-live="polite" aria-atomic="true">5 categorias encontradas</div>
+      </div>
+      
+      <div class="categories-grid" id="categoriesGrid">
+        <!-- Categoria 1 -->
+        <article class="category-card" role="region" aria-label="Categoria Hot Wheels">
+          <div class="category-header">
+            <div>
+              <div class="category-name">Hot Wheels</div>
+              <div class="category-stats">
+                <div class="category-products">
+                  <span class="material-icons" style="font-size: 16px;" aria-hidden="true">local_offer</span>
+                  24 produtos
+                </div>
+                <div class="category-date">Criada em 10/06/2025</div>
+              </div>
+            </div>
+            <div class="category-actions">
+              <button class="btn-action edit" onclick="openEditCategoryModal(1, 'Hot Wheels')" aria-label="Editar categoria Hot Wheels" type="button">
+                <span class="material-icons" aria-hidden="true">edit</span>
+              </button>
+              <button class="btn-action delete" onclick="openDeleteModal(1, 'Hot Wheels')" aria-label="Excluir categoria Hot Wheels" type="button">
+                <span class="material-icons" aria-hidden="true">delete</span>
+              </button>
+            </div>
+          </div>
+          <div class="category-status">
+            <span class="status-badge active">Ativa</span>
+          </div>
+        </article>
+        
+        <!-- Categoria 2 -->
+        <article class="category-card" role="region" aria-label="Categoria MiniGT">
+          <div class="category-header">
+            <div>
+              <div class="category-name">MiniGT</div>
+              <div class="category-stats">
+                <div class="category-products">
+                  <span class="material-icons" style="font-size: 16px;" aria-hidden="true">local_offer</span>
+                  12 produtos
+                </div>
+                <div class="category-date">Criada em 08/06/2025</div>
+              </div>
+            </div>
+            <div class="category-actions">
+              <button class="btn-action edit" onclick="openEditCategoryModal(2, 'MiniGT')" aria-label="Editar categoria MiniGT" type="button">
+                <span class="material-icons" aria-hidden="true">edit</span>
+              </button>
+              <button class="btn-action delete" onclick="openDeleteModal(2, 'MiniGT')" aria-label="Excluir categoria MiniGT" type="button">
+                <span class="material-icons" aria-hidden="true">delete</span>
+              </button>
+            </div>
+          </div>
+          <div class="category-status">
+            <span class="status-badge active">Ativa</span>
+          </div>
+        </article>
+        
+        <!-- Categoria 3 -->
+        <article class="category-card" role="region" aria-label="Categoria Pop Race">
+          <div class="category-header">
+            <div>
+              <div class="category-name">Pop Race</div>
+              <div class="category-stats">
+                <div class="category-products">
+                  <span class="material-icons" style="font-size: 16px;" aria-hidden="true">local_offer</span>
+                  8 produtos
+                </div>
+                <div class="category-date">Criada em 05/06/2025</div>
+              </div>
+            </div>
+            <div class="category-actions">
+              <button class="btn-action edit" onclick="openEditCategoryModal(3, 'Pop Race')" aria-label="Editar categoria Pop Race" type="button">
+                <span class="material-icons" aria-hidden="true">edit</span>
+              </button>
+              <button class="btn-action delete" onclick="openDeleteModal(3, 'Pop Race')" aria-label="Excluir categoria Pop Race" type="button">
+                <span class="material-icons" aria-hidden="true">delete</span>
+              </button>
+            </div>
+          </div>
+          <div class="category-status">
+            <span class="status-badge active">Ativa</span>
+          </div>
+        </article>
+        
+        <!-- Categoria 4 -->
+        <article class="category-card" role="region" aria-label="Categoria Madeiras">
+          <div class="category-header">
+            <div>
+              <div class="category-name">Madeiras</div>
+              <div class="category-stats">
+                <div class="category-products">
+                  <span class="material-icons" style="font-size: 16px;" aria-hidden="true">local_offer</span>
+                  15 produtos
+                </div>
+                <div class="category-date">Criada em 02/06/2025</div>
+              </div>
+            </div>
+            <div class="category-actions">
+              <button class="btn-action edit" onclick="openEditCategoryModal(4, 'Madeiras')" aria-label="Editar categoria Madeiras" type="button">
+                <span class="material-icons" aria-hidden="true">edit</span>
+              </button>
+              <button class="btn-action delete" onclick="openDeleteModal(4, 'Madeiras')" aria-label="Excluir categoria Madeiras" type="button">
+                <span class="material-icons" aria-hidden="true">delete</span>
+              </button>
+            </div>
+          </div>
+          <div class="category-status">
+            <span class="status-badge active">Ativa</span>
+          </div>
+        </article>
+        
+        <!-- Categoria 5 -->
+        <article class="category-card" role="region" aria-label="Categoria Acessórios">
+          <div class="category-header">
+            <div>
+              <div class="category-name">Acessórios</div>
+              <div class="category-stats">
+                <div class="category-products">
+                  <span class="material-icons" style="font-size: 16px;" aria-hidden="true">local_offer</span>
+                  3 produtos
+                </div>
+                <div class="category-date">Criada em 01/06/2025</div>
+              </div>
+            </div>
+            <div class="category-actions">
+              <button class="btn-action edit" onclick="openEditCategoryModal(5, 'Acessórios')" aria-label="Editar categoria Acessórios" type="button">
+                <span class="material-icons" aria-hidden="true">edit</span>
+              </button>
+              <button class="btn-action delete" onclick="openDeleteModal(5, 'Acessórios')" aria-label="Excluir categoria Acessórios" type="button">
+                <span class="material-icons" aria-hidden="true">delete</span>
+              </button>
+            </div>
+          </div>
+          <div class="category-status">
+            <span class="status-badge inactive">Inativa</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item active" data-page="categorias" tabindex="0" aria-current="page" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <!-- Modais e scripts da página -->
+  <!-- Modal Nova/Editar Categoria -->
+  <div id="categoryModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title" class="modal-title">Nova Categoria</h2>
+        <button class="close" aria-label="Fechar modal" onclick="closeModal()" type="button">&times;</button>
+      </div>
+      
+      <div class="form-group">
+        <label class="form-label required" for="category-name">Nome da Categoria</label>
+        <input type="text" id="category-name" class="form-input" placeholder="Ex: Hot Wheels" />
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn-cancel" type="button" onclick="closeModal()">Cancelar</button>
+        <button class="btn-save" type="button" onclick="saveCategory()">Salvar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal Confirmar Exclusão -->
+  <div id="deleteModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" tabindex="-1">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="delete-modal-title" class="modal-title">Confirmar Exclusão</h2>
+        <button class="close" aria-label="Fechar modal" onclick="closeModal()" type="button">&times;</button>
+      </div>
+      
+      <p style="color: #ccc; margin-bottom: 24px;">
+        Tem certeza que deseja excluir a categoria "<span id="delete-category-name" style="color: #00b86b; font-weight: 600;"></span>"?
+      </p>
+      <p style="color: #ff7979; font-size: 0.9rem; margin-bottom: 24px;">
+        ⚠️ Esta ação não pode ser desfeita. Todos os produtos desta categoria ficarão sem categoria.
+      </p>
+      
+      <div class="modal-actions">
+        <button class="btn-cancel" type="button" onclick="closeModal()">Cancelar</button>
+        <button class="btn-delete-confirm" type="button" onclick="confirmDelete()">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentEditingId = null;
+    
+    function openNewCategoryModal() {
+      document.getElementById('modal-title').textContent = 'Nova Categoria';
+      document.getElementById('category-name').value = '';
+      document.getElementById('categoryModal').style.display = 'block';
+      currentEditingId = null;
+      document.getElementById('category-name').focus();
+    }
+    
+    function openEditCategoryModal(id, name) {
+      document.getElementById('modal-title').textContent = 'Editar Categoria';
+      document.getElementById('category-name').value = name;
+      document.getElementById('categoryModal').style.display = 'block';
+      currentEditingId = id;
+      document.getElementById('category-name').focus();
+    }
+    
+    function closeModal() {
+      document.getElementById('categoryModal').style.display = 'none';
+      document.getElementById('deleteModal').style.display = 'none';
+      currentEditingId = null;
+    }
+    
+    function saveCategory() {
+      const name = document.getElementById('category-name').value.trim();
+      
+      if (!name) {
+        alert('Por favor, insira o nome da categoria.');
+        return;
+      }
+      
+      if (currentEditingId) {
+        alert(`Categoria "${name}" atualizada com sucesso!`);
+      } else {
+        alert(`Categoria "${name}" criada com sucesso!`);
+      }
+      
+      closeModal();
+      // Aqui você atualizaria a lista de categorias
+    }
+    
+    function openDeleteModal(id, name) {
+      document.getElementById('delete-category-name').textContent = name;
+      document.getElementById('deleteModal').style.display = 'block';
+      currentEditingId = id;
+    }
+    
+    function confirmDelete() {
+      const categoryName = document.getElementById('delete-category-name').textContent;
+      alert(`Categoria "${categoryName}" excluída com sucesso!`);
+      closeModal();
+      // Aqui você removeria a categoria da lista
+    }
+    
+    function searchCategories() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const categoryCards = document.querySelectorAll('.category-card');
+      
+      categoryCards.forEach(card => {
+        const categoryName = card.querySelector('.category-name').textContent.toLowerCase();
+        
+        if (categoryName.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+    
+    // Fechar modal ao clicar fora dele
+    window.onclick = function(event) {
+      const categoryModal = document.getElementById('categoryModal');
+      const deleteModal = document.getElementById('deleteModal');
+      
+      if (event.target == categoryModal) {
+        closeModal();
+      }
+      if (event.target == deleteModal) {
+        closeModal();
+      }
+    }
+    
+    // Fechar modais com ESC
+    window.addEventListener('keydown', function(event) {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html>

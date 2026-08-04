@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notificações - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .back-btn {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 700;
+      flex: 1;
+      text-align: center;
+    }
+    .notification-badge {
+      background: #ff4444;
+      color: #fff;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .notifications-container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .notifications-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #222;
+    }
+    .section-title-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-tab {
+      background: #222;
+      color: #aaa;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-tab.active {
+      background: #00b86b;
+      color: #fff;
+    }
+    .filter-tab:hover {
+      background: #333;
+    }
+    .filter-tab.active:hover {
+      background: #00a85a;
+    }
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      background: #222;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      transition: all 0.2s;
+      cursor: pointer;
+      border-left: 4px solid transparent;
+    }
+    .notification-item:hover {
+      background: #333;
+    }
+    .notification-item.unread {
+      border-left-color: #00b86b;
+      background: #00b86b11;
+    }
+    .notification-item.warning {
+      border-left-color: #ff9444;
+    }
+    .notification-item.error {
+      border-left-color: #ff4444;
+    }
+    .notification-item.success {
+      border-left-color: #00b86b;
+    }
+    .notification-item.info {
+      border-left-color: #2196f3;
+    }
+    .notification-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .notification-icon.info {
+      background: #2196f322;
+      color: #2196f3;
+    }
+    .notification-icon.warning {
+      background: #ff944422;
+      color: #ff9444;
+    }
+    .notification-icon.error {
+      background: #ff444422;
+      color: #ff4444;
+    }
+    .notification-icon.success {
+      background: #00b86b22;
+      color: #00b86b;
+    }
+    .notification-content {
+      flex: 1;
+    }
+    .notification-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+    .notification-message {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .notification-time {
+      color: #666;
+      font-size: 0.8rem;
+    }
+    .notification-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .notification-action {
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .notification-action:hover {
+      background: #444;
+    }
+    .notification-action.primary {
+      background: #00b86b;
+    }
+    .notification-action.primary:hover {
+      background: #00a85a;
+    }
+    .mark-read-btn {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .mark-read-btn:hover {
+      background: #333;
+      color: #fff;
+    }
+    .clear-all-btn {
+      background: #ff4444;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .clear-all-btn:hover {
+      background: #cc3333;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+    .empty-state .material-icons {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    .settings-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+      height: fit-content;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #666;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #00b86b;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+      background-color: #fff;
+    }
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #333;
+    }
+    .toggle-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    .toggle-content {
+      flex: 1;
+      margin-right: 16px;
+    }
+    .toggle-label {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .toggle-description {
+      color: #aaa;
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+    .form-select {
+      width: 100%;
+      padding: 8px 12px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .form-select:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .save-settings-btn {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .save-settings-btn:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        text-align: left;
+        font-size: 1.3rem;
+      }
+      .notifications-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .notifications-section, .settings-section {
+        padding: 20px;
+      }
+      .filter-tabs {
+        flex-wrap: wrap;
+      }
+      .notification-item {
+        padding: 12px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .nav-item.active {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <div class="main-content">
+    <div class="header-row">
+      <a href="mais.html" class="back-btn" aria-label="Voltar para Mais">
+        <span class="material-icons">arrow_back</span>
+        Voltar
+      </a>
+      <div class="page-title">Notificações</div>
+      <div class="notification-badge" id="notificationCount">5</div>
+    </div>
+    
+    <div class="notifications-container">
+      <!-- Lista de Notificações -->
+      <div class="notifications-section">
+        <div class="section-title">
+          <div class="section-title-left">
+            <span class="material-icons">notifications</span>
+            Central de Notificações
+          </div>
+          <button class="clear-all-btn" onclick="clearAllNotifications()" aria-label="Limpar todas as notificações">
+            <span class="material-icons">clear_all</span>
+            Limpar Tudo
+          </button>
+        </div>
+        
+        <div class="filter-tabs" role="tablist" aria-label="Filtros de notificações">
+          <button class="filter-tab active" onclick="filterNotifications('all')" role="tab" aria-selected="true" aria-controls="notificationsList" id="tab-all">Todas</button>
+          <button class="filter-tab" onclick="filterNotifications('unread')" role="tab" aria-selected="false" aria-controls="notificationsList" id="tab-unread">Não Lidas</button>
+          <button class="filter-tab" onclick="filterNotifications('success')" role="tab" aria-selected="false" aria-controls="notificationsList" id="tab-success">Sucesso</button>
+          <button class="filter-tab" onclick="filterNotifications('warning')" role="tab" aria-selected="false" aria-controls="notificationsList" id="tab-warning">Avisos</button>
+          <button class="filter-tab" onclick="filterNotifications('error')" role="tab" aria-selected="false" aria-controls="notificationsList" id="tab-error">Erros</button>
+        </div>
+        
+        <div id="notificationsList" role="tabpanel" aria-labelledby="tab-all">
+          <!-- Notificações aqui -->
+          <!-- Exemplo de notificação -->
+          <!-- ... -->
+        </div>
+        
+        <div id="emptyState" class="empty-state" style="display: none;" role="alert" aria-live="polite">
+          <span class="material-icons" aria-hidden="true">notifications_off</span>
+          <div>Nenhuma notificação encontrada</div>
+        </div>
+      </div>
+      
+      <!-- Configurações de Notificação -->
+      <div class="settings-section" aria-label="Configurações de Notificação">
+        <div class="section-title">
+          <div class="section-title-left">
+            <span class="material-icons">tune</span>
+            Configurações
+          </div>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <div class="toggle-label">Notificações Push</div>
+            <div class="toggle-description">Receber notificações no navegador</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pushNotifications" checked aria-checked="true" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <div class="toggle-label">Notificações por Email</div>
+            <div class="toggle-description">Receber alertas por email</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="emailNotifications" checked aria-checked="true" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <div class="toggle-label">Sons de Alerta</div>
+            <div class="toggle-description">Reproduzir sons para notificações</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="soundAlerts" aria-checked="false" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <div class="toggle-label">Novas Reservas</div>
+            <div class="toggle-description">Alertas de novas reservas detectadas</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="reservationAlerts" checked aria-checked="true" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <div class="toggle-label">Estoque Baixo</div>
+            <div class="toggle-description">Avisos quando produtos estão acabando</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="stockAlerts" checked aria-checked="true" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <div class="toggle-label">Erros do Sistema</div>
+            <div class="toggle-description">Notificações de falhas e erros</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="systemErrors" checked aria-checked="true" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item" style="align-items: center;">
+          <div class="toggle-content" style="flex: 1; margin-right: 16px;">
+            <div class="toggle-label">Relatórios Diários</div>
+            <div class="toggle-description">Resumo diário das atividades</div>
+            <select class="form-select" id="dailyReportTime" aria-label="Horário do relatório diário">
+              <option value="08:00">08:00</option>
+              <option value="09:00" selected>09:00</option>
+              <option value="10:00">10:00</option>
+              <option value="18:00">18:00</option>
+              <option value="19:00">19:00</option>
+            </select>
+          </div>
+          <label class="toggle-switch" style="margin-top: 0;">
+            <input type="checkbox" id="dailyReports" aria-checked="false" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <button class="save-settings-btn" onclick="saveNotificationSettings()" aria-label="Salvar configurações de notificações">
+          <span class="material-icons">save</span>
+          Salvar Configurações
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <script>
+    let currentFilter = 'all';
+
+    function filterNotifications(type) {
+      currentFilter = type;
+
+      // Atualizar tabs ativas
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+        tab.setAttribute('aria-selected', 'false');
+      });
+      event.target.classList.add('active');
+      event.target.setAttribute('aria-selected', 'true');
+
+      // Filtrar notificações
+      const notifications = document.querySelectorAll('.notification-item');
+      let visibleCount = 0;
+
+      notifications.forEach(notification => {
+        const notificationType = notification.dataset.type;
+        const isUnread = notification.classList.contains('unread');
+
+        let shouldShow = false;
+
+        switch(type) {
+          case 'all':
+            shouldShow = true;
+            break;
+          case 'unread':
+            shouldShow = isUnread;
+            break;
+          case 'success':
+            shouldShow = notificationType === 'success';
+            break;
+          case 'warning':
+            shouldShow = notificationType === 'warning';
+            break;
+          case 'error':
+            shouldShow = notificationType === 'error';
+            break;
+          case 'info':
+            shouldShow = notificationType === 'info';
+            break;
+        }
+
+        if (shouldShow) {
+          notification.style.display = 'flex';
+          visibleCount++;
+        } else {
+          notification.style.display = 'none';
+        }
+      });
+
+      // Mostrar estado vazio se necessário
+      const emptyState = document.getElementById('emptyState');
+      if (visibleCount === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
+      }
+    }
+
+    function markAsRead(button) {
+      const notification = button.closest('.notification-item');
+      const icon = button.querySelector('.material-icons');
+
+      if (notification.classList.contains('unread')) {
+        notification.classList.remove('unread');
+        icon.textContent = 'visibility_off';
+        updateNotificationCount(-1);
+      } else {
+        notification.classList.add('unread');
+        icon.textContent = 'visibility';
+        updateNotificationCount(1);
+      }
+    }
+
+    function updateNotificationCount(change) {
+      const badge = document.getElementById('notificationCount');
+      let currentCount = parseInt(badge.textContent);
+      currentCount += change;
+
+      if (currentCount < 0) currentCount = 0;
+
+      badge.textContent = currentCount;
+
+      if (currentCount === 0) {
+        badge.style.display = 'none';
+      } else {
+        badge.style.display = 'flex';
+      }
+    }
+
+    function clearAllNotifications() {
+      if (confirm('Tem certeza que deseja limpar todas as notificações?')) {
+        const notificationsList = document.getElementById('notificationsList');
+        notificationsList.innerHTML = '';
+
+        document.getElementById('notificationCount').textContent = '0';
+        document.getElementById('notificationCount').style.display = 'none';
+
+        document.getElementById('emptyState').style.display = 'block';
+      }
+    }
+
+    function saveNotificationSettings() {
+      const settings = {
+        pushNotifications: document.getElementById('pushNotifications').checked,
+        emailNotifications: document.getElementById('emailNotifications').checked,
+        soundAlerts: document.getElementById('soundAlerts').checked,
+        reservationAlerts: document.getElementById('reservationAlerts').checked,
+        stockAlerts: document.getElementById('stockAlerts').checked,
+        systemErrors: document.getElementById('systemErrors').checked,
+        dailyReports: document.getElementById('dailyReports').checked,
+        dailyReportTime: document.getElementById('dailyReportTime').value
+      };
+
+      console.log('Configurações de notificação salvas:', settings);
+
+      // Simular salvamento
+      const button = event.target;
+      const originalText = button.innerHTML;
+
+      button.innerHTML = '<span class="material-icons">check</span>Salvo!';
+      button.style.background = '#00b86b';
+
+      setTimeout(() => {
+        button.innerHTML = originalText;
+        button.style.background = '';
+      }, 2000);
+
+      // Solicitar permissão para notificações se habilitado
+      if (settings.pushNotifications && 'Notification' in window) {
+        Notification.requestPermission();
+      }
+    }
+  </script>
+</body>
+</html>

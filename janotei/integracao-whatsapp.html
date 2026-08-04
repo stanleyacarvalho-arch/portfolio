@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Integração WhatsApp - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .back-btn {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 700;
+      flex: 1;
+      text-align: center;
+    }
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .status-connected {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+    }
+    .status-disconnected {
+      background: #ff444422;
+      color: #ff6b6b;
+      border: 1px solid #ff4444;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .status-connected .status-dot {
+      background: #00e676;
+    }
+    .status-disconnected .status-dot {
+      background: #ff6b6b;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    .integration-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .integration-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #222;
+    }
+    .qr-container {
+      text-align: center;
+      padding: 20px;
+    }
+    .qr-code {
+      width: 200px;
+      height: 200px;
+      background: #fff;
+      border-radius: 12px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ddd;
+    }
+    .qr-placeholder {
+      color: #666;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .connect-btn {
+      background: linear-gradient(90deg, #25d366 60%, #128c7e 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px auto 0;
+    }
+    .connect-btn:hover {
+      background: linear-gradient(90deg, #128c7e 60%, #25d366 100%);
+    }
+    .disconnect-btn {
+      background: #ff4444;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px auto 0;
+    }
+    .disconnect-btn:hover {
+      background: #cc3333;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-textarea:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #666;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #00b86b;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+      background-color: #fff;
+    }
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .toggle-content {
+      flex: 1;
+      margin-right: 16px;
+    }
+    .setting-description {
+      color: #aaa;
+      font-size: 0.8rem;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .keyword-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .keyword-tag {
+      background: #00b86b22;
+      color: #00e676;
+      border: 1px solid #00b86b;
+      border-radius: 16px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .keyword-tag .remove-keyword {
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .keyword-tag .remove-keyword:hover {
+      opacity: 1;
+    }
+    .add-keyword-btn {
+      background: #222;
+      color: #00b86b;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .add-keyword-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 16px;
+      background: #222;
+      border-radius: 8px;
+    }
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #00e676;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+    .success-message {
+      background: #00b86b22;
+      border: 1px solid #00b86b;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #00e676;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .warning-message {
+      background: #ff944422;
+      border: 1px solid #ff9444;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #ffb366;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        text-align: left;
+        font-size: 1.3rem;
+      }
+      .integration-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .integration-section {
+        padding: 20px;
+      }
+      .qr-code {
+        width: 160px;
+        height: 160px;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .nav-item.active {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="#" class="nav-item active">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <div class="main-content">
+    <div class="header-row">
+      <a href="mais.html" class="back-btn">
+        <span class="material-icons">arrow_back</span>
+        Voltar
+      </a>
+      <div class="page-title">Integração WhatsApp</div>
+      <div class="status-indicator status-disconnected" id="connectionStatus">
+        <div class="status-dot"></div>
+        Desconectado
+      </div>
+    </div>
+    
+    <div class="warning-message">
+      <span class="material-icons">info</span>
+      Para usar a integração, você precisa conectar seu WhatsApp escaneando o QR Code abaixo.
+    </div>
+    
+    <div class="success-message" id="successMessage">
+      <span class="material-icons">check_circle</span>
+      Configurações da integração salvas com sucesso!
+    </div>
+    
+    <div class="integration-container">
+      <!-- Conexão WhatsApp -->
+      <div class="integration-section">
+        <div class="section-title">
+          <span class="material-icons">qr_code_scanner</span>
+          Conectar WhatsApp
+        </div>
+        
+        <div class="qr-container">
+          <div class="qr-code" id="qrCode">
+            <div class="qr-placeholder">
+              <span class="material-icons" style="font-size: 48px; color: #666;">qr_code</span>
+              <br>QR Code será exibido aqui
+            </div>
+          </div>
+          <button class="connect-btn" id="connectBtn" onclick="generateQRCode()">
+            <span class="material-icons">qr_code_scanner</span>
+            Gerar QR Code
+          </button>
+          <button class="disconnect-btn" id="disconnectBtn" onclick="disconnectWhatsApp()" style="display: none;">
+            <span class="material-icons">logout</span>
+            Desconectar
+          </button>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Número Conectado</label>
+          <input type="text" class="form-input" id="connectedNumber" placeholder="Nenhum número conectado" readonly>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Status da Conexão</label>
+          <input type="text" class="form-input" id="connectionStatusText" value="Desconectado" readonly>
+        </div>
+      </div>
+      
+      <!-- Configurações de Monitoramento -->
+      <div class="integration-section">
+        <div class="section-title">
+          <span class="material-icons">monitor</span>
+          Monitoramento
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label class="form-label">Monitoramento Ativo</label>
+            <div class="setting-description">Ativar o monitoramento automático de mensagens</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="monitoringActive" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Grupos Monitorados</label>
+          <input type="text" class="form-input" id="monitoredGroups" placeholder="Digite o nome dos grupos separados por vírgula">
+          <div class="setting-description">Deixe vazio para monitorar todos os grupos</div>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label class="form-label">Mensagens Privadas</label>
+            <div class="setting-description">Monitorar também mensagens privadas</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="monitorPrivate">
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label class="form-label">Resposta Automática</label>
+            <div class="setting-description">Enviar confirmação automática das reservas</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="autoResponse" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Palavras-chave -->
+      <div class="integration-section">
+        <div class="section-title">
+          <span class="material-icons">key</span>
+          Palavras-chave
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Adicionar Palavra-chave</label>
+          <input type="text" class="form-input" id="newKeyword" placeholder="Digite uma palavra-chave">
+          <button class="add-keyword-btn" onclick="addKeyword()">
+            <span class="material-icons">add</span>
+            Adicionar
+          </button>
+        </div>
+        
+        <div class="keyword-list" id="keywordList">
+          <div class="keyword-tag">
+            quero
+            <span class="material-icons remove-keyword" onclick="removeKeyword(this)">close</span>
+          </div>
+          <div class="keyword-tag">
+            reserva
+            <span class="material-icons remove-keyword" onclick="removeKeyword(this)">close</span>
+          </div>
+          <div class="keyword-tag">
+            interesse
+            <span class="material-icons remove-keyword" onclick="removeKeyword(this)">close</span>
+          </div>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label class="form-label">Detecção Inteligente</label>
+            <div class="setting-description">Usar IA para detectar intenções de compra</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="smartDetection">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <!-- Mensagens Automáticas -->
+      <div class="integration-section">
+        <div class="section-title">
+          <span class="material-icons">auto_awesome</span>
+          Mensagens Automáticas
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Mensagem de Confirmação</label>
+          <textarea class="form-textarea" id="confirmationMessage" placeholder="Mensagem enviada quando uma reserva é detectada">Olá! Sua reserva foi registrada com sucesso. Em breve entraremos em contato para confirmar os detalhes. 🎯</textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Mensagem de Boas-vindas</label>
+          <textarea class="form-textarea" id="welcomeMessage" placeholder="Mensagem enviada para novos contatos">Bem-vindo(a)! Obrigado pelo interesse em nossos produtos. Como posso ajudá-lo(a)? 😊</textarea>
+        </div>
+        
+        <div class="toggle-item">
+          <div class="toggle-content">
+            <label class="form-label">Horário Comercial</label>
+            <div class="setting-description">Enviar mensagens apenas no horário comercial</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="businessHours" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div style="display: flex; gap: 12px; align-items: center; margin-top: 12px;">
+          <input type="time" class="form-input" id="startTime" value="08:00" style="width: auto;">
+          <span style="color: #aaa;">até</span>
+          <input type="time" class="form-input" id="endTime" value="18:00" style="width: auto;">
+        </div>
+      </div>
+      
+      <!-- Estatísticas -->
+      <div class="integration-section full-width">
+        <div class="section-title">
+          <span class="material-icons">analytics</span>
+          Estatísticas da Integração
+        </div>
+        
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Mensagens Hoje</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Reservas Detectadas</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Grupos Ativos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Contatos Novos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Respostas Enviadas</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">99.9%</div>
+            <div class="stat-label">Uptime</div>
+          </div>
+        </div>
+        
+        <button class="connect-btn" onclick="saveIntegrationSettings()" style="margin: 24px auto 0;">
+          <span class="material-icons">save</span>
+          Salvar Configurações
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      Início
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">local_offer</span>
+      Produtos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">category</span>
+      Categorias
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">people</span>
+      Clientes
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">campaign</span>
+      Disparos
+    </a>
+    <a href="#" class="nav-item active">
+      <span class="material-icons">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <script>
+    let isConnected = false;
+    
+    function generateQRCode() {
+      const qrCode = document.getElementById('qrCode');
+      const connectBtn = document.getElementById('connectBtn');
+      
+      // Simular geração de QR Code
+      qrCode.innerHTML = `
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZiIvPgogIDx0ZXh0IHg9IjEwMCIgeT0iMTAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjMzMzIj5RUiBDb2RlPC90ZXh0Pgo8L3N2Zz4K" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain;">
+      `;
+      
+      connectBtn.textContent = 'Aguardando conexão...';
+      connectBtn.disabled = true;
+      
+      // Simular conexão após 5 segundos
+      setTimeout(() => {
+        connectWhatsApp();
+      }, 5000);
+    }
+    
+    function connectWhatsApp() {
+      isConnected = true;
+      
+      // Atualizar status
+      const statusIndicator = document.getElementById('connectionStatus');
+      statusIndicator.className = 'status-indicator status-connected';
+      statusIndicator.innerHTML = '<div class="status-dot"></div>Conectado';
+      
+      // Atualizar campos
+      document.getElementById('connectedNumber').value = '+55 11 99999-9999';
+      document.getElementById('connectionStatusText').value = 'Conectado e ativo';
+      
+      // Trocar botões
+      document.getElementById('connectBtn').style.display = 'none';
+      document.getElementById('disconnectBtn').style.display = 'flex';
+      
+      // Atualizar QR Code
+      document.getElementById('qrCode').innerHTML = `
+        <div style="color: #00b86b; text-align: center;">
+          <span class="material-icons" style="font-size: 48px;">check_circle</span>
+          <br>Conectado com sucesso!
+        </div>
+      `;
+      
+      // Atualizar estatísticas
+      updateStats();
+    }
+    
+    function disconnectWhatsApp() {
+      if (confirm('Tem certeza que deseja desconectar o WhatsApp?')) {
+        isConnected = false;
+        
+        // Atualizar status
+        const statusIndicator = document.getElementById('connectionStatus');
+        statusIndicator.className = 'status-indicator status-disconnected';
+        statusIndicator.innerHTML = '<div class="status-dot"></div>Desconectado';
+        
+        // Limpar campos
+        document.getElementById('connectedNumber').value = '';
+        document.getElementById('connectionStatusText').value = 'Desconectado';
+        
+        // Trocar botões
+        document.getElementById('connectBtn').style.display = 'flex';
+        document.getElementById('connectBtn').textContent = 'Gerar QR Code';
+        document.getElementById('connectBtn').disabled = false;
+        document.getElementById('disconnectBtn').style.display = 'none';
+        
+        // Resetar QR Code
+        document.getElementById('qrCode').innerHTML = `
+          <div class="qr-placeholder">
+            <span class="material-icons" style="font-size: 48px; color: #666;">qr_code</span>
+            <br>QR Code será exibido aqui
+          </div>
+        `;
+        
+        // Resetar estatísticas
+        resetStats();
+      }
+    }
+    
+    function addKeyword() {
+      const input = document.getElementById('newKeyword');
+      const keyword = input.value.trim();
+      
+      if (keyword) {
+        const keywordList = document.getElementById('keywordList');
+        const keywordTag = document.createElement('div');
+        keywordTag.className = 'keyword-tag';
+        keywordTag.innerHTML = `
+          ${keyword}
+          <span class="material-icons remove-keyword" onclick="removeKeyword(this)">close</span>
+        `;
+        keywordList.appendChild(keywordTag);
+        input.value = '';
+      }
+    }
+    
+    function removeKeyword(element) {
+      element.parentElement.remove();
+    }
+    
+    function updateStats() {
+      // Simular estatísticas quando conectado
+      const stats = document.querySelectorAll('.stat-number');
+      stats[0].textContent = '47'; // Mensagens Hoje
+      stats[1].textContent = '12'; // Reservas Detectadas
+      stats[2].textContent = '3';  // Grupos Ativos
+      stats[3].textContent = '8';  // Contatos Novos
+      stats[4].textContent = '15'; // Respostas Enviadas
+    }
+    
+    function resetStats() {
+      // Resetar estatísticas quando desconectado
+      const stats = document.querySelectorAll('.stat-number');
+      for (let i = 0; i < stats.length - 1; i++) {
+        stats[i].textContent = '0';
+      }
+    }
+    
+    function saveIntegrationSettings() {
+      // Coletar configurações
+      const settings = {
+        monitoringActive: document.getElementById('monitoringActive').checked,
+        monitoredGroups: document.getElementById('monitoredGroups').value,
+        monitorPrivate: document.getElementById('monitorPrivate').checked,
+        autoResponse: document.getElementById('autoResponse').checked,
+        smartDetection: document.getElementById('smartDetection').checked,
+        confirmationMessage: document.getElementById('confirmationMessage').value,
+        welcomeMessage: document.getElementById('welcomeMessage').value,
+        businessHours: document.getElementById('businessHours').checked,
+        startTime: document.getElementById('startTime').value,
+        endTime: document.getElementById('endTime').value
+      };
+      
+      // Coletar palavras-chave
+      const keywords = [];
+      document.querySelectorAll('.keyword-tag').forEach(tag => {
+        const text = tag.textContent.replace('close', '').trim();
+        keywords.push(text);
+      });
+      settings.keywords = keywords;
+      
+      console.log('Configurações da integração salvas:', settings);
+      
+      // Mostrar mensagem de sucesso
+      const successMessage = document.getElementById('successMessage');
+      successMessage.style.display = 'flex';
+      
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+    }
+    
+    // Permitir adicionar palavra-chave com Enter
+    document.getElementById('newKeyword').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        addKeyword();
+      }
+    });
+  </script>
+</body>
+</html>

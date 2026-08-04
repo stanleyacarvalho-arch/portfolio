@@ -1,0 +1,390 @@
+    
+    <!-- CAMPANHA DE PRODUTOS -->
+    <div id="products-campaign" class="campaign-content active">
+      <div class="form-container">
+        <form id="productCampaignForm">
+          <!-- Seção 1: Informações Básicas -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">info</span>
+              Informações Básicas
+            </div>
+            <div class="section-description">
+              Configure o nome e a mensagem principal da sua campanha de disparo de produtos.
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">campaign</span>
+                  Nome da Campanha
+                </label>
+                <input type="text" name="campaignName" class="form-input" placeholder="Ex: Lançamentos Hot Wheels Julho" required>
+                <div class="form-help">Escolha um nome descritivo para identificar facilmente sua campanha</div>
+<!-- Seção Modalidade da Campanha -->
+<div class="form-group full-width" style="margin-top: 24px; padding: 16px; border: 1px solid #333; border-radius: 8px; background-color: #1a1a1a;">
+  <label class="form-label required" style="font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+    <span class="material-icons" style="font-size: 20px;">settings</span>Modalidade da Campanha
+  </label>
+  <div style="color:#aaa; font-size:0.9rem; margin: 8px 0 16px 0;">
+    Escolha uma modalidade para a campanha. Apenas uma opção pode ser selecionada:
+    <ul style="margin: 8px 0 0 20px; padding: 0; list-style-type: disc;">
+      <li><strong>Pronta Entrega:</strong> Produtos disponíveis para envio imediato.</li>
+      <li><strong>Produto de Importação:</strong> Produtos que são importados e podem ter prazo maior.</li>
+    </ul>
+  </div>
+  <div style="display:flex; gap: 32px; align-items: center;">
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="prontaEntrega" name="modalidadeCampanha" value="prontaEntrega" onclick="toggleCheckboxExclusive(this)" />
+      Pronta Entrega
+    </label>
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size: 0.95rem; font-weight: 600; color: #ccc;">
+      <input type="checkbox" id="produtoImportacao" name="modalidadeCampanha" value="produtoImportacao" onclick="toggleCheckboxExclusive(this)" />
+      Produto de Importação
+    </label>
+  </div>
+</div>
+
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons" style="font-size: 16px;">label</span>
+                  Categoria da Campanha
+                </label>
+                <select name="campaignCategory" class="form-select">
+                  <option value="">Selecione uma categoria</option>
+                  <option value="lancamentos">Lançamentos</option>
+                  <option value="promocoes">Promoções</option>
+                  <option value="estoque">Controle de Estoque</option>
+                  <option value="geral">Geral</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label required">
+                <span class="material-icons" style="font-size: 16px;">message</span>
+                Mensagem Introdutória
+              </label>
+              <textarea id="campaignMessage" name="campaignMessage" class="form-textarea" placeholder="Digite a mensagem introdutória que será enviada antes dos produtos...
+
+Exemplo:
+🔥 NOVIDADES CHEGARAM! 🔥
+
+Confira os lançamentos mais esperados que acabaram de chegar:
+
+💬 Responda com 'QUERO' + nome do produto para reservar!
+⏰ Vagas limitadas!" required></textarea>
+              <div class="form-help">Esta mensagem será enviada primeiro, seguida de cada produto individualmente com foto e detalhes.</div>
+            </div>
+          </div>
+
+          <!-- Seção 2: Agendamento -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">schedule</span>
+              Agendamento da Campanha
+            </div>
+            <div class="section-description">
+              Defina quando e com que frequência sua campanha será executada.
+            </div>
+
+            <div class="schedule-options">
+              <div class="schedule-option" data-schedule="once" onclick="selectScheduleType('once')">
+                <div class="schedule-option-icon material-icons">event</div>
+                <div class="schedule-option-title">Envio Único</div>
+                <div class="schedule-option-desc">Enviar apenas uma vez</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="daily" onclick="selectScheduleType('daily')">
+                <div class="schedule-option-icon material-icons">today</div>
+                <div class="schedule-option-title">Diário</div>
+                <div class="schedule-option-desc">Todos os dias no mesmo horário</div>
+              </div>
+
+              <div class="schedule-option" data-schedule="weekly" onclick="selectScheduleType('weekly')">
+                <div class="schedule-option-icon material-icons">date_range</div>
+                <div class="schedule-option-title">Semanal</div>
+                <div class="schedule-option-desc">Dias específicos da semana</div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Único -->
+            <div id="once-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data do Envio
+                  </label>
+                  <input type="date" name="onceDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário do Envio
+                  </label>
+                  <input type="time" name="onceTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Diário -->
+            <div id="daily-details" class="schedule-details">
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="dailyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="dailyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário Diário
+                  </label>
+                  <input type="time" name="dailyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detalhes do Envio Semanal -->
+            <div id="weekly-details" class="schedule-details">
+              <div class="form-group">
+                <label class="form-label required">Dias da Semana</label>
+                <div class="weekdays-selector">
+                  <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(0)">Dom</button>
+                  <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(1)">Seg</button>
+                  <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(2)">Ter</button>
+                  <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(3)">Qua</button>
+                  <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(4)">Qui</button>
+                  <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(5)">Sex</button>
+                  <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(6)">Sáb</button>
+                </div>
+              </div>
+
+              <div class="time-grid">
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Início
+                  </label>
+                  <input type="date" name="weeklyStartDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">
+                    <span class="material-icons" style="font-size: 16px;">event</span>
+                    Data de Fim (opcional)
+                  </label>
+                  <input type="date" name="weeklyEndDate" class="form-input">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label required">
+                    <span class="material-icons" style="font-size: 16px;">access_time</span>
+                    Horário
+                  </label>
+                  <input type="time" name="weeklyTime" class="form-input" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 3: Seleção de Produtos -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">inventory</span>
+              Produtos para Disparo (<span id="selectedCount">0</span> selecionados)
+            </div>
+            <div class="section-description">
+              Selecione os produtos que serão incluídos nesta campanha. Cada produto será enviado individualmente com foto e informações específicas.
+            </div>
+
+            <div class="products-section">
+              <div class="products-header">
+                <div class="products-search-bar">
+                  <input type="text" id="productsSearch" class="search-input" placeholder="Buscar produtos..." onkeyup="searchProducts()">
+                  <select id="categoryFilter" class="filter-select" onchange="searchProducts()">
+                    <option value="">Todas as categorias</option>
+                    <option value="Hot Wheels">Hot Wheels</option>
+                    <option value="MiniGT">MiniGT</option>
+                    <option value="Pop Race">Pop Race</option>
+                    <option value="Tomica">Tomica</option>
+                    <option value="Majorette">Majorette</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="products-grid">
+                <!-- Produto 1 -->
+                <div class="product-card" data-product="1" onclick="toggleProduct(1, 'Hot Wheels Ferrari F40', 25.00, 'Hot Wheels', 15)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Hot Wheels Ferrari F40</div>
+                    <div class="product-category">Hot Wheels</div>
+                    <div class="product-price">R$ 25,00</div>
+                    <div class="product-stock">15 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 2 -->
+                <div class="product-card" data-product="2" onclick="toggleProduct(2, 'MiniGT Lamborghini Huracán', 45.00, 'MiniGT', 8)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">MiniGT Lamborghini Huracán</div>
+                    <div class="product-category">MiniGT</div>
+                    <div class="product-price">R$ 45,00</div>
+                    <div class="product-stock">8 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 3 -->
+                <div class="product-card" data-product="3" onclick="toggleProduct(3, 'Pop Race Toyota Supra', 38.00, 'Pop Race', 12)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Pop Race Toyota Supra</div>
+                    <div class="product-category">Pop Race</div>
+                    <div class="product-price">R$ 38,00</div>
+                    <div class="product-stock">12 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 4 - Sem estoque -->
+                <div class="product-card out-of-stock" data-product="4" onclick="toggleProduct(4, 'Hot Wheels Porsche 911', 22.00, 'Hot Wheels', 0)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Hot Wheels Porsche 911</div>
+                    <div class="product-category">Hot Wheels</div>
+                    <div class="product-price">R$ 22,00</div>
+                    <div class="product-stock out">Sem estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 5 -->
+                <div class="product-card" data-product="5" onclick="toggleProduct(5, 'MiniGT Nissan GT-R', 42.00, 'MiniGT', 6)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">MiniGT Nissan GT-R</div>
+                    <div class="product-category">MiniGT</div>
+                    <div class="product-price">R$ 42,00</div>
+                    <div class="product-stock">6 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 6 -->
+                <div class="product-card" data-product="6" onclick="toggleProduct(6, 'Tomica Honda Civic', 28.00, 'Tomica', 20)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Tomica Honda Civic</div>
+                    <div class="product-category">Tomica</div>
+                    <div class="product-price">R$ 28,00</div>
+                    <div class="product-stock">20 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 7 -->
+                <div class="product-card" data-product="7" onclick="toggleProduct(7, 'Majorette BMW M3', 35.00, 'Majorette', 4)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Majorette BMW M3</div>
+                    <div class="product-category">Majorette</div>
+                    <div class="product-price">R$ 35,00</div>
+                    <div class="product-stock">4 em estoque</div>
+                  </div>
+                </div>
+
+                <!-- Produto 8 -->
+                <div class="product-card" data-product="8" onclick="toggleProduct(8, 'Hot Wheels McLaren P1', 30.00, 'Hot Wheels', 10)">
+                  <input type="checkbox" class="product-checkbox">
+                  <div class="product-info">
+                    <div class="product-name">Hot Wheels McLaren P1</div>
+                    <div class="product-category">Hot Wheels</div>
+                    <div class="product-price">R$ 30,00</div>
+                    <div class="product-stock">10 em estoque</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="selected-products-summary">
+                <div class="summary-header">
+                  <span class="material-icons">shopping_cart</span>
+                  Produtos Selecionados
+                </div>
+                <div id="selectedProductsSummary" class="selected-items">
+                  <!-- Produtos selecionados aparecerão aqui -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Campo de Previsão de Entrega -->
+            <div class="delivery-forecast">
+              <div class="delivery-forecast-header">
+                <span class="material-icons">local_shipping</span>
+                Previsão de Entrega
+              </div>
+              <div class="delivery-forecast-description">
+                Esta informação será incluída em cada produto enviado no grupo. Seja específico para que os clientes saibam quando esperar a chegada.
+              </div>
+              <div class="form-group">
+                <label class="form-label required">
+                  <span class="material-icons" style="font-size: 16px;">schedule</span>
+                  Data Prevista de Chegada
+                </label>
+                <input type="text" id="deliveryForecast" name="deliveryForecast" class="form-input" placeholder="Ex: 15 a 20 dias úteis, Primeira semana de agosto, 25/08/2024" required>
+                <div class="form-help">Exemplos: "15 a 20 dias úteis", "Primeira semana de agosto", "25/08/2024", "Final do mês"</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção 4: Preview da Mensagem -->
+          <div class="form-section">
+            <div class="section-title">
+              <span class="material-icons">preview</span>
+              Preview dos Disparos
+            </div>
+            <div class="section-description">
+              Veja como suas mensagens aparecerão no WhatsApp. Primeiro será enviada a mensagem introdutória, depois cada produto individualmente.
+            </div>
+
+            <div class="message-preview">
+              <div class="preview-header">
+                <span class="material-icons">phone_android</span>
+                Como aparecerá no WhatsApp
+              </div>
+
+              <div class="whatsapp-preview">
+                <div class="preview-message" id="previewMessage">Digite sua mensagem...</div>
+                <div class="preview-products" id="previewProducts">
+                  <em>Nenhum produto selecionado</em>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="resetForm()">
+              <span class="material-icons" style="font-size: 18px;">refresh</span>
+              Limpar Formulário
+            </button>
+            <button type="button" class="btn-primary" onclick="saveCampaign()">
+              <span class="material-icons" style="font-size: 18px;">send</span>
+              Criar Campanha
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>

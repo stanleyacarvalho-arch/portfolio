@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Perfil da Empresa - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .back-btn {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 700;
+      flex: 1;
+      text-align: center;
+    }
+    .save-btn {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .save-btn:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .form-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .form-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #222;
+    }
+    .logo-upload-section {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo-preview {
+      width: 120px;
+      height: 120px;
+      background: #222;
+      border-radius: 12px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #444;
+      cursor: pointer;
+      transition: all 0.2s;
+      overflow: hidden;
+    }
+    .logo-preview:hover {
+      border-color: #00b86b;
+      background: #333;
+    }
+    .logo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .logo-placeholder {
+      color: #666;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    .upload-btn {
+      background: #222;
+      color: #00b86b;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .upload-btn:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-label {
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .form-textarea {
+      width: 100%;
+      padding: 12px 16px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      resize: vertical;
+      min-height: 80px;
+    }
+    .form-textarea:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .form-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: #222;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+    .form-select:focus {
+      outline: none;
+      border-color: #00b86b;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .success-message {
+      background: #00b86b22;
+      border: 1px solid #00b86b;
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #00e676;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .hidden {
+      display: none;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        text-align: left;
+        font-size: 1.3rem;
+      }
+      .save-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .form-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .form-section {
+        padding: 20px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .nav-item.active {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <div class="main-content">
+    <div class="header-row">
+      <a href="mais.html" class="back-btn" aria-label="Voltar para Mais">
+        <span class="material-icons">arrow_back</span>
+        Voltar
+      </a>
+      <div class="page-title">Perfil da Empresa</div>
+      <button class="save-btn" onclick="saveCompanyProfile()" aria-label="Salvar alterações no perfil da empresa">
+        <span class="material-icons">save</span>
+        Salvar Alterações
+      </button>
+    </div>
+    
+    <div class="success-message" id="successMessage" role="alert" aria-live="polite">
+      <span class="material-icons">check_circle</span>
+      Perfil da empresa atualizado com sucesso!
+    </div>
+    
+    <div class="form-container">
+      <!-- Logo da Empresa -->
+      <div class="form-section logo-upload-section">
+        <div class="section-title">
+          <span class="material-icons">image</span>
+          Logo da Empresa
+        </div>
+        <div class="logo-preview" onclick="document.getElementById('logoInput').click()" role="button" tabindex="0" aria-label="Adicionar logo da empresa">
+          <div class="logo-placeholder">
+            <span class="material-icons" style="font-size: 48px; color: #666;">add_photo_alternate</span>
+            <br>Clique para adicionar logo
+          </div>
+        </div>
+        <input type="file" id="logoInput" class="hidden" accept="image/*" onchange="previewLogo(this)" aria-label="Selecionar arquivo de logo da empresa">
+        <button class="upload-btn" onclick="document.getElementById('logoInput').click()" aria-label="Escolher arquivo de logo da empresa">
+          <span class="material-icons">upload</span>
+          Escolher Arquivo
+        </button>
+      </div>
+      
+      <!-- Informações Básicas -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="material-icons">business</span>
+          Informações Básicas
+        </div>
+        
+        <div class="form-group">
+          <label for="companyName" class="form-label">Nome da Empresa *</label>
+          <input type="text" class="form-input" id="companyName" placeholder="Digite o nome da empresa" value="JANOTEI" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="tradeName" class="form-label">Nome Fantasia</label>
+          <input type="text" class="form-input" id="tradeName" placeholder="Nome fantasia (opcional)">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="cnpj" class="form-label">CNPJ</label>
+            <input type="text" class="form-input" id="cnpj" placeholder="00.000.000/0000-00">
+          </div>
+          <div class="form-group">
+            <label for="stateRegistration" class="form-label">Inscrição Estadual</label>
+            <input type="text" class="form-input" id="stateRegistration" placeholder="000.000.000.000">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="businessSegment" class="form-label">Segmento/Ramo de Atividade</label>
+          <select class="form-select" id="businessSegment">
+            <option value="">Selecione o segmento</option>
+            <option value="varejo">Varejo</option>
+            <option value="atacado">Atacado</option>
+            <option value="servicos">Serviços</option>
+            <option value="industria">Indústria</option>
+            <option value="outros">Outros</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="companyDescription" class="form-label">Descrição da Empresa</label>
+          <textarea class="form-textarea" id="companyDescription" placeholder="Descreva brevemente sua empresa e atividades"></textarea>
+        </div>
+      </div>
+      
+      <!-- Dados de Contato -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="material-icons">contact_phone</span>
+          Dados de Contato
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="mainPhone" class="form-label">Telefone Principal *</label>
+            <input type="tel" class="form-input" id="mainPhone" placeholder="(00) 0000-0000" required>
+          </div>
+          <div class="form-group">
+            <label for="whatsapp" class="form-label">WhatsApp</label>
+            <input type="tel" class="form-input" id="whatsapp" placeholder="(00) 00000-0000">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="mainEmail" class="form-label">E-mail Principal *</label>
+          <input type="email" class="form-input" id="mainEmail" placeholder="contato@empresa.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="financialEmail" class="form-label">E-mail Financeiro</label>
+          <input type="email" class="form-input" id="financialEmail" placeholder="financeiro@empresa.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="website" class="form-label">Website</label>
+          <input type="url" class="form-input" id="website" placeholder="https://www.empresa.com">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="instagram" class="form-label">Instagram</label>
+            <input type="text" class="form-input" id="instagram" placeholder="@empresa">
+          </div>
+          <div class="form-group">
+            <label for="facebook" class="form-label">Facebook</label>
+            <input type="text" class="form-input" id="facebook" placeholder="facebook.com/empresa">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Endereço -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="material-icons">location_on</span>
+          Endereço
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="zipCode" class="form-label">CEP</label>
+            <input type="text" class="form-input" id="zipCode" placeholder="00000-000" onblur="searchAddress()">
+          </div>
+          <div class="form-group">
+            <label for="state" class="form-label">Estado</label>
+            <select class="form-select" id="state">
+              <option value="">Selecione o estado</option>
+              <option value="AC">Acre</option>
+              <option value="AL">Alagoas</option>
+              <option value="AP">Amapá</option>
+              <option value="AM">Amazonas</option>
+              <option value="BA">Bahia</option>
+              <option value="CE">Ceará</option>
+              <option value="DF">Distrito Federal</option>
+              <option value="ES">Espírito Santo</option>
+              <option value="GO">Goiás</option>
+              <option value="MA">Maranhão</option>
+              <option value="MT">Mato Grosso</option>
+              <option value="MS">Mato Grosso do Sul</option>
+              <option value="MG">Minas Gerais</option>
+              <option value="PA">Pará</option>
+              <option value="PB">Paraíba</option>
+              <option value="PR">Paraná</option>
+              <option value="PE">Pernambuco</option>
+              <option value="PI">Piauí</option>
+              <option value="RJ">Rio de Janeiro</option>
+              <option value="RN">Rio Grande do Norte</option>
+              <option value="RS">Rio Grande do Sul</option>
+              <option value="RO">Rondônia</option>
+              <option value="RR">Roraima</option>
+              <option value="SC">Santa Catarina</option>
+              <option value="SP">São Paulo</option>
+              <option value="SE">Sergipe</option>
+              <option value="TO">Tocantins</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="city" class="form-label">Cidade</label>
+          <input type="text" class="form-input" id="city" placeholder="Nome da cidade">
+        </div>
+        
+        <div class="form-group">
+          <label for="neighborhood" class="form-label">Bairro</label>
+          <input type="text" class="form-input" id="neighborhood" placeholder="Nome do bairro">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="street" class="form-label">Rua/Avenida</label>
+            <input type="text" class="form-input" id="street" placeholder="Nome da rua">
+          </div>
+          <div class="form-group">
+            <label for="number" class="form-label">Número</label>
+            <input type="text" class="form-input" id="number" placeholder="123">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="complement" class="form-label">Complemento</label>
+          <input type="text" class="form-input" id="complement" placeholder="Sala, andar, etc. (opcional)">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Menu inferior para mobile -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+  
+  <script>
+    function previewLogo(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const logoPreview = document.querySelector('.logo-preview');
+          logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Preview">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    
+    function searchAddress() {
+      const zipCode = document.getElementById('zipCode').value.replace(/\D/g, '');
+      if (zipCode.length === 8) {
+        // Simulação de busca de CEP - em produção, usar API dos Correios
+        // fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
+        console.log('Buscando endereço para CEP:', zipCode);
+      }
+    }
+    
+    function saveCompanyProfile() {
+      // Validação básica
+      const companyName = document.getElementById('companyName').value;
+      const mainPhone = document.getElementById('mainPhone').value;
+      const mainEmail = document.getElementById('mainEmail').value;
+      
+      if (!companyName || !mainPhone || !mainEmail) {
+        alert('Por favor, preencha todos os campos obrigatórios (*)');
+        return;
+      }
+      
+      // Simulação de salvamento
+      const successMessage = document.getElementById('successMessage');
+      successMessage.style.display = 'flex';
+      
+      // Scroll para o topo para mostrar a mensagem
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      // Ocultar mensagem após 3 segundos
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+      }, 3000);
+      
+      console.log('Perfil da empresa salvo com sucesso!');
+    }
+    
+    // Máscaras para campos
+    document.getElementById('cnpj').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+      value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      value = value.replace(/(\d{4})(\d)/, '$1-$2');
+      e.target.value = value;
+    });
+    
+    document.getElementById('zipCode').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+      e.target.value = value;
+    });
+    
+    document.getElementById('mainPhone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/, '($1) $2');
+      value = value.replace(/(\d{4})(\d)/, '$1-$2');
+      e.target.value = value;
+    });
+    
+    document.getElementById('whatsapp').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      value = value.replace(/^(\d{2})(\d)/, '($1) $2');
+      value = value.replace(/(\d{5})(\d)/, '$1-$2');
+      e.target.value = value;
+    });
+  </script>
+</body>
+</html>

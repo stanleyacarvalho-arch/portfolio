@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Disparos WhatsApp - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Estilos base mantidos do seu código original */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover,
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px #00b86b33;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .btn-secondary {
+      background: #222;
+      color: #fff;
+      border: 1.2px solid #00b86b;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+    .btn-secondary:hover {
+      background: #00b86b;
+      color: #fff;
+    }
+    .campaigns-container {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 24px;
+      color: #fff;
+      overflow-x: auto;
+    }
+    .campaigns-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+    .campaigns-title {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .campaign-card {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #333;
+      transition: all 0.2s;
+    }
+    .campaign-card:hover {
+      border-color: #00b86b;
+      box-shadow: 0 4px 12px #00b86b22;
+    }
+    .campaign-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .campaign-info {
+      flex: 1;
+      min-width: 200px;
+    }
+    .campaign-name {
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .campaign-schedule {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .campaign-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .status-active {
+      color: #00e676;
+    }
+    .status-paused {
+      color: #ffb347;
+    }
+    .status-scheduled {
+      color: #74b9ff;
+    }
+    .campaign-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 120px;
+      justify-content: flex-end;
+    }
+    .btn-action {
+      background: transparent;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 6px 8px;
+      color: #aaa;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+    .btn-action:hover {
+      border-color: #00b86b;
+      color: #00b86b;
+    }
+    .btn-action.danger:hover {
+      border-color: #ff5252;
+      color: #ff5252;
+    }
+    .campaign-products {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .product-tag {
+      background: #333;
+      color: #ccc;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .product-tag.out-of-stock {
+      background: #ff525222;
+      color: #ff5252;
+      border: 1px solid #ff5252;
+    }
+    .campaign-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #333;
+    }
+    .campaign-stat {
+      text-align: center;
+    }
+    .campaign-stat-value {
+      color: #00e676;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .campaign-stat-label {
+      color: #aaa;
+      font-size: 0.75rem;
+    }
+    /* Lista de pedidos do disparo */
+    .orders-container {
+      background: #222;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      color: #eee;
+      max-height: 400px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+    .order-summary {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 600;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid #333;
+      gap: 12px;
+    }
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    .order-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 180px;
+    }
+    .order-name {
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .order-product {
+      font-size: 0.85rem;
+      color: #aaa;
+      white-space: normal;
+      word-break: break-word;
+    }
+    .order-quantity,
+    .order-total {
+      font-size: 0.9rem;
+      color: #ccc;
+      min-width: 70px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .order-status-select {
+      background: #333;
+      color: #eee;
+      border: 1px solid #444;
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      min-width: 180px;
+      white-space: nowrap;
+    }
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .modal.show {
+      display: flex;
+    }
+    .modal-content {
+      background: #181818;
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 700px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #222;
+      padding-bottom: 12px;
+    }
+    .modal-title {
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: #aaa;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .btn-close:hover {
+      color: #fff;
+      background: #333;
+    }
+    /* Responsividade */
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+      .campaigns-container {
+        padding: 20px 0;
+      }
+      .campaign-card {
+        padding: 16px;
+      }
+      .campaign-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .campaign-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .campaign-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10px;
+      }
+    }
+    /* Menu inferior oculto na versão web */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item active" data-page="disparos" tabindex="0" aria-current="page" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="meu-perfil.html" class="nav-item" data-page="meu-perfil" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div class="page-title">Disparos WhatsApp</div>
+       <div class="header-actions">
+        <button class="btn-secondary" onclick="alert('Histórico ainda não implementado')">
+    <span class="material-icons">history</span>
+    Histórico
+        </button>
+       <button id="btnNovaCampanha" class="btn-primary">
+     <span class="material-icons">add</span>
+    Nova Campanha
+  </button>
+</div>
+    </div>
+
+    <div class="campaigns-container" id="campaignsContainer">
+      <!-- Campanhas serão carregadas aqui via JS -->
+    </div>
+  </div>
+
+  <!-- Modal de pedidos do disparo -->
+  <div id="ordersModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="ordersModalTitle" aria-describedby="ordersModalDesc">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="ordersModalTitle">Pedidos do Disparo</h2>
+        <button class="btn-close" aria-label="Fechar" onclick="closeOrdersModal()">×</button>
+      </div>
+      <div id="ordersModalDesc" class="orders-container">
+        <!-- Lista de pedidos será inserida aqui -->
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Menu inferior">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item active" data-page="disparos" tabindex="0" aria-current="page" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="meu-perfil.html" class="nav-item" data-page="meu-perfil" tabindex="0" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </nav>
+
+  <script>
+    // Dados simulados para campanhas e pedidos
+    const campaigns = [
+      {
+        id: 1,
+        name: '🔥 Lançamentos Hot Wheels',
+        schedule: 'Todos os dias às 09:00',
+        status: 'disponivel_para_reserva', // status geral do disparo
+        products: ['Hot Wheels Ferrari F40', 'Hot Wheels Porsche 911', 'Hot Wheels McLaren P1'],
+        stats: { sent: 156, delivered: 142, reservations: 23, rate: '91%' },
+        orders: [
+          { id: 101, client: 'João Silva', product: 'Hot Wheels Ferrari F40', quantity: 2, unitPrice: 25.00, status: 'reservado' },
+          { id: 102, client: 'Maria Souza', product: 'Hot Wheels Porsche 911', quantity: 1, unitPrice: 22.00, status: 'disponivel_para_pagamento' },
+          { id: 103, client: 'Carlos Lima', product: 'Hot Wheels McLaren P1', quantity: 3, unitPrice: 30.00, status: 'pago_aguardando_retirada' },
+        ]
+      },
+      {
+        id: 2,
+        name: '🏎️ MiniGT Premium',
+        schedule: 'Seg, Qua, Sex às 14:00',
+        status: 'disponivel_para_reserva',
+        products: ['MiniGT Lamborghini Huracán', 'MiniGT Nissan GT-R'],
+        stats: { sent: 89, delivered: 84, reservations: 12, rate: '94%' },
+        orders: [
+          { id: 201, client: 'Ana Paula', product: 'MiniGT Lamborghini Huracán', quantity: 1, unitPrice: 45.00, status: 'reservado' },
+          { id: 202, client: 'Pedro Santos', product: 'MiniGT Nissan GT-R', quantity: 1, unitPrice: 42.00, status: 'cancelado' },
+        ]
+      }
+    ];
+
+    // Mapas para exibir status legíveis
+    const generalStatusLabels = {
+      disponivel_para_reserva: 'Disponível para Reserva',
+      disponivel_para_pagamento: 'Disponível para Pagamento',
+      pausada: 'Pausada',
+      finalizada: 'Finalizada'
+    };
+
+    const orderStatusLabels = {
+      reservado: 'Reservado',
+      disponivel_para_pagamento: 'Disponível para Pagamento',
+      pago_aguardando_retirada: 'Pago, aguardando retirada',
+      retirado: 'Retirado / Concluído',
+      cancelado: 'Cancelado'
+    };
+
+    // Renderiza a lista de campanhas
+    function renderCampaigns() {
+      const container = document.getElementById('campaignsContainer');
+      container.innerHTML = campaigns.map(campaign => `
+        <div class="campaign-card" data-id="${campaign.id}">
+          <div class="campaign-header">
+            <div class="campaign-info">
+              <div class="campaign-name">${campaign.name}</div>
+              <div class="campaign-schedule">
+                <span class="material-icons" style="font-size: 14px;">schedule</span>
+                ${campaign.schedule}
+              </div>
+              <div class="campaign-status">
+                <span class="material-icons" style="font-size: 14px;">info</span>
+                <select class="order-status-select" onchange="changeGeneralStatus(${campaign.id}, this.value)" aria-label="Alterar status geral do disparo">
+                  ${Object.entries(generalStatusLabels).map(([key, label]) => `
+                    <option value="${key}" ${campaign.status === key ? 'selected' : ''}>${label}</option>
+                  `).join('')}
+                </select>
+              </div>
+            </div>
+            <div class="campaign-actions">
+              <button class="btn-action" onclick="openOrdersModal(${campaign.id})" aria-label="Ver pedidos do disparo">
+                <span class="material-icons">list_alt</span> Pedidos
+              </button>
+            </div>
+          </div>
+          <div class="campaign-products">
+            ${campaign.products.map(p => `<span class="product-tag">${p}</span>`).join('')}
+          </div>
+          <div class="campaign-stats">
+            <div class="campaign-stat">
+              <div class="campaign-stat-value">${campaign.stats.sent}</div>
+              <div class="campaign-stat-label">Enviadas</div>
+            </div>
+            <div class="campaign-stat">
+              <div class="campaign-stat-value">${campaign.stats.delivered}</div>
+              <div class="campaign-stat-label">Entregues</div>
+            </div>
+            <div class="campaign-stat">
+              <div class="campaign-stat-value">${campaign.stats.reservations}</div>
+              <div class="campaign-stat-label">Reservas</div>
+            </div>
+            <div class="campaign-stat">
+              <div class="campaign-stat-value">${campaign.stats.rate}</div>
+              <div class="campaign-stat-label">Taxa</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Alterar status geral do disparo
+    function changeGeneralStatus(campaignId, newStatus) {
+      const campaign = campaigns.find(c => c.id === campaignId);
+      if (!campaign) return;
+
+      campaign.status = newStatus;
+
+      // Atualiza status individuais para "disponivel_para_pagamento" se o status geral mudou para isso
+      if (newStatus === 'disponivel_para_pagamento') {
+        campaign.orders.forEach(order => {
+          if (order.status === 'reservado') {
+            order.status = 'disponivel_para_pagamento';
+          }
+        });
+      }
+
+      renderCampaigns();
+      if (currentOpenCampaignId === campaignId) {
+        renderOrders(campaignId);
+      }
+    }
+
+    // Modal pedidos
+    let currentOpenCampaignId = null;
+    function openOrdersModal(campaignId) {
+      currentOpenCampaignId = campaignId;
+      renderOrders(campaignId);
+      document.getElementById('ordersModal').classList.add('show');
+    }
+    function closeOrdersModal() {
+      document.getElementById('ordersModal').classList.remove('show');
+      currentOpenCampaignId = null;
+    }
+
+    // Renderiza pedidos do disparo
+    function renderOrders(campaignId) {
+      const campaign = campaigns.find(c => c.id === campaignId);
+      if (!campaign) return;
+
+      const container = document.getElementById('ordersModalDesc');
+      if (campaign.orders.length === 0) {
+        container.innerHTML = '<p>Nenhum pedido para este disparo.</p>';
+        return;
+      }
+
+      // Calcula total de pedidos e valor total
+      const totalOrders = campaign.orders.reduce((acc, order) => acc + order.quantity, 0);
+      const totalValue = campaign.orders.reduce((acc, order) => acc + order.quantity * order.unitPrice, 0);
+
+      container.innerHTML = `
+        <div class="order-summary">
+          <div>Total de unidades reservadas: ${totalOrders}</div>
+          <div>Valor total dos pedidos: R$ ${totalValue.toFixed(2)}</div>
+        </div>
+        ${campaign.orders.map(order => `
+          <div class="order-item" data-order-id="${order.id}">
+            <div class="order-info">
+              <div class="order-name">${order.client}</div>
+              <div class="order-product">${order.product}</div>
+            </div>
+            <div class="order-quantity" title="Quantidade reservada">${order.quantity} un.</div>
+            <div class="order-total" title="Valor total">R$ ${(order.quantity * order.unitPrice).toFixed(2)}</div>
+            <select class="order-status-select" aria-label="Alterar status do pedido" onchange="changeOrderStatus(${campaignId}, ${order.id}, this.value)">
+              ${Object.entries(orderStatusLabels).map(([key, label]) => `
+                <option value="${key}" ${order.status === key ? 'selected' : ''}>${label}</option>
+              `).join('')}
+            </select>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    // Alterar status individual do pedido
+    function changeOrderStatus(campaignId, orderId, newStatus) {
+      const campaign = campaigns.find(c => c.id === campaignId);
+      if (!campaign) return;
+      const order = campaign.orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      order.status = newStatus;
+      renderOrders(campaignId);
+    }
+
+    // Inicializa a tela e adiciona listener para o botão Nova Campanha
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCampaigns();
+
+      const btnNovaCampanha = document.getElementById('btnNovaCampanha');
+      if (btnNovaCampanha) {
+        btnNovaCampanha.addEventListener('click', () => {
+          window.location.href = 'nova-campanha.html';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

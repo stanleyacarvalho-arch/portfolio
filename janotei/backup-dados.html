@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Backup dos Dados - JANOTEI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .sidebar {
+      width: 80px;
+      background: #181818ee;
+      border-right: 1.5px solid #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 0 0;
+      min-height: 100vh;
+      z-index: 2;
+    }
+    .sidebar .logo {
+      width: 48px;
+      margin-bottom: 32px;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+      margin-bottom: 28px;
+      cursor: pointer;
+    }
+    .nav-item:hover {
+      color: #00b86b;
+    }
+    .nav-item.active {
+      color: #00b86b;
+    }
+    .material-icons {
+      font-size: 28px;
+      margin-bottom: 2px;
+    }
+    .main-content {
+      flex: 1;
+      padding: 32px 24px 24px 24px;
+      background: radial-gradient(circle at 70% 20%, #00e67633 0%, #111 40%), 
+                  radial-gradient(circle at 20% 80%, #00b86b55 0%, #111 50%),
+                  linear-gradient(135deg, #111 60%, #222 100%);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .page-title {
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .breadcrumb {
+      color: #aaa;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a {
+      color: #00b86b;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .backup-container {
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .backup-section {
+      background: #181818;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #00b86b22;
+      padding: 32px;
+      color: #fff;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+    .section-icon {
+      width: 48px;
+      height: 48px;
+      background: #00b86b22;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00b86b;
+    }
+    .section-title {
+      color: #fff;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .section-description {
+      color: #aaa;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .backup-options {
+      margin-bottom: 24px;
+    }
+    .option-group {
+      margin-bottom: 20px;
+    }
+    .option-label {
+      color: #ccc;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #00b86b;
+      cursor: pointer;
+    }
+    .checkbox-item label {
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      flex: 1;
+    }
+    .data-info {
+      color: #666;
+      font-size: 0.8rem;
+      margin-left: 26px;
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, #00b86b 60%, #00e676 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px #00b86b33;
+      width: 100%;
+      justify-content: center;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(90deg, #00e676 60%, #00b86b 100%);
+    }
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .success-message, .error-message {
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .success-message {
+      background: #00b86b22;
+      border: 1px solid #00b86b;
+      color: #00e676;
+    }
+    .error-message {
+      background: #ff525222;
+      border: 1px solid #ff5252;
+      color: #ff5252;
+    }
+    .success-message.show, .error-message.show {
+      display: flex;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      margin: 16px 0;
+      overflow: hidden;
+      display: none;
+    }
+    .progress-bar.show {
+      display: block;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00b86b, #00e676);
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .info-box {
+      background: #222;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      border-left: 4px solid #00b86b;
+    }
+    .info-box-title {
+      color: #00b86b;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .info-box-text {
+      color: #ccc;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    /* Menu inferior oculto por padrão */
+    .bottom-nav {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 18px 4vw 70px 4vw;
+        min-height: 100vh;
+      }
+      .header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .page-title {
+        font-size: 1.2rem;
+      }
+      .backup-section {
+        padding: 24px;
+      }
+      .bottom-nav {
+        display: flex;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 56px;
+        background: #181818ee;
+        border-top: 1.5px solid #222;
+        z-index: 10;
+        justify-content: space-around;
+        align-items: center;
+      }
+      .bottom-nav .nav-item {
+        margin-bottom: 0;
+        align-items: center;
+        color: #aaa;
+        font-size: 0.75rem;
+      }
+      .bottom-nav .nav-item:hover {
+        color: #00b86b;
+      }
+      .bottom-nav .material-icons {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+  <script src="js/app.js"></script>
+</head>
+<body>
+  <!-- Sidebar só aparece em telas grandes -->
+  <div class="sidebar">
+    <img src="images/JANOTEI LOGO VETOR (1).png" alt="JANOTEI Logo" class="logo" />
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <div class="main-content">
+    <div class="header-row">
+      <div>
+        <div class="breadcrumb">
+          <a href="dashboard.html" data-page="dashboard">Início</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <a href="mais.html" data-page="mais">Mais</a>
+          <span class="material-icons" style="font-size: 14px;">chevron_right</span>
+          <span>Backup dos Dados</span>
+        </div>
+        <div class="page-title">
+          <span class="material-icons">cloud_download</span>
+          Backup dos Dados
+        </div>
+      </div>
+    </div>
+
+    <div class="backup-container">
+      <!-- Seção de Exportar Dados -->
+      <div class="backup-section">
+        <div class="section-header">
+          <div class="section-icon">
+            <span class="material-icons">file_download</span>
+          </div>
+          <div class="section-title">Exportar Dados</div>
+        </div>
+        
+        <div class="section-description">
+          Faça o download de um backup completo dos seus dados. Selecione quais informações deseja incluir no arquivo de backup.
+        </div>
+
+        <!-- Caixa de Informação -->
+        <div class="info-box">
+          <div class="info-box-title">
+            <span class="material-icons" style="font-size: 16px;">info</span>
+            Informações Importantes
+          </div>
+          <div class="info-box-text">
+            • O arquivo será gerado no formato JSON<br>
+            • Mantenha seus backups em local seguro<br>
+            • Recomendamos fazer backup semanalmente
+          </div>
+        </div>
+
+        <!-- Mensagem de Sucesso -->
+        <div id="exportSuccess" class="success-message" role="alert" aria-live="assertive" aria-atomic="true">
+          <span class="material-icons">check_circle</span>
+          <span>Backup exportado com sucesso!</span>
+        </div>
+
+        <!-- Mensagem de Erro -->
+        <div id="exportError" class="error-message" role="alert" aria-live="assertive" aria-atomic="true">
+          <span class="material-icons">error</span>
+          <span>Erro ao exportar backup. Tente novamente.</span>
+        </div>
+
+        <!-- Barra de Progresso -->
+        <div id="exportProgress" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="progress-fill"></div>
+        </div>
+
+        <div class="backup-options">
+          <div class="option-group">
+            <label class="option-label" for="products">Selecione os dados para exportar:</label>
+            <div class="checkbox-group" role="group" aria-labelledby="products">
+              <div class="checkbox-item">
+                <input type="checkbox" id="products" checked>
+                <label for="products">Produtos</label>
+              </div>
+              <div class="data-info">Inclui nome, preço, categoria e fotos</div>
+              
+              <div class="checkbox-item">
+                <input type="checkbox" id="categories" checked>
+                <label for="categories">Categorias</label>
+              </div>
+              <div class="data-info">Lista de todas as categorias criadas</div>
+              
+              <div class="checkbox-item">
+                <input type="checkbox" id="customers" checked>
+                <label for="customers">Clientes</label>
+              </div>
+              <div class="data-info">Dados dos clientes e histórico de pedidos</div>
+              
+              <div class="checkbox-item">
+                <input type="checkbox" id="orders" checked>
+                <label for="orders">Pedidos</label>
+              </div>
+              <div class="data-info">Histórico completo de reservas e vendas</div>
+              
+              <div class="checkbox-item">
+                <input type="checkbox" id="settings">
+                <label for="settings">Configurações</label>
+              </div>
+              <div class="data-info">Configurações do sistema e preferências</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="exportData()" aria-label="Gerar backup dos dados">
+          <span class="material-icons">file_download</span>
+          Gerar Backup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu inferior para dispositivos móveis -->
+  <div class="bottom-nav">
+    <a href="dashboard.html" class="nav-item" data-page="dashboard" tabindex="0" aria-label="Início">
+      <span class="material-icons" aria-hidden="true">home</span>
+      Início
+    </a>
+    <a href="produtos.html" class="nav-item" data-page="produtos" tabindex="0" aria-label="Produtos">
+      <span class="material-icons" aria-hidden="true">local_offer</span>
+      Produtos
+    </a>
+    <a href="categorias.html" class="nav-item" data-page="categorias" tabindex="0" aria-label="Categorias">
+      <span class="material-icons" aria-hidden="true">category</span>
+      Categorias
+    </a>
+    <a href="clientes.html" class="nav-item" data-page="clientes" tabindex="0" aria-label="Clientes">
+      <span class="material-icons" aria-hidden="true">people</span>
+      Clientes
+    </a>
+    <a href="relatorios.html" class="nav-item" data-page="relatorios" tabindex="0" aria-label="Relatórios">
+      <span class="material-icons" aria-hidden="true">bar_chart</span>
+      Relatórios
+    </a>
+    <a href="disparos.html" class="nav-item" data-page="disparos" tabindex="0" aria-label="Disparos">
+      <span class="material-icons" aria-hidden="true">campaign</span>
+      Disparos
+    </a>
+    <a href="mais.html" class="nav-item active" data-page="mais" tabindex="0" aria-current="page" aria-label="Mais">
+      <span class="material-icons" aria-hidden="true">menu</span>
+      Mais
+    </a>
+  </div>
+
+  <script>
+    // Função para exportar dados
+    function exportData() {
+      const checkboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]:checked');
+      
+      if (checkboxes.length === 0) {
+        showMessage('exportError', 'Selecione pelo menos um tipo de dado para exportar.');
+        return;
+      }
+
+      // Simular progresso de exportação
+      showProgress('exportProgress');
+      
+      setTimeout(() => {
+        hideProgress('exportProgress');
+        showMessage('exportSuccess', 'Backup exportado com sucesso!');
+        
+        // Simular download do arquivo
+        const selectedData = Array.from(checkboxes).map(cb => cb.id);
+        const filename = `backup_janotei_${new Date().toISOString().split('T')[0]}.json`;
+        
+        console.log('Exportando dados:', selectedData);
+        console.log('Nome do arquivo:', filename);
+        
+        // Aqui você faria a requisição real para o backend
+        // downloadBackup(selectedData, filename);
+      }, 3000);
+    }
+
+    // Funções auxiliares
+    function showMessage(elementId, message) {
+      const element = document.getElementById(elementId);
+      if (message) {
+        element.querySelector('span:last-child').textContent = message;
+      }
+      element.classList.add('show');
+      
+      setTimeout(() => {
+        element.classList.remove('show');
+      }, 5000);
+    }
+
+    function showProgress(elementId) {
+      const progressBar = document.getElementById(elementId);
+      const progressFill = progressBar.querySelector('.progress-fill');
+      
+      progressBar.classList.add('show');
+      progressFill.style.width = '0%';
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+          progress = 100;
+          clearInterval(interval);
+        }
+        progressFill.style.width = progress + '%';
+      }, 200);
+    }
+
+    function hideProgress(elementId) {
+      document.getElementById(elementId).classList.remove('show');
+    }
+  </script>
+</body>
+</html>
